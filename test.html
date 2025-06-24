@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마이페이지 | 로또1081</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap">
+  <style>
+    :root {
+      --main-burgundy: #7b192b;
+      --main-gold: #ffd700;
+      --main-white: #fff;
+      --main-gray: #f8f8f8;
+      --main-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --radius: 16px;
+    }
+    body {
+      font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      margin: 0; padding: 0;
+      background: var(--main-gray);
+      color: #333;
+    }
+    .mypage-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+    }
+    .mypage-sidebar {
+      background: var(--main-white);
+      border-radius: var(--radius);
+      box-shadow: var(--main-shadow);
+      padding: 25px;
+      height: fit-content;
+    }
+    .mypage-main {
+      background: var(--main-white);
+      border-radius: var(--radius);
+      box-shadow: var(--main-shadow);
+      padding: 30px;
+    }
+    .mypage-header {
+      margin-bottom: 30px;
+    }
+    .mypage-header h2 {
+      color: var(--main-burgundy);
+      margin-bottom: 0.3em;
+      font-weight: 700;
+      font-size: 1.8em;
+    }
+    .mypage-info {
+      background: #fff4ec;
+      border-left: 6px solid var(--main-gold);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .mypage-info strong {
+      color: var(--main-burgundy);
+      display: inline-block;
+      width: 80px;
+    }
+    .mypage-section {
+      margin-bottom: 35px;
+    }
+    .mypage-section h3 {
+      font-size: 1.2em;
+      color: var(--main-burgundy);
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--main-gold);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mypage-section h3 i {
+      color: var(--main-gold);
+    }
+    .table-list {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--main-gray);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .table-list th, .table-list td {
+      padding: 14px 16px;
+      text-align: left;
+    }
+    .table-list th {
+      background: var(--main-burgundy);
+      color: var(--main-gold);
+      font-weight: 600;
+    }
+    .table-list tr:nth-child(even) {
+      background: #fff;
+    }
+    .table-list tr:hover {
+      background: #fff4ec;
+    }
+    .mypage-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+    }
+    .mypage-actions button {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--main-burgundy);
+      color: var(--main-gold);
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mypage-actions button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(123,25,43,0.15);
+    }
+    .mypage-actions button.logout {
+      background: #fff;
+      color: var(--main-burgundy);
+      border: 1px solid var(--main-burgundy);
+    }
+    .mypage-actions button.logout:hover {
+      background: var(--main-burgundy);
+      color: var(--main-gold);
+    }
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: var(--main-white);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--main-shadow);
+    }
+    .stat-card .number {
+      font-size: 2em;
+      font-weight: 700;
+      color: var(--main-burgundy);
+      margin-bottom: 5px;
+    }
+    .stat-card .label {
+      color: #666;
+      font-size: 0.95em;
+    }
+    @media (max-width: 1024px) {
+      .mypage-container {
+        grid-template-columns: 1fr;
+        max-width: 800px;
+      }
+      .mypage-sidebar {
+        display: none;
+      }
+    }
+    @media (max-width: 780px) {
+      .mypage-container {
+        margin: 0;
+        padding: 0;
+        background: var(--main-gray);
+      }
+      .mypage-main {
+        border-radius: 0;
+        box-shadow: none;
+        padding: 16px;
+      }
+      .mypage-header {
+        margin-bottom: 20px;
+        padding: 16px;
+        background: var(--main-white);
+        border-radius: var(--radius);
+        box-shadow: var(--main-shadow);
+      }
+      .mypage-header h2 {
+        font-size: 1.4em;
+      }
+      .mypage-section {
+        margin-bottom: 20px;
+        background: var(--main-white);
+        border-radius: var(--radius);
+        box-shadow: var(--main-shadow);
+        padding: 16px;
+      }
+      .mypage-section h3 {
+        font-size: 1.1em;
+        margin-bottom: 12px;
+      }
+      .table-list {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        background: transparent;
+        box-shadow: none;
+      }
+      .table-list th, 
+      .table-list td {
+        padding: 12px 10px;
+        font-size: 0.95em;
+        white-space: nowrap;
+      }
+      .table-list th {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+      .table-list td:first-child {
+        position: sticky;
+        left: 0;
+        background: inherit;
+        z-index: 1;
+      }
+      .table-list tr:nth-child(even) {
+        background: var(--main-gray);
+      }
+      .table-list tr:hover {
+        background: #fff4ec;
+      }
+      /* 모바일용 빠른 통계 */
+      .mobile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 0 16px;
+      }
+      .mobile-stat-card {
+        background: var(--main-white);
+        border-radius: var(--radius);
+        padding: 12px;
+        text-align: center;
+        box-shadow: var(--main-shadow);
+      }
+      .mobile-stat-card .number {
+        font-size: 1.5em;
+        font-weight: 700;
+        color: var(--main-burgundy);
+        margin-bottom: 4px;
+      }
+      .mobile-stat-card .label {
+        color: #666;
+        font-size: 0.85em;
+      }
+      /* 모바일용 회원정보 */
+      .mobile-info {
+        background: #fff4ec;
+        border-left: 6px solid var(--main-gold);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin: 0 16px 20px 16px;
+      }
+      .mobile-info strong {
+        color: var(--main-burgundy);
+        display: inline-block;
+        width: 70px;
+      }
+      /* 모바일용 액션 버튼 */
+      .mobile-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--main-white);
+        padding: 12px 16px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        gap: 10px;
+        z-index: 100;
+      }
+      .mobile-actions button {
+        flex: 1;
+        padding: 12px 0;
+        border: none;
+        border-radius: var(--radius);
+        background: var(--main-burgundy);
+        color: var(--main-gold);
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .mobile-actions button.logout {
+        background: #fff;
+        color: var(--main-burgundy);
+        border: 1px solid var(--main-burgundy);
+      }
+      /* 메인 컨텐츠 하단 여백 추가 */
+      .mypage-main {
+        padding-bottom: 80px;
+      }
+    }
+    @media (max-width: 480px) {
+      .mobile-stats {
+        grid-template-columns: 1fr;
+      }
+      .mobile-stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+      }
+      .mobile-stat-card .number {
+        margin-bottom: 0;
+      }
+      .mobile-info strong {
+        width: 60px;
+      }
+      .table-list th, 
+      .table-list td {
+        padding: 10px 8px;
+        font-size: 0.9em;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="mypage-container">
+    <!-- 사이드바 -->
+    <div class="mypage-sidebar">
+      <div class="mypage-header">
+        <h2>마이페이지</h2>
+        <div style="color:#666; font-size:1em;">나의 정보와 이용내역을 확인하세요</div>
+      </div>
+      
+      <!-- 회원 기본 정보 -->
+      <div class="mypage-info">
+        <div><strong>이름:</strong> 홍길동</div>
+        <div><strong>휴대폰:</strong> 010-1234-5678</div>
+        <div><strong>이메일:</strong> user@email.com</div>
+        <div><strong>가입일:</strong> 2024-12-15</div>
+      </div>
+
+      <!-- 빠른 통계 -->
+      <div class="quick-stats">
+        <div class="stat-card">
+          <div class="number">12</div>
+          <div class="label">추천번호</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">3</div>
+          <div class="label">당첨횟수</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">2</div>
+          <div class="label">문의건수</div>
+        </div>
+      </div>
+
+      <!-- 로그아웃/회원탈퇴 -->
+      <div class="mypage-actions">
+        <button onclick="alert('로그아웃 기능 연결 예정')" class="logout">로그아웃</button>
+        <button onclick="alert('회원탈퇴 기능 연결 예정')">회원탈퇴</button>
+      </div>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="mypage-main">
+      <!-- 모바일용 빠른 통계 -->
+      <div class="mobile-stats">
+        <div class="mobile-stat-card">
+          <div class="number">12</div>
+          <div class="label">추천번호</div>
+        </div>
+        <div class="mobile-stat-card">
+          <div class="number">3</div>
+          <div class="label">당첨횟수</div>
+        </div>
+        <div class="mobile-stat-card">
+          <div class="number">2</div>
+          <div class="label">문의건수</div>
+        </div>
+      </div>
+
+      <!-- 모바일용 회원정보 -->
+      <div class="mobile-info">
+        <div><strong>이름:</strong> 홍길동</div>
+        <div><strong>휴대폰:</strong> 010-1234-5678</div>
+        <div><strong>이메일:</strong> user@email.com</div>
+        <div><strong>가입일:</strong> 2024-12-15</div>
+      </div>
+
+      <!-- 추천번호 이력 -->
+      <div class="mypage-section">
+        <h3><i class="fas fa-ticket-alt"></i>최근 추천번호 이력</h3>
+        <table class="table-list">
+          <thead>
+            <tr>
+              <th>회차</th>
+              <th>추천일</th>
+              <th>추천번호</th>
+              <th>당첨여부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1081회</td>
+              <td>2025-06-10</td>
+              <td>3, 7, 12, 28, 32, 41 + 15</td>
+              <td><span style="color:var(--main-burgundy);">당첨</span></td>
+            </tr>
+            <tr>
+              <td>1080회</td>
+              <td>2025-06-03</td>
+              <td>5, 11, 19, 24, 36, 43 + 2</td>
+              <td><span style="color:#666;">미당첨</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 결제/구매 이력 -->
+      <div class="mypage-section">
+        <h3><i class="fas fa-shopping-cart"></i>결제 이력</h3>
+        <table class="table-list">
+          <thead>
+            <tr>
+              <th>결제일</th>
+              <th>상품명</th>
+              <th>결제금액</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-06-10</td>
+              <td>로또 추천번호 1회</td>
+              <td>10,000원</td>
+              <td><span style="color:var(--main-burgundy);">완료</span></td>
+            </tr>
+            <tr>
+              <td>2025-06-03</td>
+              <td>로또 추천번호 1회</td>
+              <td>10,000원</td>
+              <td><span style="color:var(--main-burgundy);">완료</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 문의내역 -->
+      <div class="mypage-section">
+        <h3><i class="fas fa-question-circle"></i>내 문의내역</h3>
+        <table class="table-list">
+          <thead>
+            <tr>
+              <th>문의일</th>
+              <th>제목</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-05-22</td>
+              <td>환불 문의</td>
+              <td><span style="color:#666;">답변 완료</span></td>
+            </tr>
+            <tr>
+              <td>2025-05-11</td>
+              <td>결제오류</td>
+              <td><span style="color:var(--main-burgundy);">답변 대기</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 모바일용 액션 버튼 -->
+      <div class="mobile-actions">
+        <button onclick="alert('로그아웃 기능 연결 예정')" class="logout">로그아웃</button>
+        <button onclick="alert('회원탈퇴 기능 연결 예정')">회원탈퇴</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

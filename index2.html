@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>『10년간의 연구, 1등 당첨자의 특별한 추천번호』</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B0000',
+            secondary: '#1E3A8A',
+            accent: '#64748B',
+            light: '#F8FAFC',
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            'hero-pattern': "url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B0000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .section-divider {
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+    }
+    .section-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #1E3A8A 20%, 
+        #1E3A8A 80%, 
+        transparent 100%
+      );
+    }
+    .section-divider::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, 
+        #1E3A8A 0%, 
+        transparent 100%
+      );
+    }
+    .section-divider.reverse::before {
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #64748B 20%, 
+        #64748B 80%, 
+        transparent 100%
+      );
+    }
+    .section-divider.reverse::after {
+      background: linear-gradient(180deg, 
+        #64748B 0%, 
+        transparent 100%
+      );
+    }
+    .gold-border {
+      border: 2px solid #D4AF37;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+    .premium-card {
+      background: linear-gradient(135deg, #ffffff 0%, #F8FAFC 100%);
+      border: 1px solid #64748B;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .premium-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, 
+        #1E3A8A 0%, 
+        #64748B 50%, 
+        #1E3A8A 100%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .premium-card:hover {
+      box-shadow: 0 8px 30px rgba(30, 58, 138, 0.15);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+    .premium-card:hover::before {
+      opacity: 1;
+    }
+    .section-title {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, 
+        #1E3A8A 0%, 
+        #64748B 50%, 
+        #1E3A8A 100%
+      );
+    }
+    .section-content {
+      position: relative;
+    }
+    .section-content::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(180deg, 
+        transparent 0%, 
+        #1E3A8A 100%
+      );
+    }
+  </style>
+</head>
+<body class="bg-light font-sans">
+  <!-- Navigation -->
+  <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <a href="/" class="text-2xl font-bold text-primary">
+        <span class="relative">
+            로또1081
+            <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
+          </span>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#story" class="text-gray-600 hover:text-primary transition">나의 이야기</a>
+          <a href="#method" class="text-gray-600 hover:text-primary transition">당첨 비법</a>
+          <a href="#reviews" class="text-gray-600 hover:text-primary transition">후기</a>
+          <a href="#faq" class="text-gray-600 hover:text-primary transition">고객센터</a>
+          <a href="/login" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-24 pb-16 bg-gradient-to-b from-white to-light relative overflow-hidden">
+    <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+          『제1081회 1등 당첨자가<br/>
+          <span class="text-primary">10년간 연구한 추천번호</span>』
+        </h1>
+        <p class="text-xl text-gray-600 mb-4">
+          당신에게 보내는 번호, 그저 '운'이 아닙니다.<br/>
+          이 번호는 제1081회 로또 1등 당첨자가 지난 10년간 수천 회차의 통계와 흐름을 분석하고,<br/>
+          자신만의 특별한 기준으로 직접 선별한 조합입니다.
+        </p>
+        <p class="text-sm text-gray-500 mb-8">
+          ※ 정확한 분석 방식은 대표자의 비공개 전략 자산으로, 상세한 로직은 공개하지 않습니다.<br/>
+          하지만, 이 번호들이 그저 운에 맡긴 숫자가 아님은 결과로 증명될 것입니다.
+        </p>
+        <p class="text-2xl font-bold text-primary mb-8">포기하지 말자! 할 수 있다! 제가 도와드리겠습니다.</p>
+        <a href="#story" class="inline-block bg-primary text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transition">
+          나의 이야기 시작하기
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Story Section -->
+  <section id="story" class="py-20 bg-white relative">
+    <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">나의 특별한 이야기</h2>
+        <div class="section-content">
+          <div class="space-y-12">
+            <div class="flex flex-col md:flex-row items-center gap-8">
+              <div class="md:w-1/2">
+                <img src="story1.jpg" alt="시작" class="rounded-2xl shadow-lg premium-card" />
+              </div>
+              <div class="md:w-1/2">
+                <h3 class="text-2xl font-bold text-primary mb-4">처음 시작된 운명</h3>
+                <p class="text-gray-600 leading-relaxed">
+                  10년 전, 평범한 직장인이었던 저는 우연히 로또 당첨 번호의 패턴을 발견하게 되었습니다. 
+                  그 순간부터 저의 인생은 완전히 바뀌었죠. 매일 퇴근 후 번호를 연구하며 패턴을 찾아낸 
+                  그 순간의 짜릿함은 지금도 잊을 수 없습니다.
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+              <div class="md:w-1/2">
+                <img src="story2.jpg" alt="연구" class="rounded-2xl shadow-lg" />
+              </div>
+              <div class="md:w-1/2">
+                <h3 class="text-2xl font-bold text-primary mb-4">10년간의 연구</h3>
+                <p class="text-gray-600 leading-relaxed">
+                  수많은 시행착오와 연구 끝에, 저만의 특별한 번호 선정 방법을 찾아냈습니다. 
+                  단순한 확률이 아닌, 수학적 패턴과 통계를 기반으로 한 저의 방법은 
+                  제1081회 1등 당첨이라는 결과로 증명되었습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider reverse"></div>
+
+  <!-- Certification Section -->
+  <section id="certification" class="py-20 bg-light relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-8 text-gray-800 section-title">1등 당첨 인증</h2>
+        <div class="section-content">
+          <p class="text-xl text-secondary font-bold mb-8">눈으로 직접 확인하세요!</p>
+          <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="premium-card rounded-2xl p-8">
+              <img src="indexFile/winner-proof.JPG" alt="당첨 인증서" class="w-full rounded-lg shadow-md" />
+              <p class="mt-6 text-gray-600">
+                제1081회 로또 1등 당첨 인증서
+              </p>
+            </div>
+            <div class="premium-card rounded-2xl p-8">
+              <img src="indexFile/1.JPG" alt="입금 내역" class="w-full rounded-lg shadow-md" />
+              <p class="mt-6 text-gray-600">
+                공증된 입금 내역 (개인정보 모자이크 처리)
+              </p>
+            </div>
+          </div>
+          <div class="premium-card rounded-2xl p-8">
+            <h3 class="text-2xl font-bold text-primary mb-6">🎥 인터뷰 영상</h3>
+            <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-xl">
+              <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Method Section -->
+  <section id="method" class="py-20 bg-white relative">
+    <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">당첨의 비법</h2>
+        <div class="section-content">
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="premium-card rounded-2xl p-6 text-center">
+              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-2xl">📊</span>
+              </div>
+              <h3 class="text-xl font-bold mb-3">통계 분석</h3>
+              <p class="text-gray-600">10년간의 당첨 번호 데이터를 분석하여 패턴을 찾아냈습니다.</p>
+            </div>
+            <div class="premium-card rounded-2xl p-6 text-center">
+              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-2xl">🎯</span>
+              </div>
+              <h3 class="text-xl font-bold mb-3">수학적 접근</h3>
+              <p class="text-gray-600">확률론과 수학적 모델을 기반으로 번호를 선정합니다.</p>
+            </div>
+            <div class="premium-card rounded-2xl p-6 text-center">
+              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-2xl">✨</span>
+              </div>
+              <h3 class="text-xl font-bold mb-3">검증된 결과</h3>
+              <p class="text-gray-600">실제 1등 당첨으로 증명된 방법을 제공합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider reverse"></div>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="py-20 bg-light relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
+        <div class="section-content">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="premium-card rounded-2xl p-6">
+              <div class="flex items-center mb-4">
+                <img src="review1.jpg" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
+                <div>
+                  <h4 class="font-bold">김** 님</h4>
+                  <div class="text-yellow-400">★★★★★</div>
+                </div>
+              </div>
+              <p class="text-gray-600">"처음에는 반신반의했는데, 실제로 4등 당첨이 되었어요! 정말 감사합니다."</p>
+            </div>
+            <div class="premium-card rounded-2xl p-6">
+              <div class="flex items-center mb-4">
+                <img src="review2.jpg" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
+                <div>
+                  <h4 class="font-bold">이** 님</h4>
+                  <div class="text-yellow-400">★★★★★</div>
+                </div>
+              </div>
+              <p class="text-gray-600">"운영자님의 노하우가 정말 대단해요. 3등 당첨으로 큰 행복을 누렸습니다."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-b from-white to-light relative">
+    <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 section-title">지금 바로 시작하세요</h2>
+        <div class="section-content">
+          <p class="text-xl mb-8 text-gray-600">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천</p>
+          <div class="premium-card rounded-2xl p-8 mb-8">
+            <h3 class="text-2xl font-bold mb-6 text-secondary">이번 주 추천 번호</h3>
+            <div class="flex justify-center space-x-4 mb-6">
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">3</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">11</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">19</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">27</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">34</span>
+              <span class="w-12 h-12 flex items-center justify-center bg-secondary text-white rounded-full font-bold text-xl blur-sm">42</span>
+            </div>
+            <p class="text-sm text-accent">* 실제 추천 번호는 결제 후 확인 가능합니다</p>
+          </div>
+          <a href="/payment" class="inline-block bg-secondary text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transition">
+            추천 번호 받기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider reverse"></div>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 bg-white relative">
+    <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">자주 묻는 질문</h2>
+        <div class="section-content">
+          <div class="space-y-4">
+            <div class="premium-card rounded-xl p-6">
+              <h3 class="text-xl font-bold mb-2">Q. 추천 번호는 어떻게 선정되나요?</h3>
+              <p class="text-gray-600">추천 번호는 제1081회 1등 당첨자가 10년간 직접 쌓아 올린 독점적인 노하우와 그만의 비밀스러운 분석 시스템을 통해 선정됩니다. 이는 단순한 통계나 확률을 넘어선 특별함으로, 오직 저희 사이트에서만 경험하실 수 있습니다.</p>
+            </div>
+            <div class="premium-card rounded-xl p-6">
+              <h3 class="text-xl font-bold mb-2">Q. 결제 후 언제 번호를 받을 수 있나요?</h3>
+              <p class="text-gray-600">결제 즉시 마이페이지에서 추천 번호를 확인하실 수 있습니다.</p>
+            </div>
+            <div class="premium-card rounded-xl p-6">
+              <h3 class="text-xl font-bold mb-2">Q. 환불 정책은 어떻게 되나요?</h3>
+              <p class="text-gray-600">번호 확인 전까지는 100% 환불이 가능합니다. 자세한 내용은 고객센터로 문의해 주세요.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">로또1081</h3>
+            <p class="text-gray-400">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천 서비스</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">고객센터</h3>
+            <p class="text-gray-400">평일 09:00 - 18:00</p>
+            <p class="text-gray-400">문의: support@lotto1081.com</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold mb-4">바로가기</h3>
+            <ul class="space-y-2">
+              <li><a href="login.html" class="text-gray-400 hover:text-white transition">로그인</a></li>
+              <li><a href="/mypage" class="text-gray-400 hover:text-white transition">마이페이지</a></li>
+              <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+          <p>&copy; 2024 로또1081. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

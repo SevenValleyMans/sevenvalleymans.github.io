@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>마이페이지 | 로또1081</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs (v8.x.x) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
+      authDomain: "lotto1081-2b3dc.firebaseapp.com",
+      projectId: "lotto1081-2b3dc",
+      storageBucket: "lotto1081-2b3dc.firebasestorage.app",
+      messagingSenderId: "785261698548",
+      appId: "1:785261698548:web:84531550d2380c24f82da1",
+      measurementId: "G-EMCRJS1KM2"
+    };
+  firebase.initializeApp(firebaseConfig);
+</script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B0000',
+            secondary: '#D4AF37',
+            accent: '#64748B',
+            light: '#F8FAFC',
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans KR', sans-serif; }
+    .section-card { background: #fff; border-radius: 1rem; box-shadow: 0 4px 24px rgba(30,58,138,0.07);}
+    .table thead { background: #F8FAFC; }
+    .status-paid { color: #fff; background: #8B0000; border-radius: 0.375rem; padding: 0.25rem 0.75rem;}
+    .status-expired { color: #fff; background: #64748B; border-radius: 0.375rem; padding: 0.25rem 0.75rem;}
+  </style>
+</head>
+<body class="bg-light min-h-screen">
+<!-- 네비게이션 바 (항상 보임) -->
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-bold text-primary relative">
+        로또1081
+        <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
+      </a>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="index.html" class="text-gray-600 hover:text-primary transition">홈</a>
+        <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
+        <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
+                  <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
+      <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
+      <span id="userNav" class="hidden flex items-center space-x-2">
+        <span id="userName" class="text-secondary font-bold"></span>
+      </span>
+      </div>
+      <!-- Mobile Hamburger -->
+      <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
+        <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- 모바일 전체 메뉴 오버레이 (오직 모바일에서만, nav 외부에!) -->
+<div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
+  <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
+    <!-- 닫기 버튼 -->
+    <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
+    <nav class="flex flex-col space-y-6 mt-8">
+      <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
+      <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
+      <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
+        <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
+  <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
+  <span id="userNavMobile" class="hidden flex items-center space-x-2">
+    <span id="userNameMobile" class="text-secondary font-bold"></span>
+  </span>
+    </nav>
+    <div class="mt-auto text-xs text-gray-400 pt-8 text-center">© 2024 로또1081</div>
+  </div>
+</div>
+
+<!-- 네비 겹침 방지 padding-top 적용 예시 -->
+<div class="h-16 md:h-16"></div>
+
+  <!-- Main -->
+  <main class="container mx-auto px-4 max-w-3xl pt-24 pb-10">
+    <!-- 결제/구독 현황 -->
+    <section class="section-card mb-8 p-6 border border-accent/20">
+      <h2 class="text-2xl font-bold text-primary mb-3">결제 / 구독 현황</h2>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div class="text-lg font-semibold mb-1">정기구독 상태:
+            <span class="status-paid">구독중</span>
+            <!-- <span class="status-expired">만료</span> -->
+          </div>
+          <div class="text-gray-500">최근 결제일: <span class="font-semibold text-gray-700">2024-06-20</span></div>
+          <div class="text-gray-500">결제 수단: <span class="font-semibold text-gray-700">카카오페이</span></div>
+          <div class="text-gray-500">다음 결제 예정일: <span class="font-semibold text-gray-700">2024-07-20</span></div>
+        </div>
+        <div>
+          <button class="mt-2 sm:mt-0 px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-primary transition">구독 해지</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 받은 추천번호 이력 -->
+    <section class="section-card mb-8 p-6 border border-accent/20">
+      <h2 class="text-2xl font-bold text-primary mb-3">받은 추천번호 이력</h2>
+      <div class="overflow-x-auto">
+        <table class="table w-full text-center text-gray-700">
+          <thead>
+            <tr>
+              <th class="py-2 px-3">회차</th>
+              <th class="py-2 px-3">발송일</th>
+              <th class="py-2 px-3">추천번호</th>
+            </tr>
+          </thead>
+          <tbody id="recommendListTbody">
+            <!-- 더미 데이터 추가 가능 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 내 Q&A 내역 -->
+    <section class="section-card p-6 border border-accent/20">
+      <h2 class="text-2xl font-bold text-primary mb-3">내 Q&A 내역</h2>
+      <div class="overflow-x-auto">
+        <table class="table w-full text-center text-gray-700">
+          <thead>
+            <tr>
+              <th class="py-2 px-3">제목</th>
+              <th class="py-2 px-3">작성일</th>
+              <th class="py-2 px-3">답변상태</th>
+            </tr>
+          </thead>
+          <tbody id="myQnaTbody">
+
+            <!-- 더미 데이터 추가 가능 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+
+  <script>
+    // 추천번호 이력 불러오기
+function loadRecommendHistory(userEmail) {
+  const tbody = document.getElementById('recommendListTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!userEmail) {
+    tbody.innerHTML = `<tr>
+      <td colspan="3" class="py-8 text-accent text-center">로그인 후 이력을 확인할 수 있습니다.</td>
+    </tr>`;
+    return;
+  }
+  firebase.firestore()
+    .collection('recommendations')
+    .where('email', '==', userEmail)
+    .orderBy('sentAt', 'desc')
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr>
+          <td colspan="3" class="py-8 text-accent text-center">아직 추천번호를 받은 적이 없습니다.</td>
+        </tr>`;
+        return;
+      }
+      snapshot.forEach(doc => {
+        const rec = doc.data();
+        const round = rec.round || '-';
+        const numbers = rec.numbers || '-';
+        const sentAt = rec.sentAt && rec.sentAt.toDate ? rec.sentAt.toDate().toLocaleDateString() : '-';
+        tbody.innerHTML += `
+          <tr>
+            <td class="py-2 px-3 font-semibold">${round}회</td>
+            <td class="py-2 px-3">${sentAt}</td>
+            <td class="py-2 px-3">${numbers}</td>
+          </tr>
+        `;
+      });
+    })
+    .catch(e => {
+      tbody.innerHTML = `<tr>
+        <td colspan="3" class="py-8 text-red-400 text-center">불러오기 오류: ${e.message}</td>
+      </tr>`;
+    });
+}
+
+// 내 Q&A 내역만!
+function loadMyQnA(userEmail) {
+  const tbody = document.getElementById('myQnaTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!userEmail) {
+    tbody.innerHTML = `<tr>
+      <td colspan="3" class="py-8 text-accent text-center">로그인 후 내 Q&A 내역을 확인할 수 있습니다.</td>
+    </tr>`;
+    return;
+  }
+  firebase.firestore()
+    .collection('qna')
+    .where('email', '==', userEmail)
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr>
+          <td colspan="3" class="py-8 text-accent text-center">작성한 Q&A가 없습니다.</td>
+        </tr>`;
+        return;
+      }
+      snapshot.forEach(doc => {
+        const q = doc.data();
+        const dateStr = q.createdAt && q.createdAt.toDate ? q.createdAt.toDate().toLocaleDateString() : '';
+        const answerStatus = q.answer && q.answer.trim() ? 
+          '<span class="status-paid">답변완료</span>' : 
+          '<span class="status-expired">미답변</span>';
+        tbody.innerHTML += `
+          <tr>
+            <td class="py-2 px-3 font-semibold text-left">${q.title || '-'}</td>
+            <td class="py-2 px-3">${dateStr}</td>
+            <td class="py-2 px-3">${answerStatus}</td>
+          </tr>
+        `;
+      });
+    })
+    .catch(e => {
+      tbody.innerHTML = `<tr>
+        <td colspan="3" class="py-8 text-red-400 text-center">불러오기 오류: ${e.message}</td>
+      </tr>`;
+    });
+}
+
+
+
+  // 네비게이션 상태 변경(로그인/로그아웃)
+document.addEventListener('DOMContentLoaded', function() {
+  firebase.auth().onAuthStateChanged(function(user) {
+
+      // 내 Q&A 내역 불러오기
+    if (user && user.email) {
+      loadMyQnA(user.email);
+      loadRecommendHistory(user.email);
+    } else {
+      loadMyQnA(null); // 비로그인 시 안내문구 **특수한 것 !! 붙여넣기 주의****
+    }
+
+    // 데스크톱
+    const loginNavBtn = document.getElementById('loginNavBtn');
+    const userNav = document.getElementById('userNav');
+    const userName = document.getElementById('userName');
+    const logoutNavBtn = document.getElementById('logoutNavBtn');
+    // 모바일
+    const loginMobileBtn = document.getElementById('loginMobileBtn');
+    const userNavMobile = document.getElementById('userNavMobile');
+    const userNameMobile = document.getElementById('userNameMobile');
+    const logoutMobileBtn = document.getElementById('logoutMobileBtn');
+
+    if (user) {
+      // Firestore에서 유저명 불러오기(선택)
+      firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
+        const name = doc.exists && doc.data().name ? doc.data().name + '님' : user.email || '회원님';
+        if (userName) userName.textContent = name;
+        if (userNameMobile) userNameMobile.textContent = name;
+      }).catch(() => {
+        if (userName) userName.textContent = user.email || '회원님';
+        if (userNameMobile) userNameMobile.textContent = user.email || '회원님';
+      });
+
+      // 데스크톱
+      if (loginNavBtn) loginNavBtn.style.display = "none";
+      if (userNav) userNav.classList.remove('hidden');
+      // 모바일
+      if (loginMobileBtn) loginMobileBtn.style.display = "none";
+      if (userNavMobile) userNavMobile.classList.remove('hidden');
+    } else {
+      // 데스크톱
+      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
+      if (userNav) userNav.classList.add('hidden');
+      // 모바일
+      if (loginMobileBtn) loginMobileBtn.style.display = "block";
+      if (userNavMobile) userNavMobile.classList.add('hidden');
+    }
+
+    // 로그아웃 이벤트 (데스크톱)
+    if (logoutNavBtn) {
+      logoutNavBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(function() {
+          window.location.reload();
+        });
+      }
+    }
+    // 로그아웃 이벤트 (모바일)
+    if (logoutMobileBtn) {
+      logoutMobileBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(function() {
+          window.location.reload();
+        });
+      }
+    }
+  });
+});
+
+</script>
+
+  <!-- 햄버거 메뉴 동작 스크립트 (아래 한 번만 추가하면 됨) -->
+  <script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  // 메뉴 오버레이 클릭시 닫기
+  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+  </script>
+
+</body>
+</html>

@@ -78,22 +78,16 @@
   <div id="loginMessage" class="mt-4 text-center text-accent text-sm"></div>
 </div>
 
-<div class="flex items-center justify-center my-5 w-full">
-  <div class="flex-grow max-w-[220px] h-px bg-gray-200"></div>
-  <span class="mx-3 text-gray-400 text-sm font-semibold">또는</span>
-  <div class="flex-grow max-w-[220px] h-px bg-gray-200"></div>
+
+<!-- 인증번호 인증 후에만 표시 -->
+<div id="signupArea" class="hidden">
+  <input type="text" id="userId" placeholder="ID (이메일 형식 권장)">
+  <button type="button" id="checkIdBtn">중복확인</button>
+  <input type="password" id="password" placeholder="비밀번호">
+  <input type="password" id="password2" placeholder="비밀번호 확인">
+  <button type="button" id="finalSignupBtn">회원가입</button>
 </div>
 
-<div class="flex justify-center mb-10">
-  <button type="button" id="googleSignInBtn"
-    class="w-[340px] flex items-center justify-center gap-3 py-3 px-4 rounded-lg border border-[#dadce0] bg-white shadow-sm hover:shadow-md hover:border-primary transition font-bold text-gray-700 relative group focus:outline-none focus:ring-2 focus:ring-primary">
-    <span class="absolute left-4 flex items-center">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-           alt="Google" class="w-6 h-6" />
-    </span>
-    <span class="mx-auto text-base group-hover:text-primary transition">Google 계정으로 계속</span>
-  </button>
-</div>
 
 <script>
 let recaptchaVerifier = null;
@@ -165,26 +159,57 @@ document.addEventListener('DOMContentLoaded', function() {
       loginMessage.textContent = "인증 실패: " + error.message;
     });
   };
-
-  // 구글 로그인
-  document.getElementById('googleSignInBtn').onclick = function() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-      .then(function(result) {
-        const user = result.user;
-        db.collection('users').doc(user.uid).set({
-          name: user.displayName || '',
-          email: user.email || '',
-          provider: 'google',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true }).then(() => {
-          window.location.href = "index.html";
-        });
-      }).catch(function(error) {
-        loginMessage.textContent = "구글 로그인 실패: " + error.message;
-      });
-  };
 });
+
+// ID(이메일) 중복확인
+document.getElementById('checkIdBtn').onclick = function() {
+  const userId = document.getElementById('userId').value.trim();
+  firebase.auth().fetchSignInMethodsForEmail(userId)
+    .then((methods) => {
+      if (methods.length > 0) {
+        alert("이미 사용중인 ID입니다.");
+      } else {
+        alert("사용 가능한 ID입니다.");
+      }
+    });
+};
+
+// 회원가입 처리
+document.getElementById('finalSignupBtn').onclick = function() {
+  const userId = document.getElementById('userId').value.trim();
+  const password = document.getElementById('password').value;
+  const password2 = document.getElementById('password2').value;
+
+  if (!userId || !password || !password2) {
+    alert("모든 항목을 입력해주세요.");
+    return;
+  }
+  if (password !== password2) {
+    alert("비밀번호가 일치하지 않습니다.");
+    return;
+  }
+  if (password.length < 8) {
+    alert("비밀번호는 8자 이상이어야 합니다.");
+    return;
+  }
+
+  firebase.auth().createUserWithEmailAndPassword(userId, password)
+    .then((userCredential) => {
+      // Firestore에 추가 정보 저장 (이름, 전화번호 등)
+      db.collection('users').doc(userCredential.user.uid).set({
+        name: 박해진,
+        phone: number,
+        userId: userId,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("회원가입 완료!");
+      location.href = "index.html";
+    })
+    .catch((error) => {
+      alert("회원가입 실패: " + error.message);
+    });
+};
+
 </script>
 </body>
 </html>

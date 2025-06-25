@@ -145,13 +145,90 @@
   </div>
 </div>
 
+  <!-- Footer -->
+<footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">로또1081</h3>
+          <p class="text-gray-400">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천 서비스</p>
+          <p class="text-gray-500 mt-4">운영팀: <span class="font-semibold">로또1081 운영팀</span></p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">고객센터</h3>
+          <p class="text-gray-400">운영시간: 평일 09:00 - 18:00</p>
+          <p class="text-gray-400">문의: 사이트 내 1:1 문의 또는 Q&A 게시판 이용</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">바로가기</h3>
+          <ul class="space-y-2">
+            <li><a href="login.html" class="text-gray-400 hover:text-white transition">로그인</a></li>
+            <li><a href="/mypage" class="text-gray-400 hover:text-white transition">마이페이지</a></li>
+            <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
+            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
+            <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2024 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
 <script>
 const db = firebase.firestore();
+// 전역으로 이메일, userId 보관
 let currentUserEmail = null;
+let currentUserUserId = null;
 
-firebase.auth().onAuthStateChanged(function(user) {
+// userId 캐싱: 로그인 변화 감지
+firebase.auth().onAuthStateChanged(async function(user) {
   currentUserEmail = user && user.email ? user.email : null;
+  currentUserUserId = null;
+  if (user && user.uid) {
+    // Firestore에서 userId 읽어오기
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    if (userDoc.exists && userDoc.data().userId) {
+      currentUserUserId = userDoc.data().userId;
+    }
+  }
+  // userId 준비 완료 시점에 리스트 다시 로딩!
+  loadQnA();
 });
+
+// QnA 리스트 표시
+async function loadQnA() {
+  const listElem = document.getElementById('qnaList');
+  listElem.innerHTML = "";
+  const snapshot = await db.collection("qna").orderBy("createdAt", "desc").get();
+  if (snapshot.empty) {
+    listElem.innerHTML = "<p class='text-center text-accent py-8'>아직 등록된 글이 없습니다.</p>";
+    return;
+  }
+  snapshot.forEach(doc => {
+    const q = doc.data();
+    // 내 글이면 뱃지 추가 (userId 기준)
+    let myPostBadge = "";
+    if (currentUserUserId && q.userId === currentUserUserId) {
+      myPostBadge = `<span class="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full align-middle">내 글</span>`;
+    }
+    listElem.innerHTML += `
+      <div class="bg-light border border-accent rounded-lg p-4 cursor-pointer hover:bg-accent/10 transition" onclick="showDetail('${doc.id}')">
+        <div class="flex items-center mb-1">
+          <span class="text-primary font-bold mr-2">${q.nickname || "익명"}</span>
+          ${myPostBadge}
+          <span class="text-xs text-gray-400">${q.createdAt && q.createdAt.toDate ? q.createdAt.toDate().toLocaleString() : ''}</span>
+        </div>
+        <div class="font-semibold text-lg">${q.title}</div>
+        <div class="text-gray-600 line-clamp-2">${q.content}</div>
+      </div>
+    `;
+  });
+}
 
 // 상세 모달
 window.showDetail = async function(docId) {
@@ -160,9 +237,9 @@ window.showDetail = async function(docId) {
   const doc = await db.collection("qna").doc(docId).get();
   const q = doc.data();
 
-  // 본인 글이면 [내 글] 표시
+  // 본인 글이면 [내 글] 표시(userId 기준)
   let myPostBadge = '';
-  if (currentUserEmail && q.email && q.email === currentUserEmail) {
+  if (currentUserUserId && q.userId && q.userId === currentUserUserId) {
     myPostBadge = `<span class="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full align-middle">내 글</span>`;
   }
 
@@ -170,7 +247,7 @@ window.showDetail = async function(docId) {
     <div class="mb-2">
       <span class="text-primary font-bold mr-2">${q.nickname || "익명"}</span>
       ${myPostBadge}
-      <span class="text-xs text-gray-400">${q.createdAt.toDate ? q.createdAt.toDate().toLocaleString() : ''}</span>
+      <span class="text-xs text-gray-400">${q.createdAt && q.createdAt.toDate ? q.createdAt.toDate().toLocaleString() : ''}</span>
     </div>
     <div class="font-semibold text-xl mb-2">${q.title}</div>
     <div class="text-gray-700 mb-6 whitespace-pre-line">${q.content}</div>
@@ -186,83 +263,60 @@ window.showDetail = async function(docId) {
   modal.classList.remove('hidden');
 }
 
-// 모달 닫기: X 버튼 + 배경 클릭
-const detailModal = document.getElementById('detailModal');
-const modalInner = document.getElementById('modalInner');
-
-document.getElementById('closeDetailBtn').onclick = () => {
-  detailModal.classList.add('hidden');
-};
-// 배경 클릭 시 닫기 (내부 클릭은 무시)
-detailModal.onclick = (e) => {
-  if (e.target === detailModal) {
-    detailModal.classList.add('hidden');
-  }
-};
-
-    // QnA 글 등록
-    document.getElementById('qnaForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const title = document.getElementById('qTitle').value.trim();
-      const content = document.getElementById('qContent').value.trim();
-      const user = firebase.auth().currentUser;
-      if (!title || !content) return;
-
-      // 로그인 사용자만 글 작성 가능하도록
-      if (!user || !user.email) {
-        alert('로그인 후 글쓰기가 가능합니다.');
-        return;
-      }
-
-      await db.collection("qna").add({
-        nickname: "익명",
-        email: user.email,            // 이메일 저장!
-        title,
-        content,
-        answer: "",
-        createdAt: new Date()
-      });
-      this.reset();
-      writeModal.classList.add('hidden');
-      loadQnA();
-    };
-
-
-// QnA 리스트 표시
-async function loadQnA() {
-  const listElem = document.getElementById('qnaList');
-  listElem.innerHTML = "";
-  const snapshot = await db.collection("qna").orderBy("createdAt", "desc").get();
-  if (snapshot.empty) {
-    listElem.innerHTML = "<p class='text-center text-accent py-8'>아직 등록된 글이 없습니다.</p>";
+// QnA 글 등록
+document.getElementById('qnaForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const title = document.getElementById('qTitle').value.trim();
+  const content = document.getElementById('qContent').value.trim();
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    alert('로그인 후 글쓰기가 가능합니다.');
     return;
   }
-  snapshot.forEach(doc => {
-    const q = doc.data();
-    // 내 글이면 뱃지 추가
-    let myPostBadge = "";
-    if (currentUserEmail && q.email === currentUserEmail) {
-      myPostBadge = `<span class="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full align-middle">내 글</span>`;
-    }
-    listElem.innerHTML += `
-      <div class="bg-light border border-accent rounded-lg p-4 cursor-pointer hover:bg-accent/10 transition" onclick="showDetail('${doc.id}')">
-        <div class="flex items-center mb-1">
-          <span class="text-primary font-bold mr-2">${q.nickname || "익명"}</span>
-          ${myPostBadge}
-          <span class="text-xs text-gray-400">${q.createdAt.toDate ? q.createdAt.toDate().toLocaleString() : ''}</span>
-        </div>
-        <div class="font-semibold text-lg">${q.title}</div>
-        <div class="text-gray-600 line-clamp-2">${q.content}</div>
-      </div>
-    `;
+  // userId는 onAuthStateChanged에서 미리 캐싱!
+  if (!currentUserUserId) {
+    alert('회원 정보 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
+  await db.collection("qna").add({
+    userId: currentUserUserId,
+    nickname: "익명",
+    title,
+    content,
+    answer: "",
+    createdAt: new Date()
   });
-}
+  this.reset();
+  document.getElementById('writeModal').classList.add('hidden');
+  loadQnA();
+};
+
+// ------ 모달 닫기 로직 강화 ------
+document.getElementById('closeDetailBtn').onclick = () => {
+  document.getElementById('detailModal').classList.add('hidden');
+};
+// 배경 클릭 시 닫기 (내부 클릭 무시)
+document.getElementById('detailModal').onclick = (e) => {
+  if (e.target === document.getElementById('detailModal')) {
+    document.getElementById('detailModal').classList.add('hidden');
+  }
+};
+
+// 글쓰기 모달 열기
+document.getElementById('openWriteBtn').onclick = function() {
+  document.getElementById('writeModal').classList.remove('hidden');
+};
+// 글쓰기 모달 닫기 (취소 버튼)
+document.getElementById('cancelWriteBtn').onclick = function() {
+  document.getElementById('writeModal').classList.add('hidden');
+};
+// 글쓰기 모달: 바깥 클릭 시 닫기
+document.getElementById('writeModal').onclick = function(e) {
+  if (e.target === document.getElementById('writeModal')) this.classList.add('hidden');
+};
+</script>
 
 
-    // 최초 로딩
-    loadQnA();
-    
-  </script>
 
 
 <script>
@@ -340,19 +394,5 @@ document.addEventListener('DOMContentLoaded', function() {
   mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>
 
-<script>
-  // 글쓰기 모달 열기
-  document.getElementById('openWriteBtn').onclick = function() {
-    document.getElementById('writeModal').classList.remove('hidden');
-  };
-  // 글쓰기 모달 닫기 (취소 버튼)
-  document.getElementById('cancelWriteBtn').onclick = function() {
-    document.getElementById('writeModal').classList.add('hidden');
-  };
-  // 글쓰기 모달: 바깥 클릭 시 닫기
-  document.getElementById('writeModal').onclick = function(e) {
-    if (e.target === this) this.classList.add('hidden');
-  }
-</script>
 </body>
 </html>

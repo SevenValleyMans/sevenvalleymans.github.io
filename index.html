@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>『10년간의 연구, 1등 당첨자의 특별한 추천번호』</title>
+  <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
+  
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDKs (v8.x.x) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
@@ -160,6 +163,8 @@
       );
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 </head>
 <body class="bg-light font-sans">
 <!-- 네비게이션 바 (항상 보임) -->
@@ -217,29 +222,30 @@
 
   <!-- Hero Section -->
   <section class="pt-24 pb-16 bg-gradient-to-b from-white to-light relative overflow-hidden">
-    <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-          『제1081회 1등 당첨자가<br/>
-          <span class="text-primary">10년간 연구한 추천번호</span>』
-        </h1>
-        <p class="text-xl text-gray-600 mb-4">
-          당신에게 보내는 번호, 그저 '운'이 아닙니다.<br/>
-          이 번호는 제1081회 로또 1등 당첨자가 지난 10년간 수천 회차의 통계와 흐름을 분석하고,<br/>
-          자신만의 특별한 기준으로 직접 선별한 조합입니다.
-        </p>
-        <p class="text-sm text-gray-500 mb-8">
-          ※ 정확한 분석 방식은 대표자의 비공개 전략 자산으로, 상세한 로직은 공개하지 않습니다.<br/>
-          하지만, 이 번호들이 그저 운에 맡긴 숫자가 아님은 결과로 증명될 것입니다.
-        </p>
-        <p class="text-2xl font-bold text-primary mb-8">포기하지 말자! 할 수 있다! 제가 도와드리겠습니다.</p>
-        <a href="#story" class="inline-block bg-primary text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transition">
-          나의 이야기 시작하기
-        </a>
-      </div>
+  <div class="absolute inset-0 z-0 pointer-events-none">
+    <canvas id="hero-bg-canvas" style="width:100%;height:100%;display:block;"></canvas>
+  </div>
+  <div class="container mx-auto px-4 relative z-10">
+    <div class="max-w-4xl mx-auto text-center bg-white/70 rounded-2xl shadow-lg py-12 px-6 md:px-16" style="backdrop-filter: blur(5px);">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">『제1081회 1등 당첨자가<br/>
+        <span class="text-primary">10년간 연구한 추천번호</span>』
+      </h1>
+      <p class="text-xl text-gray-600 mb-4 drop-shadow">
+        당신에게 보내는 번호, 그저 '운'이 아닙니다.<br/>
+        이 번호는 제1081회 로또 1등 당첨자가 지난 10년간 수천 회차의 통계와 흐름을 분석하고,<br/>
+        자신만의 특별한 기준으로 직접 선별한 조합입니다.
+      </p>
+      <p class="text-sm text-gray-500 mb-8 drop-shadow">
+        ※ 정확한 분석 방식은 대표자의 비공개 전략 자산으로, 상세한 로직은 공개하지 않습니다.<br/>
+        하지만, 이 번호들이 그저 운에 맡긴 숫자가 아님은 결과로 증명될 것입니다.
+      </p>
+      <p class="text-2xl font-bold text-primary mb-8">포기하지 말자! 할 수 있다! 제가 도와드리겠습니다.</p>
+      <a href="#story" class="inline-block bg-primary text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-opacity-90 transition">
+        나의 이야기 시작하기
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 
   <div class="section-divider"></div>
 
@@ -285,38 +291,52 @@
 
   <div class="section-divider reverse"></div>
 
-  <!-- Certification Section -->
   <section id="certification" class="py-20 bg-light relative">
-    <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-8 text-gray-800 section-title">1등 당첨 인증</h2>
-        <div class="section-content">
-          <p class="text-xl text-secondary font-bold mb-8">눈으로 직접 확인하세요!</p>
-          <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <div class="premium-card rounded-2xl p-8">
-              <img src="indexFile/winner-proof.JPG" alt="당첨 인증서" class="w-full rounded-lg shadow-md" />
-              <p class="mt-6 text-gray-600">
-                제1081회 로또 1등 당첨 인증서
-              </p>
-            </div>
-            <div class="premium-card rounded-2xl p-8">
-              <img src="indexFile/1.JPG" alt="입금 내역" class="w-full rounded-lg shadow-md" />
-              <p class="mt-6 text-gray-600">
-                공증된 입금 내역 (개인정보 모자이크 처리)
-              </p>
-            </div>
-          </div>
-          <div class="premium-card rounded-2xl p-8">
-            <h3 class="text-2xl font-bold text-primary mb-6">🎥 인터뷰 영상</h3>
-            <div class="relative pb-[56.25%] h-0 overflow-hidden rounded-xl">
-              <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
-            </div>
-          </div>
-        </div>
+  <div class="container mx-auto px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-8 text-gray-800 section-title">1등 당첨 인증</h2>
+      <div class="section-content">
+        <p class="text-xl text-secondary font-bold mb-8">눈으로 직접 확인하세요!</p>
+        
+        <div class="grid md:grid-cols-2 gap-20 items-stretch">
+  <!-- 왼쪽: 인증서 -->
+  <div class="h-full flex">
+    <div class="premium-card rounded-2xl p-10 flex flex-col items-center max-w-xl w-full h-full mx-auto md:mx-0 mb-0 md:mb-0">
+      <div class="w-full h-[480px] max-w-md mx-auto overflow-hidden flex items-center justify-center">
+        <img src="indexFile/winner-proof.JPG"
+             alt="당첨 인증서"
+             class="object-cover w-full h-full rounded-lg shadow-md transition duration-200 hover:scale-105"
+        />
+      </div>
+      <p class="mt-8 text-lg text-gray-600">제1081회 로또 1등 당첨 인증서</p>
+    </div>
+  </div>
+  <!-- 오른쪽: 입금내역(위) + 유튜브(아래) -->
+  <div class="flex flex-col gap-12 h-full">
+    <div class="premium-card rounded-2xl p-10 flex flex-col items-center max-w-xl w-full flex-1 mx-auto md:mx-0">
+      <div class="w-full h-[260px] max-w-md mx-auto overflow-hidden flex items-center justify-center">
+        <img src="indexFile/1.JPG"
+             alt="입금 내역"
+             class="object-cover w-full h-full rounded-lg shadow-md transition duration-200 hover:scale-105"
+        />
+      </div>
+      <p class="mt-8 text-lg text-gray-600">공증된 입금 내역 (개인정보 모자이크 처리)</p>
+    </div>
+    <div class="premium-card rounded-2xl p-10 max-w-xl w-full flex-1 mx-auto md:mx-0 flex flex-col items-center">
+      <h3 class="text-2xl font-bold text-primary mb-8">🎥 인터뷰 영상</h3>
+      <div class="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl">
+        <iframe class="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/VIDEO_ID"
+                frameborder="0"
+                allowfullscreen>
+        </iframe>
       </div>
     </div>
-  </section>
+  </div>
+</div>
+</section>
+
+
 
   <div class="section-divider"></div>
 
@@ -557,6 +577,98 @@ document.addEventListener('DOMContentLoaded', function() {
   // 메뉴 오버레이 클릭시 닫기
   mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>
+
+<script>
+// three.js Hero Section Particle Animation
+(function() {
+  const canvas = document.getElementById('hero-bg-canvas');
+  if (!canvas) return;
+  let width = canvas.parentElement.offsetWidth;
+  let height = canvas.parentElement.offsetHeight;
+  canvas.width = width;
+  canvas.height = height;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setSize(width, height, false);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  camera.position.z = 120;
+  // Particle geometry
+  const particles = 200;
+  const geometry = new THREE.BufferGeometry();
+  const positions = [];
+  const colors = [];
+  for (let i = 0; i < particles; i++) {
+    const x = (Math.random() - 0.5) * 200;
+    const y = (Math.random() - 0.5) * 120;
+    const z = (Math.random() - 0.5) * 200;
+    positions.push(x, y, z);
+    // 버건디~블루 계열 그라데이션
+    const t = i / particles;
+    const r = 139/255 * (1-t) + 30/255 * t;
+    const g = 0/255 * (1-t) + 58/255 * t;
+    const b = 0/255 * (1-t) + 138/255 * t;
+    colors.push(r, g, b);
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  const material = new THREE.PointsMaterial({ size: 3, vertexColors: true, transparent: true, opacity: 0.7 });
+  const points = new THREE.Points(geometry, material);
+  scene.add(points);
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    points.rotation.y += 0.0015;
+    points.rotation.x += 0.0007;
+    renderer.render(scene, camera);
+  }
+  animate();
+  // Responsive
+  window.addEventListener('resize', () => {
+    width = canvas.parentElement.offsetWidth;
+    height = canvas.parentElement.offsetHeight;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  });
+})();
+// anime.js Section/Card/Button Animation
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    anime({
+      targets: '.section-title',
+      translateY: [40, 0],
+      opacity: [0, 1],
+      delay: anime.stagger(200, {start: 300}),
+      duration: 900,
+      easing: 'easeOutExpo'
+    });
+    anime({
+      targets: '.section-content',
+      translateY: [60, 0],
+      opacity: [0, 1],
+      delay: anime.stagger(200, {start: 600}),
+      duration: 1000,
+      easing: 'easeOutExpo'
+    });
+    anime({
+      targets: '.premium-card',
+      scale: [0.95, 1],
+      opacity: [0, 1],
+      delay: anime.stagger(120, {start: 900}),
+      duration: 900,
+      easing: 'easeOutCubic'
+    });
+    anime({
+      targets: 'a.inline-block, .cta-btn',
+      scale: [0.9, 1],
+      opacity: [0, 1],
+      delay: 1200,
+      duration: 700,
+      easing: 'easeOutBack'
+    });
+  });
+})();
+</script>
 
 </body>
 </html>

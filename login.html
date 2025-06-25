@@ -143,22 +143,22 @@ document.addEventListener('DOMContentLoaded', function() {
       loginMessage.textContent = "올바른 인증번호를 입력하세요.";
       return;
     }
-    confirmationResult.confirm(code).then(function(result) {
-      const user = result.user;
-      db.collection('users').doc(user.uid).set({
-        name: name,
-        phone: phone,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true }).then(() => {
-        loginMessage.textContent = "로그인 성공! 잠시 후 이동합니다.";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 800);
-      });
-    }).catch(function(error) {
-      loginMessage.textContent = "인증 실패: " + error.message;
-    });
-  };
+  confirmationResult.confirm(code).then(function(result) {
+    // 인증 성공: 이제 Firestore/회원가입은 하지 말고
+    // ID/비밀번호 입력 폼만 보여주기!
+    document.getElementById('signupArea').classList.remove('hidden');
+    // 필요한 경우 이름/전화번호 등은 임시 변수로 보관
+    window.tempUserInfo = {
+      uid: result.user.uid,
+      name: document.getElementById('name').value.trim(),
+      phone: document.getElementById('phone').value.trim()
+    };
+    // 인증완료 안내 메시지
+    loginMessage.textContent = "인증 성공! 이제 ID/비밀번호를 입력해 회원가입을 완료하세요.";
+  }).catch(function(error) {
+    loginMessage.textContent = "인증 실패: " + error.message;
+  });
+};
 });
 
 // ID(이메일) 중복확인
@@ -193,12 +193,13 @@ document.getElementById('finalSignupBtn').onclick = function() {
     return;
   }
 
+  // 실제 회원가입!
   firebase.auth().createUserWithEmailAndPassword(userId, password)
     .then((userCredential) => {
-      // Firestore에 추가 정보 저장 (이름, 전화번호 등)
+      // Firestore에 추가정보 저장
       db.collection('users').doc(userCredential.user.uid).set({
-        name: 박해진,
-        phone: number,
+        name: window.tempUserInfo.name,
+        phone: window.tempUserInfo.phone,
         userId: userId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });

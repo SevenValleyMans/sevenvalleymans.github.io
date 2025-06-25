@@ -164,13 +164,79 @@
   </main>
 
 
-  <script>
-    // 추천번호 이력 불러오기
-function loadRecommendHistory(userEmail) {
+<script>
+// 1. 로그인 후 내 userId(가상이메일) Firestore에서 불러오기 + 모든 데이터 로드
+function fetchMyUserIdAndLoadAll() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    // 데스크톱/모바일 네비 요소
+    const loginNavBtn = document.getElementById('loginNavBtn');
+    const userNav = document.getElementById('userNav');
+    const userName = document.getElementById('userName');
+    const logoutNavBtn = document.getElementById('logoutNavBtn');
+    const loginMobileBtn = document.getElementById('loginMobileBtn');
+    const userNavMobile = document.getElementById('userNavMobile');
+    const userNameMobile = document.getElementById('userNameMobile');
+    const logoutMobileBtn = document.getElementById('logoutMobileBtn');
+
+    if (user && user.uid) {
+      firebase.firestore().collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (!doc.exists || !doc.data().userId) {
+            loadRecommendHistory(null);
+            loadMyQnA(null);
+            if (userName) userName.textContent = "회원님";
+            if (userNameMobile) userNameMobile.textContent = "회원님";
+            return;
+          }
+          const myUserId = doc.data().userId;
+          loadRecommendHistory(myUserId);
+          loadMyQnA(myUserId);
+
+          const name = doc.data().name ? doc.data().name + '님' : myUserId;
+          if (userName) userName.textContent = name;
+          if (userNameMobile) userNameMobile.textContent = name;
+        })
+        .catch(() => {
+          loadRecommendHistory(null);
+          loadMyQnA(null);
+        });
+
+      // 네비 UI 처리 (로그인/로그아웃)
+      if (loginNavBtn) loginNavBtn.style.display = "none";
+      if (userNav) userNav.classList.remove('hidden');
+      if (loginMobileBtn) loginMobileBtn.style.display = "none";
+      if (userNavMobile) userNavMobile.classList.remove('hidden');
+    } else {
+      loadRecommendHistory(null);
+      loadMyQnA(null);
+      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
+      if (userNav) userNav.classList.add('hidden');
+      if (loginMobileBtn) loginMobileBtn.style.display = "block";
+      if (userNavMobile) userNavMobile.classList.add('hidden');
+    }
+
+    // 로그아웃 버튼 처리 (한번만 등록)
+    if (logoutNavBtn) {
+      logoutNavBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(() => window.location.reload());
+      }
+    }
+    if (logoutMobileBtn) {
+      logoutMobileBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(() => window.location.reload());
+      }
+    }
+  });
+}
+
+// 2. userId 기반 추천번호 이력
+function loadRecommendHistory(userId) {
   const tbody = document.getElementById('recommendListTbody');
   if (!tbody) return;
   tbody.innerHTML = '';
-  if (!userEmail) {
+  if (!userId) {
     tbody.innerHTML = `<tr>
       <td colspan="3" class="py-8 text-accent text-center">로그인 후 이력을 확인할 수 있습니다.</td>
     </tr>`;
@@ -178,7 +244,7 @@ function loadRecommendHistory(userEmail) {
   }
   firebase.firestore()
     .collection('recommendations')
-    .where('email', '==', userEmail)
+    .where('userId', '==', userId)
     .orderBy('sentAt', 'desc')
     .get()
     .then(snapshot => {
@@ -209,12 +275,12 @@ function loadRecommendHistory(userEmail) {
     });
 }
 
-// 내 Q&A 내역만!
-function loadMyQnA(userEmail) {
+// 3. userId 기반 QnA 이력
+function loadMyQnA(userId) {
   const tbody = document.getElementById('myQnaTbody');
   if (!tbody) return;
   tbody.innerHTML = '';
-  if (!userEmail) {
+  if (!userId) {
     tbody.innerHTML = `<tr>
       <td colspan="3" class="py-8 text-accent text-center">로그인 후 내 Q&A 내역을 확인할 수 있습니다.</td>
     </tr>`;
@@ -222,7 +288,7 @@ function loadMyQnA(userEmail) {
   }
   firebase.firestore()
     .collection('qna')
-    .where('email', '==', userEmail)
+    .where('userId', '==', userId)
     .orderBy('createdAt', 'desc')
     .get()
     .then(snapshot => {
@@ -254,76 +320,9 @@ function loadMyQnA(userEmail) {
     });
 }
 
-
-
-  // 네비게이션 상태 변경(로그인/로그아웃)
+// 4. 페이지 진입 시 자동 실행
 document.addEventListener('DOMContentLoaded', function() {
-  firebase.auth().onAuthStateChanged(function(user) {
-
-      // 내 Q&A 내역 불러오기
-    if (user && user.email) {
-      loadMyQnA(user.email);
-      loadRecommendHistory(user.email);
-    } else {
-      loadMyQnA(null); // 비로그인 시 안내문구 **특수한 것 !! 붙여넣기 주의****
-    }
-
-    // 데스크톱
-    const loginNavBtn = document.getElementById('loginNavBtn');
-    const userNav = document.getElementById('userNav');
-    const userName = document.getElementById('userName');
-    const logoutNavBtn = document.getElementById('logoutNavBtn');
-    // 모바일
-    const loginMobileBtn = document.getElementById('loginMobileBtn');
-    const userNavMobile = document.getElementById('userNavMobile');
-    const userNameMobile = document.getElementById('userNameMobile');
-    const logoutMobileBtn = document.getElementById('logoutMobileBtn');
-
-    if (user) {
-      // Firestore에서 유저명 불러오기(선택)
-      firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
-        const name = doc.exists && doc.data().name ? doc.data().name + '님' : user.email || '회원님';
-        if (userName) userName.textContent = name;
-        if (userNameMobile) userNameMobile.textContent = name;
-      }).catch(() => {
-        if (userName) userName.textContent = user.email || '회원님';
-        if (userNameMobile) userNameMobile.textContent = user.email || '회원님';
-      });
-
-      // 데스크톱
-      if (loginNavBtn) loginNavBtn.style.display = "none";
-      if (userNav) userNav.classList.remove('hidden');
-      // 모바일
-      if (loginMobileBtn) loginMobileBtn.style.display = "none";
-      if (userNavMobile) userNavMobile.classList.remove('hidden');
-    } else {
-      // 데스크톱
-      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
-      if (userNav) userNav.classList.add('hidden');
-      // 모바일
-      if (loginMobileBtn) loginMobileBtn.style.display = "block";
-      if (userNavMobile) userNavMobile.classList.add('hidden');
-    }
-
-    // 로그아웃 이벤트 (데스크톱)
-    if (logoutNavBtn) {
-      logoutNavBtn.onclick = function(e) {
-        e.preventDefault();
-        firebase.auth().signOut().then(function() {
-          window.location.reload();
-        });
-      }
-    }
-    // 로그아웃 이벤트 (모바일)
-    if (logoutMobileBtn) {
-      logoutMobileBtn.onclick = function(e) {
-        e.preventDefault();
-        firebase.auth().signOut().then(function() {
-          window.location.reload();
-        });
-      }
-    }
-  });
+  fetchMyUserIdAndLoadAll();
 });
 
 </script>

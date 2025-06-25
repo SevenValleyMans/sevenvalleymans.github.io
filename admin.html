@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로또1081 관리자</title>
-  <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
-
+   <link rel="icon" href="https://lotto1081.com/allFile/logo.png" type="image/PNG">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDK -->
@@ -169,16 +168,16 @@
       firebase.firestore().collection('users').get().then(snapshot => {
         snapshot.forEach(doc => {
           const user = doc.data();
-          const email = user.email || '-';
+          const userId = user.userId || '-';
           const nickname = user.name || '-';
           const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
           tbody.innerHTML += `
             <tr>
-              <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${email}</td>
+              <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
               <td class="py-2 px-3">${nickname}</td>
               <td class="py-2 px-3">${created}</td>
               <td class="py-2 px-3">
-                <button class="sendBtn px-3 py-1 bg-primary text-white rounded" data-email="${email}">발송</button>
+                <button class="sendBtn px-3 py-1 bg-primary text-white rounded" data-email="${userId}">발송</button>
               </td>
             </tr>
           `;
@@ -193,8 +192,8 @@
     }
 
     // 4. 추천번호 발송 모달 열기 (회차 안내 포함)
-    function openSendModal(email) {
-      document.getElementById('sendEmail').value = email;
+    function openSendModal(userId) {
+      document.getElementById('sendEmail').value = userId;
       document.getElementById('sendNumbers').value = '';
       // 회차 정보 안내
       const round = getCurrentRound();
@@ -220,47 +219,32 @@
     };
 
     // 6. 추천번호 발송(파이어스토어에 회차까지 기록)
-document.getElementById('sendForm').onsubmit = function(e) {
-  e.preventDefault();
-  const email = document.getElementById('sendEmail').value;
-  const numbers = document.getElementById('sendNumbers').value;
-  const round = getCurrentRound();
-  const now = new Date();
-
-  // 1. Firestore 저장
-  firebase.firestore().collection('recommendations').add({
-    email,
-    numbers,
-    round,
-    sentAt: now
-  }).then(() => {
-    // 2. 전화번호 조회 (users에서)
-    firebase.firestore().collection('users').where('email', '==', email).get()
-    .then(snapshot => {
-      if (!snapshot.empty) {
-        const user = snapshot.docs[0].data();
-        const phone = user.phone || '';
-        if (phone) {
-          // 3. 문자 발송 (테스트용)
-          sendSMSTest(phone, numbers, round);
-          document.getElementById('sendModal').classList.add('hidden');
-        } else {
-          alert('전화번호가 등록되어 있지 않아 문자 발송은 생략되었습니다.');
-        }
-      }
-    });
-  });
-};
+    document.getElementById('sendForm').onsubmit = function(e) {
+      e.preventDefault();
+      const userId = document.getElementById('sendEmail').value;
+      const numbers = document.getElementById('sendNumbers').value;
+      const round = getCurrentRound();
+      const now = new Date();
+      firebase.firestore().collection('recommendations').add({
+        userId,
+        numbers,
+        round,
+        sentAt: now
+      }).then(() => {
+        alert('추천번호가 저장되었습니다.');
+        document.getElementById('sendModal').classList.add('hidden');
+      });
+    };
 
     // 7. 회원 이력 모달 열기 (회차별 추천번호 보기)
-function openHistoryModal(email) {
+function openHistoryModal(userId) {
   const modal = document.getElementById('historyModal');
   const contentDiv = document.getElementById('historyContent');
   contentDiv.innerHTML = '<div class="text-gray-500 text-center py-4">로딩 중...</div>';
   modal.classList.remove('hidden');
 
   firebase.firestore().collection('recommendations')
-    .where('email', '==', email)
+    .where('userId', '==', userId)
     .orderBy('sentAt', 'desc') // ← 여기만 바꿔주면 됨
     .get()
     .then(snapshot => {
@@ -376,42 +360,52 @@ function openHistoryModal(email) {
 
     // 첫 진입시 회원 목록 로드
     loadUsers();
-  </script>
+    document.getElementById('sendForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const userId = document.getElementById('sendEmail').value;
+  const numbers = document.getElementById('sendNumbers').value;
+  const round = getCurrentRound();
+  const now = new Date();
 
+  // 1. 파이어스토어 저장
+  await firebase.firestore().collection('recommendations').add({
+    userId,
+    numbers,
+    round,
+    sentAt: now
+  });
 
-<script>
-  //테스트입니다! 헷갈리면 안됨 
-  function sendSMSTest(phone, numbers, round) {
-  const apiKey = "NCS2NTN8D4MMPJDO";
-  const apiSecret = "BXXYXM6YQ1MY5APFETKCDWWVXJ415ZD7";
-  const from = "01062581675"; // 등록한 발신번호
-
-  fetch("https://api.coolsms.co.kr/sms/2/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Basic " + btoa(apiKey + ":" + apiSecret),
-    },
-    body: JSON.stringify({
-      to: [phone],
-      from: from,
-      text: `[로또1081] ${round}회차 추천번호: ${numbers}`,
-      type: "SMS",
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.status === "success" || data.group_id) {
-        alert("문자 발송 성공!");
-      } else {
-        alert("문자 발송 실패: " + JSON.stringify(data));
-      }
+  // 2. coolsms 문자발송 서버에 요청 (여기에 수신자 폰번호 넣기)
+  // 사용자 전화번호 정보가 users에 저장되어 있다고 가정 (필요시 Firestore에서 조회)
+  let phone = ''; // 예: 01012345678 (하이픈 없이)
+  const userDoc = await firebase.firestore().collection('users').where('userId', '==', userId).get();
+  if (!userDoc.empty) {
+    phone = userDoc.docs[0].data().phone;
+  }
+  if (phone) {
+    fetch('http://localhost:4000/send-sms', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        to: phone,
+        numbers: numbers
+      })
     })
-    .catch((err) => {
-      alert("문자 발송 오류: " + err);
-    });
-}
+      .then(r => r.json())
+      .then(result => {
+        if (result.success) {
+          alert('추천번호가 저장되고 문자로도 발송되었습니다.');
+        } else {
+          alert('문자 발송 실패: ' + JSON.stringify(result.error));
+        }
+      })
+      .catch(err => alert('문자 발송 에러: ' + err));
+  } else {
+    alert('사용자 전화번호를 찾을 수 없습니다. Firestore에 전화번호를 추가해 주세요.');
+  }
 
-</script>
+  document.getElementById('sendModal').classList.add('hidden');
+};
+  </script>
 </body>
 </html>

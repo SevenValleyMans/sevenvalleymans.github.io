@@ -64,7 +64,8 @@
         <a href="index.html" class="text-gray-600 hover:text-primary transition">홈</a>
         <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
         <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
-                  <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
+        <a href="payment.html" class="text-gray-600 hover:text-primary transition">구독상품</a>
+        <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
       <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
       <span id="userNav" class="hidden flex items-center space-x-2">
         <span id="userName" class="text-secondary font-bold"></span>
@@ -89,6 +90,7 @@
       <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
       <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
       <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
+      <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
         <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
   <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
   <span id="userNavMobile" class="hidden flex items-center space-x-2">
@@ -163,6 +165,24 @@
     </section>
   </main>
 
+  <!-- Q&A 상세 모달 -->
+<div id="qnaModal" class="fixed inset-0 bg-black/50 z-[100] items-center justify-center hidden">
+  <div class="bg-white rounded-2xl shadow-xl max-w-lg w-[90vw] mx-auto p-8 relative">
+    <button id="closeQnaModal" class="absolute top-3 right-3 text-2xl text-gray-400 hover:text-primary">&times;</button>
+    <h3 id="qnaModalTitle" class="text-xl font-bold mb-2 text-primary"></h3>
+    <div class="mb-2 text-xs text-gray-500" id="qnaModalDate"></div>
+    <div class="mb-4">
+      <span class="font-bold text-accent">질문 내용</span>
+      <p id="qnaModalContent" class="text-gray-800 whitespace-pre-line mt-1"></p>
+    </div>
+    <div>
+      <span class="font-bold text-primary">답변</span>
+      <p id="qnaModalAnswer" class="text-gray-700 whitespace-pre-line mt-1"></p>
+    </div>
+  </div>
+</div>
+
+
   <!-- Footer -->
 <footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
   <div class="container mx-auto px-4">
@@ -177,6 +197,7 @@
           <h3 class="text-xl font-bold mb-4">고객센터</h3>
           <p class="text-gray-400">운영시간: 평일 09:00 - 18:00</p>
           <p class="text-gray-400">문의: 사이트 내 고객센터 게시판 이용</p>
+          <p class="text-gray-400">메일: lotto1081.sso@gmail.com</p>
         </div>
         <div>
           <h3 class="text-xl font-bold mb-4">바로가기</h3>
@@ -186,6 +207,7 @@
             <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
             <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
             <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
+            <li><a href="discalmier.html" class="text-gray-400 hover:text-white transition">면책조항</a></li>
           </ul>
         </div>
       </div>
@@ -338,13 +360,22 @@ function loadMyQnA(userId) {
           '<span class="status-paid">답변완료</span>' : 
           '<span class="status-expired">미답변</span>';
         tbody.innerHTML += `
-          <tr>
+          <tr class="qna-row cursor-pointer hover:bg-gray-50 transition" data-id="${doc.id}">
             <td class="py-2 px-3 font-semibold text-left">${q.title || '-'}</td>
             <td class="py-2 px-3">${dateStr}</td>
             <td class="py-2 px-3">${answerStatus}</td>
           </tr>
         `;
       });
+      // 이 안에서 이벤트 등록!
+      setTimeout(() => {
+        document.querySelectorAll('.qna-row').forEach(row => {
+          row.onclick = function() {
+            const qnaId = this.getAttribute('data-id');
+            openQnaModal(qnaId);
+          }
+        });
+      }, 0);
     })
     .catch(e => {
       tbody.innerHTML = `<tr>
@@ -353,9 +384,47 @@ function loadMyQnA(userId) {
     });
 }
 
+
 // 4. 페이지 진입 시 자동 실행
 document.addEventListener('DOMContentLoaded', function() {
   fetchMyUserIdAndLoadAll();
+});
+
+// QnA 상세 모달 관련
+function openQnaModal(qnaId) {
+  if (!qnaId) return;
+  firebase.firestore().collection('qna').doc(qnaId).get()
+    .then(doc => {
+      if (!doc.exists) return;
+      const q = doc.data();
+      document.getElementById('qnaModalTitle').textContent = q.title || '';
+      document.getElementById('qnaModalDate').textContent =
+        q.createdAt && q.createdAt.toDate ? q.createdAt.toDate().toLocaleDateString() : '';
+      document.getElementById('qnaModalContent').textContent = q.content || '-';
+      document.getElementById('qnaModalAnswer').textContent = q.answer && q.answer.trim() ? q.answer : '아직 답변이 등록되지 않았습니다.';
+      document.getElementById('qnaModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+}
+
+// 모달 닫기
+document.getElementById('closeQnaModal').onclick = function() {
+  document.getElementById('qnaModal').classList.add('hidden');
+  document.body.style.overflow = '';
+};
+// 배경 클릭시 닫기
+document.getElementById('qnaModal').onclick = function(e) {
+  if (e.target === this) {
+    this.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+};
+// ESC로 닫기
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('qnaModal').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
 });
 
 </script>

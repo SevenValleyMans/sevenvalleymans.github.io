@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로또1081 | 결제하기</title>
+  <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B0000',
+            secondary: '#D4AF37',
+            accent: '#64748B',
+            light: '#F8FAFC',
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .gold-border { border: 2px solid #D4AF37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);}
+    .premium-card {
+      background: linear-gradient(135deg, #ffffff 0%, #F8FAFC 100%);
+      border: 1px solid #64748B;
+      box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .premium-card:hover {
+      box-shadow: 0 8px 30px rgba(30, 58, 138, 0.15);
+      transform: translateY(-3px) scale(1.02);
+    }
+  </style>
+</head>
+<body class="bg-light font-sans">
+
+
+    <!-- 네비게이션 바 (항상 보임) -->
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="text-2xl font-bold text-primary relative">
+        로또1081
+        <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
+      </a>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="index.html" class="text-gray-600 hover:text-primary transition">홈</a>
+        <a href="myPage.html" class="text-gray-600 hover:text-primary transition">마이페이지</a>
+        <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
+        <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
+          <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
+      <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
+      <span id="userNav" class="hidden flex items-center space-x-2">
+        <span id="userName" class="text-secondary font-bold"></span>
+      </span>
+      </div>
+      <!-- Mobile Hamburger -->
+      <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
+        <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- 모바일 전체 메뉴 오버레이 (오직 모바일에서만, nav 외부에!) -->
+<div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
+  <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
+    <!-- 닫기 버튼 -->
+    <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
+<!-- 모바일 메뉴 (수정 예시) -->
+<nav class="flex flex-col space-y-6 mt-8">
+  <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
+  <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
+  <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
+  <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
+  <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
+  <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
+  <span id="userNavMobile" class="hidden flex items-center space-x-2">
+    <span id="userNameMobile" class="text-secondary font-bold"></span>
+  </span>
+</nav>
+
+    <div class="mt-auto text-xs text-gray-400 pt-8 text-center">© 2024 로또1081</div>
+  </div>
+</div>
+<!-- 네비 겹침 방지 padding-top 적용 예시 -->
+<div class="h-16 md:h-16"></div>
+
+  <!-- 결제 섹션 -->
+  <section class="py-20 bg-gradient-to-b from-white to-light min-h-screen">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">나만의 기적, 오늘 시작해보세요</h1>
+<p class="text-lg text-gray-600">
+  "평범했던 누군가가 1등의 주인공이 되기까지, 단 한 번의 선택이었습니다."<br>
+  지금 이 순간, <span class="font-bold text-primary">로또1081</span>의 특별한 번호와 함께<br>
+  여러분의 인생에도 작은 기적이 찾아올지 모릅니다.<br>
+  <span class="block mt-2 text-accent">진짜 주인공이 되고 싶은 바로 '그 주'라면, 망설이지 마세요.</span>
+</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- 상품 1 -->
+        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
+          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
+            <span class="text-3xl">🔖</span>
+          </div>
+          <h2 class="text-2xl font-bold mb-2 text-primary">1주 특별 기회</h2>
+<p class="mb-6 text-gray-600">“혹시 나도?” 하는 마음, 바로 이 한 주가 기회가 될 수 있습니다. 매주 단 한 번, 나를 위한 행운의 번호를 받아보세요.</p>
+          <div class="mb-8">
+            <span class="text-3xl font-bold text-secondary">5,000원</span>
+          </div>
+          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('1주 추천 번호')">
+            결제하기
+          </button>
+        </div>
+        <!-- 상품 2 -->
+        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
+          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
+            <span class="text-3xl">🎫</span>
+          </div>
+          <h2 class="text-2xl font-bold mb-2 text-primary">1달 도전 패스</h2>
+<p class="mb-6 text-gray-600">단 한 번의 선택으로 4주간 내 곁에 행운이!<br>꾸준히 도전하는 당신에게만 찾아오는 찬스, 직접 경험해보세요.</p>
+          <div class="mb-8">
+            <span class="text-3xl font-bold text-secondary">15,000원</span>
+          </div>
+          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('1달 추천 번호')">
+            결제하기
+          </button>
+        </div>
+        <!-- 상품 3 -->
+        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
+          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
+            <span class="text-3xl">💎</span>
+          </div>
+          <h2 class="text-2xl font-bold mb-2 text-primary">평생 프리패스</h2>
+<p class="mb-6 text-gray-600">“언젠가 꼭!” 평생 나의 곁에 1등 당첨자의 연구와 행운을 담아드립니다. 언제 어디서나 내 인생의 터닝포인트, 지금 시작하세요.</p>
+          <div class="mb-8">
+            <span class="text-3xl font-bold text-secondary">99,000원</span>
+          </div>
+          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('평생 이용권')">
+            결제하기
+          </button>
+        </div>
+      </div>
+      <p class="mt-12 text-accent text-sm">
+  ※ 결제 기능은 곧 오픈됩니다.<br>
+  궁금하거나 망설여진다면, 언제든 고객센터로 문의해주세요.<br>
+  <span class="text-primary font-semibold">잠깐의 주저함이, 인생의 기회를 놓치는 이유가 되지 않기를!</span>
+</p>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+<footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">로또1081</h3>
+          <p class="text-gray-400">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천 서비스</p>
+          <p class="text-gray-500 mt-4">운영팀: <span class="font-semibold">로또1081 운영팀</span></p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">고객센터</h3>
+          <p class="text-gray-400">운영시간: 평일 09:00 - 18:00</p>
+          <p class="text-gray-400">문의: 사이트 내 고객센터 게시판 이용</p>
+          <p class="text-gray-400">메일: lotto1081.sso@gmail.com</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">바로가기</h3>
+          <ul class="space-y-2">
+            <li><a href="login.html" class="text-gray-400 hover:text-white transition">로그인</a></li>
+            <li><a href="/mypage" class="text-gray-400 hover:text-white transition">마이페이지</a></li>
+            <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
+            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
+            <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
+            <li><a href="discalmier.html" class="text-gray-400 hover:text-white transition">면책조항</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2024 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <!-- 결제 준비 중 알림 -->
+  <script>
+    function paymentAlert(product) {
+  alert("아쉽게도 아직 " + product + " 결제가 곧 오픈됩니다!\n\n잠시만 기다려 주세요 🙏\n\n'기회는 준비된 자에게 온다'는 말처럼, 지금의 결심이 여러분의 내일을 바꿔줄지 모릅니다.");
+}
+  </script>
+
+</body>
+</html>

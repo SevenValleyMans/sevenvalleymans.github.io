@@ -7,6 +7,23 @@
   <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDKs (v8.x.x) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
+    authDomain: "lotto1081-2b3dc.firebaseapp.com",
+    projectId: "lotto1081-2b3dc",
+    storageBucket: "lotto1081-2b3dc.firebaseapp.com",  // ← 이 부분 .app → .app**spot**.com 오타 주의!
+    messagingSenderId: "785261698548",
+    appId: "1:785261698548:web:84531550d2380c24f82da1",
+    measurementId: "G-EMCRJS1KM2"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
   <script>
     tailwind.config = {
       theme: {
@@ -24,22 +41,7 @@
       },
     }
   </script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
-      authDomain: "lotto1081-2b3dc.firebaseapp.com",
-      projectId: "lotto1081-2b3dc",
-      storageBucket: "lotto1081-2b3dc.firebasestorage.app",
-      messagingSenderId: "785261698548",
-      appId: "1:785261698548:web:84531550d2380c24f82da1",
-      measurementId: "G-EMCRJS1KM2"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
+
   <style>
     .tab-active { border-bottom: 3px solid #8B0000; color: #8B0000; }
     .tab-inactive { border-bottom: 1px solid #ddd; color: #64748B; }
@@ -89,7 +91,7 @@
     </div>
     <div>
       <label class="block text-primary font-semibold mb-1">비밀번호</label>
-      <input type="password" id="signupPassword" required class="w-full p-2 rounded-lg border border-accent focus:outline-none focus:border-primary" placeholder="8자 이상">
+      <input type="password" id="signupPassword" required class="w-full p-2 rounded-lg border border-accent focus:outline-none focus:border-primary" placeholder="6자 이상">
     </div>
     <div>
       <label class="block text-primary font-semibold mb-1">비밀번호 확인</label>
@@ -138,8 +140,8 @@ document.getElementById('signupBtn').onclick = function() {
     signupMessage.textContent = "비밀번호가 일치하지 않습니다.";
     return;
   }
-  if (pw.length < 8) {
-    signupMessage.textContent = "비밀번호는 8자 이상이어야 합니다.";
+  if (pw.length < 6) {
+    signupMessage.textContent = "비밀번호는 6자 이상이어야 합니다.";
     return;
   }
   // 가상이메일 생성

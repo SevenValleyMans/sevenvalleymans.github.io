@@ -7,6 +7,24 @@
   <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+<!-- Firebase SDKs (v8.x.x) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
+    authDomain: "lotto1081-2b3dc.firebaseapp.com",
+    projectId: "lotto1081-2b3dc",
+    storageBucket: "lotto1081-2b3dc.firebaseapp.com",  // ← 이 부분 .app → .app**spot**.com 오타 주의!
+    messagingSenderId: "785261698548",
+    appId: "1:785261698548:web:84531550d2380c24f82da1",
+    measurementId: "G-EMCRJS1KM2"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+
   <script>
     tailwind.config = {
       theme: {
@@ -43,7 +61,7 @@
 <body class="bg-light font-sans">
 
 
-    <!-- 네비게이션 바 (항상 보임) -->
+<!-- 네비게이션 바 (항상 보임) -->
 <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
@@ -204,6 +222,82 @@
     function paymentAlert(product) {
   alert("아쉽게도 아직 " + product + " 결제가 곧 오픈됩니다!\n\n잠시만 기다려 주세요 🙏\n\n'기회는 준비된 자에게 온다'는 말처럼, 지금의 결심이 여러분의 내일을 바꿔줄지 모릅니다.");
 }
+  </script>
+
+<script>
+  // 네비게이션 상태 변경(로그인/로그아웃)
+document.addEventListener('DOMContentLoaded', function() {
+  firebase.auth().onAuthStateChanged(function(user) {
+    // 데스크톱
+    const loginNavBtn = document.getElementById('loginNavBtn');
+    const userNav = document.getElementById('userNav');
+    const userName = document.getElementById('userName');
+    const logoutNavBtn = document.getElementById('logoutNavBtn');
+    // 모바일
+    const loginMobileBtn = document.getElementById('loginMobileBtn');
+    const userNavMobile = document.getElementById('userNavMobile');
+    const userNameMobile = document.getElementById('userNameMobile');
+    const logoutMobileBtn = document.getElementById('logoutMobileBtn');
+
+    if (user) {
+      // Firestore에서 유저명 불러오기(선택)
+      firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
+        const name = doc.exists && doc.data().name ? doc.data().name + '님' : user.email || '회원님';
+        if (userName) userName.textContent = name;
+        if (userNameMobile) userNameMobile.textContent = name;
+      }).catch(() => {
+        if (userName) userName.textContent = user.email || '회원님';
+        if (userNameMobile) userNameMobile.textContent = user.email || '회원님';
+      });
+
+      // 데스크톱
+      if (loginNavBtn) loginNavBtn.style.display = "none";
+      if (userNav) userNav.classList.remove('hidden');
+      // 모바일
+      if (loginMobileBtn) loginMobileBtn.style.display = "none";
+      if (userNavMobile) userNavMobile.classList.remove('hidden');
+    } else {
+      // 데스크톱
+      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
+      if (userNav) userNav.classList.add('hidden');
+      // 모바일
+      if (loginMobileBtn) loginMobileBtn.style.display = "block";
+      if (userNavMobile) userNavMobile.classList.add('hidden');
+    }
+
+    // 로그아웃 이벤트 (데스크톱)
+    if (logoutNavBtn) {
+      logoutNavBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(function() {
+          window.location.reload();
+        });
+      }
+    }
+    // 로그아웃 이벤트 (모바일)
+    if (logoutMobileBtn) {
+      logoutMobileBtn.onclick = function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(function() {
+          window.location.reload();
+        });
+      }
+    }
+  });
+});
+
+</script>
+
+
+  <!-- 햄버거 메뉴 동작 스크립트 (아래 한 번만 추가하면 됨) -->
+  <script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  // 메뉴 오버레이 클릭시 닫기
+  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>
 
 </body>

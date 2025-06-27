@@ -5,26 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>마이페이지 | 로또1081</title>
   <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
-
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-<!-- Firebase SDKs (v8.x.x) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
-    authDomain: "lotto1081-2b3dc.firebaseapp.com",
-    projectId: "lotto1081-2b3dc",
-    storageBucket: "lotto1081-2b3dc.firebaseapp.com",  // ← 이 부분 .app → .app**spot**.com 오타 주의!
-    messagingSenderId: "785261698548",
-    appId: "1:785261698548:web:84531550d2380c24f82da1",
-    measurementId: "G-EMCRJS1KM2"
-  };
-  firebase.initializeApp(firebaseConfig);
-</script>
-
+  <!-- Firebase SDKs (v8.x.x) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
+      authDomain: "lotto1081-2b3dc.firebaseapp.com",
+      projectId: "lotto1081-2b3dc",
+      storageBucket: "lotto1081-2b3dc.firebaseapp.com",
+      messagingSenderId: "785261698548",
+      appId: "1:785261698548:web:84531550d2380c24f82da1",
+      measurementId: "G-EMCRJS1KM2"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
   <script>
     tailwind.config = {
       theme: {
@@ -51,28 +49,23 @@
   </style>
 </head>
 <body class="bg-light min-h-screen">
-<!-- 네비게이션 바 (항상 보임) -->
 <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
-      <!-- Logo -->
       <a href="/" class="text-2xl font-bold text-primary relative">
         로또1081
         <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
       </a>
-      <!-- Desktop Menu -->
       <div class="hidden md:flex items-center space-x-8">
         <a href="index.html" class="text-gray-600 hover:text-primary transition">홈</a>
         <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
         <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
         <a href="payment.html" class="text-gray-600 hover:text-primary transition">구독상품</a>
         <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
-      <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
-      <span id="userNav" class="hidden flex items-center space-x-2">
-        <span id="userName" class="text-secondary font-bold"></span>
-      </span>
+        <span id="userNav" class="hidden flex items-center space-x-2">
+          <span id="userName" class="text-secondary font-bold"></span>
+        </span>
       </div>
-      <!-- Mobile Hamburger -->
       <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
         <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
@@ -81,92 +74,78 @@
     </div>
   </div>
 </nav>
-
-<!-- 모바일 전체 메뉴 오버레이 (오직 모바일에서만, nav 외부에!) -->
 <div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
   <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
-    <!-- 닫기 버튼 -->
     <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
     <nav class="flex flex-col space-y-6 mt-8">
       <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
       <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
       <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
       <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
-        <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
-  <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
-  <span id="userNavMobile" class="hidden flex items-center space-x-2">
-    <span id="userNameMobile" class="text-secondary font-bold"></span>
-  </span>
+      <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
+      <span id="userNavMobile" class="hidden flex items-center space-x-2">
+        <span id="userNameMobile" class="text-secondary font-bold"></span>
+      </span>
     </nav>
     <div class="mt-auto text-xs text-gray-400 pt-8 text-center">© 2024 로또1081</div>
   </div>
 </div>
-
-<!-- 네비 겹침 방지 padding-top 적용 예시 -->
 <div class="h-16 md:h-16"></div>
 
-  <!-- Main -->
-  <main class="container mx-auto px-4 max-w-3xl pt-24 pb-10">
-    <!-- 결제/구독 현황 -->
-    <section class="section-card mb-8 p-6 border border-accent/20">
-      <h2 class="text-2xl font-bold text-primary mb-3">결제 / 구독 현황</h2>
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div class="text-lg font-semibold mb-1">정기구독 상태:
-            <span class="status-paid">구독중</span>
-            <!-- <span class="status-expired">만료</span> -->
-          </div>
-          <div class="text-gray-500">최근 결제일: <span class="font-semibold text-gray-700">2024-06-20</span></div>
-          <div class="text-gray-500">결제 수단: <span class="font-semibold text-gray-700">카카오페이</span></div>
-          <div class="text-gray-500">다음 결제 예정일: <span class="font-semibold text-gray-700">2024-07-20</span></div>
+<main class="container mx-auto px-4 max-w-3xl pt-24 pb-10">
+  <section class="section-card mb-8 p-6 border border-accent/20">
+    <h2 class="text-2xl font-bold text-primary mb-3">결제 / 구독 현황</h2>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="text-lg font-semibold mb-1">정기구독 상태:
+          <span class="status-paid">구독중</span>
         </div>
-        <div>
-          <button class="mt-2 sm:mt-0 px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-primary transition">구독 해지</button>
-        </div>
+        <div class="text-gray-500">최근 결제일: <span class="font-semibold text-gray-700">2024-06-20</span></div>
+        <div class="text-gray-500">결제 수단: <span class="font-semibold text-gray-700">카카오페이</span></div>
+        <div class="text-gray-500">다음 결제 예정일: <span class="font-semibold text-gray-700">2024-07-20</span></div>
       </div>
-    </section>
-
-    <!-- 받은 추천번호 이력 -->
-    <section class="section-card mb-8 p-6 border border-accent/20">
-      <h2 class="text-2xl font-bold text-primary mb-3">받은 추천번호 이력</h2>
-      <div class="overflow-x-auto">
-        <table class="table w-full text-center text-gray-700">
-          <thead>
-            <tr>
-              <th class="py-2 px-3">회차</th>
-              <th class="py-2 px-3">발송일</th>
-              <th class="py-2 px-3">추천번호</th>
-            </tr>
-          </thead>
-          <tbody id="recommendListTbody">
-            <!-- 더미 데이터 추가 가능 -->
-          </tbody>
-        </table>
+      <div>
+        <button class="mt-2 sm:mt-0 px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-primary transition">구독 해지</button>
       </div>
-    </section>
+    </div>
+  </section>
+  <!-- 이번 주 로또 당첨번호 표시 -->
+  <section class="section-card mb-6 p-5 border border-accent/20 flex items-center gap-4">
+    <span id="roundLabel" class="font-bold text-lg text-primary"></span>
+    <span id="winningNumView" class="text-xl font-mono text-accent"></span>
+  </section>
+  <section class="section-card mb-8 p-6 border border-accent/20">
+    <h2 class="text-2xl font-bold text-primary mb-3">받은 추천번호 이력</h2>
+    <div class="overflow-x-auto">
+      <table class="table w-full text-center text-gray-700">
+        <thead>
+          <tr>
+            <th class="py-2 px-3">회차</th>
+            <th class="py-2 px-3">발송일</th>
+            <th class="py-2 px-3">추천번호</th>
+          </tr>
+        </thead>
+        <tbody id="recommendListTbody"></tbody>
+      </table>
+    </div>
+  </section>
+  <section class="section-card p-6 border border-accent/20">
+    <h2 class="text-2xl font-bold text-primary mb-3">내 Q&A 내역</h2>
+    <div class="overflow-x-auto">
+      <table class="table w-full text-center text-gray-700">
+        <thead>
+          <tr>
+            <th class="py-2 px-3">제목</th>
+            <th class="py-2 px-3">작성일</th>
+            <th class="py-2 px-3">답변상태</th>
+          </tr>
+        </thead>
+        <tbody id="myQnaTbody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
 
-    <!-- 내 Q&A 내역 -->
-    <section class="section-card p-6 border border-accent/20">
-      <h2 class="text-2xl font-bold text-primary mb-3">내 Q&A 내역</h2>
-      <div class="overflow-x-auto">
-        <table class="table w-full text-center text-gray-700">
-          <thead>
-            <tr>
-              <th class="py-2 px-3">제목</th>
-              <th class="py-2 px-3">작성일</th>
-              <th class="py-2 px-3">답변상태</th>
-            </tr>
-          </thead>
-          <tbody id="myQnaTbody">
-
-            <!-- 더미 데이터 추가 가능 -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <!-- Q&A 상세 모달 -->
 <div id="qnaModal" class="fixed inset-0 bg-black/50 z-[100] items-center justify-center hidden">
   <div class="bg-white rounded-2xl shadow-xl max-w-lg w-[90vw] mx-auto p-8 relative">
     <button id="closeQnaModal" class="absolute top-3 right-3 text-2xl text-gray-400 hover:text-primary">&times;</button>
@@ -183,8 +162,6 @@
   </div>
 </div>
 
-
-  <!-- Footer -->
 <footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
@@ -219,12 +196,74 @@
   </div>
 </footer>
 
-
 <script>
-// 1. 로그인 후 내 userId(가상이메일) Firestore에서 불러오기 + 모든 데이터 로드
+function getCurrentRound(today = new Date()) {
+  const baseRound = 1177; // 2025-06-21 기준
+  const baseDate = new Date(2025, 5, 21); // month는 0부터!
+  const diffMs = today - baseDate;
+  const diffWeeks = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7));
+  return baseRound + diffWeeks;
+}
+
+// 공 색상 반환 함수
+function getBallColor(n) {
+  if (n >= 1 && n <= 10) return "#FFD600";    // 노랑
+  if (n >= 11 && n <= 20) return "#1976D2";   // 파랑
+  if (n >= 21 && n <= 30) return "#D32F2F";   // 빨강
+  if (n >= 31 && n <= 40) return "#212121";   // 검정
+  if (n >= 41 && n <= 45) return "#388E3C";   // 초록
+  return "#e0e0e0"; // 예외: 연회색
+}
+
+// 공을 HTML로 만들어주는 함수
+function renderBall(n) {
+  const color = getBallColor(n);
+  const textColor = (n >= 31 && n <= 40) ? "#fff" : "#222";
+  return `<span style="
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:${color};
+    color:${textColor};
+    font-weight:900;
+    font-size:1.15rem;
+    margin-right:7px;
+    box-shadow:0 2px 6px #0002;
+    border:2.5px solid #fff;
+    ">
+      ${n}
+    </span>`;
+}
+
+// 2. Firestore에서 당첨번호 불러오기 (공 스타일)
+function loadWinningNumber() {
+  const round = getCurrentRound();
+  // 1. "n회 당첨번호" 표시
+  document.getElementById('roundLabel').textContent = `${round}회 당첨번호`;
+
+  firebase.firestore().collection('winningNumbers').where('round', '==', round).limit(1).get()
+    .then(snapshot => {
+      const v = document.getElementById('winningNumView');
+      if (snapshot.empty) {
+        v.innerHTML = `<span class="text-gray-400">아직 입력되지 않았어요!</span>`;
+        return;
+      }
+      const data = snapshot.docs[0].data();
+      const numbers = Array.isArray(data.numbers) ? data.numbers : [];
+      const bonus = data.bonus;
+      v.innerHTML =
+        numbers.map(renderBall).join('') +
+        `<span class="mx-2 font-bold text-gray-500 text-xl">+</span>` +
+        (bonus ? renderBall(bonus) : "");
+    });
+}
+
+// 3. 추천번호/내 Q&A/네비 기능
 function fetchMyUserIdAndLoadAll() {
   firebase.auth().onAuthStateChanged(function(user) {
-    // 데스크톱/모바일 네비 요소
     const loginNavBtn = document.getElementById('loginNavBtn');
     const userNav = document.getElementById('userNav');
     const userName = document.getElementById('userName');
@@ -257,7 +296,6 @@ function fetchMyUserIdAndLoadAll() {
           loadMyQnA(null);
         });
 
-      // 네비 UI 처리 (로그인/로그아웃)
       if (loginNavBtn) loginNavBtn.style.display = "none";
       if (userNav) userNav.classList.remove('hidden');
       if (loginMobileBtn) loginMobileBtn.style.display = "none";
@@ -271,7 +309,6 @@ function fetchMyUserIdAndLoadAll() {
       if (userNavMobile) userNavMobile.classList.add('hidden');
     }
 
-    // 로그아웃 버튼 처리 (한번만 등록)
     if (logoutNavBtn) {
       logoutNavBtn.onclick = function(e) {
         e.preventDefault();
@@ -287,7 +324,7 @@ function fetchMyUserIdAndLoadAll() {
   });
 }
 
-// 2. userId 기반 추천번호 이력
+// 추천번호 이력
 function loadRecommendHistory(userId) {
   const tbody = document.getElementById('recommendListTbody');
   if (!tbody) return;
@@ -331,7 +368,7 @@ function loadRecommendHistory(userId) {
     });
 }
 
-// 3. userId 기반 QnA 이력
+// 내 Q&A 이력
 function loadMyQnA(userId) {
   const tbody = document.getElementById('myQnaTbody');
   if (!tbody) return;
@@ -368,7 +405,6 @@ function loadMyQnA(userId) {
           </tr>
         `;
       });
-      // 이 안에서 이벤트 등록!
       setTimeout(() => {
         document.querySelectorAll('.qna-row').forEach(row => {
           row.onclick = function() {
@@ -385,13 +421,7 @@ function loadMyQnA(userId) {
     });
 }
 
-
-// 4. 페이지 진입 시 자동 실행
-document.addEventListener('DOMContentLoaded', function() {
-  fetchMyUserIdAndLoadAll();
-});
-
-// QnA 상세 모달 관련
+// Q&A 상세 모달 관련
 function openQnaModal(qnaId) {
   if (!qnaId) return;
   firebase.firestore().collection('qna').doc(qnaId).get()
@@ -407,20 +437,16 @@ function openQnaModal(qnaId) {
       document.body.style.overflow = 'hidden';
     });
 }
-
-// 모달 닫기
 document.getElementById('closeQnaModal').onclick = function() {
   document.getElementById('qnaModal').classList.add('hidden');
   document.body.style.overflow = '';
 };
-// 배경 클릭시 닫기
 document.getElementById('qnaModal').onclick = function(e) {
   if (e.target === this) {
     this.classList.add('hidden');
     document.body.style.overflow = '';
   }
 };
-// ESC로 닫기
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     document.getElementById('qnaModal').classList.add('hidden');
@@ -428,18 +454,19 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// 자동 실행
+document.addEventListener('DOMContentLoaded', function() {
+  fetchMyUserIdAndLoadAll();
+  loadWinningNumber();
+});
+
+// 햄버거 메뉴
+const menuBtn = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const closeMenu = document.getElementById('closeMenu');
+menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
 </script>
-
-  <!-- 햄버거 메뉴 동작 스크립트 (아래 한 번만 추가하면 됨) -->
-  <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const closeMenu = document.getElementById('closeMenu');
-  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
-  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
-  // 메뉴 오버레이 클릭시 닫기
-  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
-  </script>
-
 </body>
 </html>

@@ -59,6 +59,24 @@
   <div class="h-16"></div>
 
   <main class="container mx-auto px-4 max-w-4xl pt-8 pb-10">
+
+      <!-- 금주 당첨번호 입력 섹션 -->
+<section id="winningSection" class="section-card p-6 border border-accent/20 mb-6">
+  <h2 class="text-xl font-bold text-primary mb-3">금주 당첨번호 입력</h2>
+  <form id="winningForm" class="flex gap-2 mb-2 flex-wrap">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="1번" id="win1">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="2번" id="win2">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="3번" id="win3">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="4번" id="win4">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="5번" id="win5">
+    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="6번" id="win6">
+    <input type="number" min="1" max="45" class="w-14 p-2 border rounded" placeholder="보너스" id="winBonus">
+    <button type="submit" class="px-4 py-2 bg-primary text-white rounded font-bold ml-2">저장</button>
+  </form>
+  <div id="winningLatest" class="text-gray-600 text-sm"></div>
+  <!-- 유저별 성적 표시 -->
+  <div id="userResults" class="mt-6"></div>
+</section>
     <!-- 탭 메뉴 -->
     <div class="flex border-b mb-6">
       <button id="tab-users" class="px-4 py-2 font-bold tab-active">회원관리</button>
@@ -147,6 +165,10 @@
     </div>
 
   </main>
+
+
+
+
 
 <div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
   <div>
@@ -415,13 +437,305 @@ document.getElementById('sendForm').onsubmit = async function(e) {
   document.getElementById('sendModal').classList.add('hidden');
 };
 
+
+//여기서부터 아래는 금주의 당첨번호
+
+// 금주 당첨번호 입력 및 Firestore 저장
+document.getElementById('winningForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const round = getCurrentRound();
+  const numbers = [
+    Number(document.getElementById('win1').value),
+    Number(document.getElementById('win2').value),
+    Number(document.getElementById('win3').value),
+    Number(document.getElementById('win4').value),
+    Number(document.getElementById('win5').value),
+    Number(document.getElementById('win6').value)
+  ];
+  const bonus = Number(document.getElementById('winBonus').value) || null;
+
+  // 중복/범위 체크
+  if (new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 45)) {
+    alert('1~45 사이의 중복 없는 6개 번호를 입력하세요.');
+    return;
+  }
+  if (bonus && (numbers.includes(bonus) || bonus < 1 || bonus > 45)) {
+    alert('보너스 번호는 1~45 사이, 기존 6개와 겹치면 안됩니다.');
+    return;
+  }
+
+  await firebase.firestore().collection('winningNumbers').add({
+    round,
+    numbers,
+    bonus,
+    createdAt: new Date()
+  });
+  alert('금주 당첨번호가 저장되었습니다.');
+  loadLatestWinningNumber(); // 최신 당첨번호 다시 로드
+};
+
+// 최신 당첨번호 보여주기
+async function loadLatestWinningNumber() {
+  const div = document.getElementById('winningLatest');
+  div.textContent = '불러오는 중...';
+  const round = Number(getCurrentRound());
+  const q = await firebase.firestore()
+    .collection('winningNumbers')
+    .where('round', '==', round)
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+  if (q.empty) {
+    div.textContent = `이번주(${round}회차) 당첨번호가 입력되지 않았습니다.`;
+  } else {
+    const data = q.docs[0].data();
+    div.innerHTML = `<b>${data.round}회차</b> | ${data.numbers.join(', ')}${data.bonus ? ' + 보너스: ' + data.bonus : ''}`;
+    // 입력폼에도 불러오기
+    data.numbers.forEach((num, idx) => {
+      document.getElementById('win' + (idx+1)).value = num;
+    });
+    if (data.bonus) document.getElementById('winBonus').value = data.bonus;
+  }
+}
+
+
+// 진입시 최신 당첨번호도 같이 로드
+loadLatestWinningNumber();
+
+
+// 여기서부터 유저 성적 확인
+async function checkUserResult(userId) {
+  const round = Number(getCurrentRound());
+  // 추천번호 불러오기
+  const recSnap = await firebase.firestore()
+    .collection('recommendations')
+    .where('userId', '==', userId)
+    .where('round', '==', round)
+    .limit(1)
+    .get();
+  if (recSnap.empty) return { error: "추천번호 기록 없음" };
+  const recData = recSnap.docs[0].data();
+  const userNums = recData.numbers
+    .split(',')
+    .map(s => Number(s.trim()))
+    .filter(n => !isNaN(n));
+
+  // 당첨번호 불러오기
+  const winSnap = await firebase.firestore()
+    .collection('winningNumbers')
+    .where('round', '==', round)
+    .orderBy('createdAt', 'desc')
+    .limit(1)
+    .get();
+  if (winSnap.empty) return { error: "해당 회차 당첨번호 없음" };
+  const winData = winSnap.docs[0].data();
+  const winNums = winData.numbers.map(n => Number(n));
+  const bonus = Number(winData.bonus);
+
+  // 일치 계산
+  const match = userNums.filter(n => winNums.includes(n));
+  const matchCount = match.length;
+  const bonusMatch = bonus && userNums.includes(bonus);
+
+  return {
+    userId,
+    round,
+    userNums,
+    winNums,
+    match,
+    matchCount,
+    bonus,
+    bonusMatch
+  };
+}
+
+
+//여기서부터 불러오기
+async function loadUserResults() {
+  const div = document.getElementById('userResults');
+  div.innerHTML = '<div class="text-gray-500">불러오는 중...</div>';
+  const round = Number(getCurrentRound());
+
+  const [usersSnap, winSnap, recsSnap] = await Promise.all([
+    firebase.firestore().collection('users').get(),
+    firebase.firestore().collection('winningNumbers').where('round', '==', round).orderBy('createdAt', 'desc').limit(1).get(),
+    firebase.firestore().collection('recommendations').where('round', '==', round).get(),
+  ]);
+
+  if (usersSnap.empty) {
+    div.innerHTML = '<div class="text-gray-500">가입한 회원이 없습니다.</div>';
+    return;
+  }
+  if (winSnap.empty) {
+    div.innerHTML = '<div class="text-gray-500">이번 회차 당첨번호가 없습니다.</div>';
+    return;
+  }
+
+  const winData = winSnap.docs[0].data();
+  const winNums = winData.numbers.map(Number);
+  const bonus = Number(winData.bonus);
+  
+  // map: userId → 추천번호
+// map: userId → 추천번호 배열
+const recsMap = {};
+recsSnap.forEach(doc => {
+  const rec = doc.data();
+  // 모든 userId, numbers 값에 trim 적용
+  const key = (rec.userId || '').trim();
+  const nums = (rec.numbers || '').trim();
+  if (!recsMap[key]) recsMap[key] = [];
+  recsMap[key].push(nums);
+});
+
+    let html = `
+      <table class="table w-full text-center mt-4">
+        <thead>
+          <tr>
+            <th class="py-2 px-3">이메일</th>
+            <th class="py-2 px-3">닉네임</th>
+            <th class="py-2 px-3">추천번호</th>
+            <th class="py-2 px-3">일치</th>
+            <th class="py-2 px-3">보너스</th>
+            <th class="py-2 px-3">등수</th>   <!-- 👈 추가 -->
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+
+usersSnap.forEach(doc => {
+  const user = doc.data();
+  const userId = user.userId;
+  const name = user.name || '-';
+  const numsArr = recsMap[userId];
+   console.log("userId:", userId, "numsArr:", numsArr); // 디버깅 로그
+  if (!numsArr || numsArr.length === 0) {
+    html += `<tr>
+      <td class="py-1 px-2">${userId}</td>
+      <td class="py-1 px-2">${name}</td>
+      <td class="py-1 px-2 text-gray-400">-</td>
+      <td class="py-1 px-2 text-gray-400">-</td>
+      <td class="py-1 px-2 text-gray-400">-</td>
+      <td class="py-1 px-2 text-gray-400">-</td>
+    </tr>`;
+    return;
+  }
+
+  // 여러 추천번호 중 “최고 등수”로 채택
+  let best = {
+    matchCount: 0,
+    match: [],
+    bonusMatch: false,
+    rankValue: 10, // 1등:1, 2등:2... 5등:5, -:10
+    rank: "-",
+    nums: ""
+    
+  };
+numsArr.forEach(numsStr => {
+    const userNums = numsStr.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+    console.log("userNums:", userNums, "| winNums:", winNums); // 여기까지만 디버깅
+    const match = userNums.filter(n => winNums.includes(n));
+    const bonusMatch = bonus && userNums.includes(bonus);
+    const rank = getLottoRank(match.length, bonusMatch);
+    const rankValue = getRankValue(match.length, bonusMatch);
+    if (rankValue < best.rankValue) {
+      best = {
+        matchCount: match.length,
+        match,
+        bonusMatch,
+        rankValue,
+        rank,
+        nums: userNums.join(', ')
+      };
+    }
+  });
+
+  html += `<tr>
+    <td class="py-1 px-2">${userId}</td>
+    <td class="py-1 px-2">${name}</td>
+    <td class="py-1 px-2">${best.nums}</td>
+    <td class="py-1 px-2 font-bold">${best.matchCount}개 (${best.match.join(', ')})</td>
+    <td class="py-1 px-2">${best.bonusMatch ? 'O' : 'X'}</td>
+    <td class="py-1 px-2 font-bold">${best.rank}</td>
+  </tr>`;
+});
+
+// 등수의 숫자값 (등수가 낮을수록 1등)
+function getRankValue(matchCount, bonusMatch) {
+  if (matchCount === 6) return 1;
+  if (matchCount === 5 && bonusMatch) return 2;
+  if (matchCount === 5) return 3;
+  if (matchCount === 4) return 4;
+  if (matchCount === 3) return 5;
+  return 10; // 미당첨
+}
+
+
+
+  html += '</tbody></table>';
+  div.innerHTML = html;
+}
+
+function getLottoRank(matchCount, bonusMatch) {
+  if (matchCount === 6) return "1등";
+  if (matchCount === 5 && bonusMatch) return "2등";
+  if (matchCount === 5) return "3등";
+  if (matchCount === 4) return "4등";
+  if (matchCount === 3) return "5등";
+  return "-";
+}
+
+
+
+// 진입시 최신 당첨번호도 같이 로드
+loadLatestWinningNumber();
+loadUserResults();
+
+document.getElementById('winningForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const round = getCurrentRound();
+  const numbers = [
+    Number(document.getElementById('win1').value),
+    Number(document.getElementById('win2').value),
+    Number(document.getElementById('win3').value),
+    Number(document.getElementById('win4').value),
+    Number(document.getElementById('win5').value),
+    Number(document.getElementById('win6').value)
+  ];
+  const bonus = Number(document.getElementById('winBonus').value) || null;
+
+  // 중복/범위 체크
+  if (new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 45)) {
+    alert('1~45 사이의 중복 없는 6개 번호를 입력하세요.');
+    return;
+  }
+  if (bonus && (numbers.includes(bonus) || bonus < 1 || bonus > 45)) {
+    alert('보너스 번호는 1~45 사이, 기존 6개와 겹치면 안됩니다.');
+    return;
+  }
+
+  await firebase.firestore().collection('winningNumbers').add({
+    round,
+    numbers,
+    bonus,
+    createdAt: new Date()
+  });
+  alert('금주 당첨번호가 저장되었습니다.');
+  loadLatestWinningNumber();
+  loadUserResults();
+};
+
+
+
+
+
   </script>
 
 
 <script>
   function checkPw() {
     const pw = document.getElementById('adminPw').value;
-    if (pw === '1234') {
+    if (pw === '1081') {
       document.getElementById('pwCover').style.display = 'none';
     } else {
       alert('비밀번호가 틀렸습니다.');

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>후기 작성 | 로또1081</title>
+  <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBH3AvpxtOF7NQDH_fDOuAXSyEfw8r5kbU",
+      authDomain: "lotto1081-2b3dc.firebaseapp.com",
+      projectId: "lotto1081-2b3dc",
+      storageBucket: "lotto1081-2b3dc.appspot.com",
+      messagingSenderId: "785261698548",
+      appId: "1:785261698548:web:84531550d2380c24f82da1",
+      measurementId: "G-EMCRJS1KM2"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#8B0000',
+            secondary: '#D4AF37',
+            accent: '#64748B',
+            light: '#F8FAFC',
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .premium-card {
+      background: linear-gradient(135deg, #fff 0%, #F8FAFC 100%);
+      border: 1px solid #64748B;
+      box-shadow: 0 4px 20px rgba(30,58,138,0.09);
+      position: relative;
+      overflow: hidden;
+    }
+    .premium-card::before {
+      content: '';
+      position: absolute; top:0; left:0; right:0;
+      height: 4px;
+      background: linear-gradient(90deg, #1E3A8A 0%, #64748B 50%, #1E3A8A 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .premium-card:hover { box-shadow: 0 8px 30px rgba(30,58,138,0.14);}
+    .premium-card:hover::before { opacity: 1;}
+    .section-title {
+      position: relative; display: inline-block; padding-bottom: 10px;
+    }
+    .section-title::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, #1E3A8A 0%, #64748B 50%, #1E3A8A 100%);
+    }
+    .gold-border {
+      border: 2px solid #D4AF37;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-light font-sans">
+<!-- 네비게이션 복붙 시작 -->
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <a href="/" class="text-2xl font-bold text-primary relative">
+        로또1081
+        <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
+      </a>
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="index.html" class="text-gray-600 hover:text-primary transition">홈</a>
+        <a href="myPage.html" class="text-gray-600 hover:text-primary transition">마이페이지</a>
+        <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
+        <a href="payment.html" class="text-gray-600 hover:text-primary transition">구독상품</a>
+        <a href="review.html" class="text-gray-700 text-lg font-bold hover:text-primary">후기</a>
+        <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
+        <span id="userNav" class="hidden flex items-center space-x-2">
+          <span id="userName" class="text-secondary font-bold"></span>
+        </span>
+      </div>
+      <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
+        <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
+  <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
+    <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
+    <nav class="flex flex-col space-y-6 mt-8">
+      <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
+      <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
+      <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
+      <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
+      <a href="review.html" class="text-gray-700 text-lg font-bold hover:text-primary">후기</a>
+      <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
+      <span id="userNavMobile" class="hidden flex items-center space-x-2">
+        <span id="userNameMobile" class="text-secondary font-bold"></span>
+      </span>
+    </nav>
+    <div class="mt-auto text-xs text-gray-400 pt-8 text-center">© 2024 로또1081</div>
+  </div>
+</div>
+<div class="h-16 md:h-16"></div>
+<!-- 네비게이션 복붙 끝 -->
+    <div class="container mx-auto px-4 max-w-xl py-16">
+      <!-- 감성 안내문: 배경 위 자연스러운 중앙 정렬, 컨테이너/배너 없이 -->
+      <div class="flex flex-col items-center justify-center mb-10" style="width:100%;">
+        <div class="mb-3">
+          <svg class="w-12 h-12 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </div>
+        <p class="text-2xl font-extrabold text-primary mb-2 text-center">여러분의 한마디가 큰 힘이 됩니다</p>
+        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center">로또1081은 <span class="text-secondary font-bold">‘진짜 1등의 경험’</span>을 바탕으로<br>누군가에게 작은 희망과 용기가 되고자 합니다.</p>
+        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center">여러분의 생생한 이야기가, 아직 망설이는 누군가에게<br><span class="text-primary font-semibold">특별한 응원</span>이 될 수 있어요.</p>
+        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center"><span class="text-secondary font-bold">진심이 담긴 후기</span>를 남겨주시면<br>저희가 더욱 노력하는 데 큰 힘이 됩니다.</p>
+        <p class="text-primary font-semibold text-base md:text-lg mb-2 text-center">오늘의 소중한 경험을 들려주세요.</p>
+        <p class="block mt-2 text-sm text-gray-500 text-center">* 따뜻한 격려, 아쉬웠던 점, 작은 변화 모두 진심으로 귀 기울이겠습니다.</p>
+      </div>
+      <!-- 후기 작성 카드 -->
+      <div class="premium-card rounded-2xl p-8 shadow-2xl w-full" style="max-width:100%;">
+        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 section-title">후기 작성</h2>
+        <div id="authMessage" class="text-center text-red-500 mb-6 hidden">로그인 후 후기를 작성할 수 있습니다.</div>
+        <form id="reviewForm" class="space-y-6">
+          <div>
+            <label class="block mb-2 font-bold text-gray-700">닉네임/별명</label>
+            <input type="text" id="nickname" required maxlength="12"
+              class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary font-semibold bg-white text-gray-800"/>
+          </div>
+          <div>
+            <label class="block mb-2 font-bold text-gray-700">별점</label>
+            <div class="flex items-center gap-1">
+              <div id="starRating" class="flex gap-1"></div>
+              <span id="starValue" class="ml-3 text-secondary font-bold"></span>
+            </div>
+          </div>
+          <div>
+            <label class="block mb-2 font-bold text-gray-700">후기 내용</label>
+            <textarea id="reviewText" rows="5" required maxlength="300"
+              class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary bg-white text-gray-800"></textarea>
+          </div>
+          <button type="submit"
+            class="w-full py-3 bg-primary text-white rounded-full font-bold text-lg hover:bg-opacity-90 transition">후기 등록</button>
+        </form>
+        <div id="submitMsg" class="mt-6 text-center text-lg font-bold text-primary hidden">후기가 정상적으로 등록되었습니다!<br>감사합니다.</div>
+      </div>
+    </div>
+
+<!-- section-divider -->
+<div class="h-6"></div>
+<div class="section-divider"></div>
+
+<!-- 푸터 복붙 시작 -->
+<footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">로또1081</h3>
+          <p class="text-gray-400">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천 서비스</p>
+          <p class="text-gray-500 mt-4">운영팀: <span class="font-semibold">로또1081 운영팀</span></p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">고객센터</h3>
+          <p class="text-gray-400">운영시간: 평일 09:00 - 18:00</p>
+          <p class="text-gray-400">문의: 사이트 내 고객센터 게시판 이용</p>
+          <p class="text-gray-400">메일: lotto1081.sso@gmail.com</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">바로가기</h3>
+          <ul class="space-y-2">
+            <li><a href="login.html" class="text-gray-400 hover:text-white transition">로그인</a></li>
+            <li><a href="/mypage" class="text-gray-400 hover:text-white transition">마이페이지</a></li>
+            <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
+            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
+            <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
+            <li><a href="discalmier.html" class="text-gray-400 hover:text-white transition">면책조항</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2024 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- 푸터 복붙 끝 -->
+
+<script>
+  // 별점 UI
+  const starRating = document.getElementById('starRating');
+  const starValue = document.getElementById('starValue');
+  let rating = 0;
+  for(let i=1;i<=5;i++){
+    const star = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    star.setAttribute("data-star",i);
+    star.setAttribute("class","w-8 h-8 text-gray-300 hover:text-secondary cursor-pointer transition");
+    star.setAttribute("fill","currentColor");
+    star.setAttribute("viewBox","0 0 20 20");
+    star.innerHTML = `<polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/>`;
+    starRating.appendChild(star);
+    star.addEventListener('mouseenter',()=>updateStars(i));
+    star.addEventListener('click',()=>{
+      rating=i;
+      updateStars(i,true);
+    });
+  }
+  starRating.addEventListener('mouseleave',()=>updateStars(rating));
+  function updateStars(val,force){
+    [...starRating.children].forEach((s,idx)=>{
+      s.classList[val>=idx+1?"add":"remove"]("text-secondary");
+      s.classList[val>=idx+1?"remove":"add"]("text-gray-300");
+    });
+    starValue.textContent = val>0? val + "점" : "";
+    if(force) rating=val;
+  }
+  updateStars(0);
+
+  // 파이어베이스 Auth 체크
+  let currentUser = null;
+  firebase.auth().onAuthStateChanged(user=>{
+    currentUser = user;
+    const authMsg = document.getElementById('authMessage');
+    const form = document.getElementById('reviewForm');
+    if(user){
+      authMsg.classList.add('hidden');
+      form.classList.remove('pointer-events-none','opacity-60');
+    }else{
+      authMsg.classList.remove('hidden');
+      form.classList.add('pointer-events-none','opacity-60');
+    }
+    // 데스크탑 네비/유저네임
+    const loginNavBtn = document.getElementById('loginNavBtn');
+    const userNav = document.getElementById('userNav');
+    const userName = document.getElementById('userName');
+    // 모바일 네비/유저네임
+    const loginMobileBtn = document.getElementById('loginMobileBtn');
+    const userNavMobile = document.getElementById('userNavMobile');
+    const userNameMobile = document.getElementById('userNameMobile');
+    if (user) {
+      // Firestore에서 유저명 불러오기(선택)
+      firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
+        let nameText = '회원님';
+        if (doc.exists && doc.data().name) {
+          nameText = doc.data().name + '님';
+        }
+        if (userName) userName.textContent = nameText;
+        if (userNameMobile) userNameMobile.textContent = nameText;
+      }).catch(() => {
+        if (userName) userName.textContent = '회원님';
+        if (userNameMobile) userNameMobile.textContent = '회원님';
+      });
+      if (loginNavBtn) loginNavBtn.style.display = "none";
+      if (userNav) userNav.classList.remove('hidden');
+      if (loginMobileBtn) loginMobileBtn.style.display = "none";
+      if (userNavMobile) userNavMobile.classList.remove('hidden');
+    } else {
+      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
+      if (userNav) userNav.classList.add('hidden');
+      if (loginMobileBtn) loginMobileBtn.style.display = "block";
+      if (userNavMobile) userNavMobile.classList.add('hidden');
+    }
+  });
+
+  // 제출 이벤트
+  document.getElementById('reviewForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    if(!currentUser){
+      alert("로그인 후 작성해 주세요.");
+      return;
+    }
+    const nickname = document.getElementById('nickname').value.trim();
+    const reviewText = document.getElementById('reviewText').value.trim();
+    if(rating===0){
+      alert("별점을 선택해 주세요!");
+      return;
+    }
+    if(!nickname || !reviewText){
+      alert("모든 내용을 입력해 주세요!");
+      return;
+    }
+    try{
+      await firebase.firestore().collection('reviews').add({
+        uid: currentUser.uid,
+        nickname: nickname,
+        rating: rating,
+        text: reviewText,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('reviewForm').classList.add('hidden');
+      document.getElementById('submitMsg').classList.remove('hidden');
+    }catch(e){
+      alert("등록 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  });
+
+  // 모바일 메뉴 동작
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로또1081 관리자</title>
-   <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
+  <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase SDK -->
@@ -60,32 +60,43 @@
 
   <main class="container mx-auto px-4 max-w-4xl pt-8 pb-10">
 
-      <!-- 금주 당첨번호 입력 섹션 -->
-<section id="winningSection" class="section-card p-6 border border-accent/20 mb-6">
-  <h2 class="text-xl font-bold text-primary mb-3">금주 당첨번호 입력</h2>
-  <form id="winningForm" class="flex gap-2 mb-2 flex-wrap">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="1번" id="win1">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="2번" id="win2">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="3번" id="win3">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="4번" id="win4">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="5번" id="win5">
-    <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="6번" id="win6">
-    <input type="number" min="1" max="45" class="w-14 p-2 border rounded" placeholder="보너스" id="winBonus">
-    <button type="submit" class="px-4 py-2 bg-primary text-white rounded font-bold ml-2">저장</button>
-  </form>
-  <div id="winningLatest" class="text-gray-600 text-sm"></div>
-  <!-- 유저별 성적 표시 -->
-  <div id="userResults" class="mt-6"></div>
-</section>
+    <!-- 금주 당첨번호 입력 섹션 -->
+    <section id="winningSection" class="section-card p-6 border border-accent/20 mb-6">
+      <h2 class="text-xl font-bold text-primary mb-3">금주 당첨번호 입력</h2>
+      <div class="flex justify-between items-center mb-3">
+  <button id="downloadResultCSV" class="px-4 py-2 bg-accent text-white rounded font-bold hover:bg-primary transition">
+    엑셀 다운
+  </button>
+</div>
+
+      <form id="winningForm" class="flex gap-2 mb-2 flex-wrap">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="1번" id="win1">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="2번" id="win2">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="3번" id="win3">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="4번" id="win4">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="5번" id="win5">
+        <input type="number" min="1" max="45" required class="w-14 p-2 border rounded" placeholder="6번" id="win6">
+        <input type="number" min="1" max="45" class="w-14 p-2 border rounded" placeholder="보너스" id="winBonus">
+        <button type="submit" class="px-4 py-2 bg-primary text-white rounded font-bold ml-2">저장</button>
+      </form>
+      <div id="winningLatest" class="text-gray-600 text-sm"></div>
+      <div id="userResults" class="mt-6"></div>
+      
+    </section>
+
     <!-- 탭 메뉴 -->
     <div class="flex border-b mb-6">
-      <button id="tab-users" class="px-4 py-2 font-bold tab-active">회원관리</button>
+      <button id="tab-users" class="px-4 py-2 tab-active font-bold">회원관리</button>
       <button id="tab-qna" class="px-4 py-2 font-bold text-gray-500">Q&A 관리</button>
     </div>
 
+
     <!-- 회원관리 -->
     <section id="userSection" class="section-card p-6 border border-accent/20">
-      <h2 class="text-xl font-bold text-primary mb-3">회원 목록</h2>
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold text-primary">회원 목록</h2>
+        <button id="bulkSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">일괄 발송</button>
+      </div>
       <div id="userList" class="overflow-x-auto">
         <table class="table w-full text-center text-gray-700">
           <thead>
@@ -123,62 +134,89 @@
       </div>
     </div>
 
-<!-- 추천번호 발송 모달 -->
-<div id="sendModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-  <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
-    <h3 class="text-lg font-bold text-primary mb-4">추천번호 발송</h3>
-    <div class="mb-2 text-gray-700" id="currentRoundInfo"></div>
-    <form id="sendForm" class="space-y-3">
-      <input type="hidden" id="sendEmail" />
-      <div>
-        <label class="block font-semibold mb-1">추천번호</label>
-        <input type="text" id="sendNumbers" class="w-full p-2 border rounded" placeholder="예: 1, 3, 14, 26, 30, 44" required>
-      </div>
-      <div>
-        <label class="block font-semibold mb-1">응원 메시지</label>
-        <select id="cheerSelect" class="w-full p-2 border rounded mb-1">
-          <option value="이번 주에는 행운이 함께 하시길!">이번 주에는 행운이 함께 하시길!</option>
-          <option value="꿈은 이루어집니다!">꿈은 이루어집니다!</option>
-          <option value="매주 행복한 한 주 보내세요!">매주 행복한 한 주 보내세요!</option>
-          <option value="로또1081이 늘 응원합니다!">로또1081이 늘 응원합니다!</option>
-        </select>
-        <input type="text" id="customCheer" class="w-full p-2 border rounded mt-1" placeholder="직접 입력 (선택)" />
-        <small class="text-gray-400">직접 입력하면 선택 메시지 대신 사용됩니다.</small>
-      </div>
-      <div class="flex gap-2">
-        <button type="button" id="autoNumber" class="px-3 py-1 bg-accent text-white rounded">자동추천</button>
-        <button type="submit" class="px-4 py-1 bg-primary text-white rounded font-bold">발송</button>
-        <button type="button" id="closeSendModal" class="ml-auto px-4 py-1 bg-gray-200 rounded">취소</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-    <!-- 회원별 추천번호 이력 모달 -->
-    <div id="historyModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-      <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full relative">
-        <button id="closeHistoryModal" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl">&times;</button>
-        <h3 class="text-lg font-bold text-primary mb-4">회차별 추천번호 이력</h3>
-        <div id="historyContent"></div>
+    <!-- 추천번호 발송 모달 (자동추천 제거) -->
+    <div id="sendModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
+        <h3 class="text-lg font-bold text-primary mb-4">추천번호 발송</h3>
+        <div class="mb-2 text-gray-700" id="currentRoundInfo"></div>
+        <form id="sendForm" class="space-y-3">
+          <input type="hidden" id="sendEmail" />
+          <div>
+            <label class="block font-semibold mb-1">추천번호 조합<br>
+              <span class="text-xs text-gray-400">각 조합을 한 줄에 1개씩, 예: 1,3,11,18,30,42</span>
+            </label>
+            <textarea id="sendNumbers" class="w-full p-2 border rounded" placeholder="예:&#10;1,3,11,18,30,42&#10;7,8,17,24,31,45&#10;..." rows="10" required></textarea>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">응원 메시지</label>
+            <select id="cheerSelect" class="w-full p-2 border rounded mb-1">
+              <option value="이번 주에는 행운이 함께 하시길!">이번 주에는 행운이 함께 하시길!</option>
+              <option value="꿈은 이루어집니다!">꿈은 이루어집니다!</option>
+              <option value="매주 행복한 한 주 보내세요!">매주 행복한 한 주 보내세요!</option>
+              <option value="로또1081이 늘 응원합니다!">로또1081이 늘 응원합니다!</option>
+            </select>
+            <input type="text" id="customCheer" class="w-full p-2 border rounded mt-1" placeholder="직접 입력 (선택)" />
+            <small class="text-gray-400">직접 입력하면 선택 메시지 대신 사용됩니다.</small>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="px-4 py-1 bg-primary text-white rounded font-bold">발송</button>
+            <button type="button" id="closeSendModal" class="ml-auto px-4 py-1 bg-gray-200 rounded">취소</button>
+          </div>
+        </form>
       </div>
     </div>
 
+    <!-- 일괄 발송 모달 -->
+    <div id="bulkSendModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full relative">
+        <button id="closeBulkSendModal" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl">&times;</button>
+        <h3 class="text-lg font-bold text-primary mb-4">전체 회원 일괄 발송</h3>
+        <form id="bulkSendForm" class="space-y-3">
+          <div>
+            <label class="block font-semibold mb-1">추천번호 조합 (최소 30개)<br>
+              <span class="text-xs text-gray-400">각 조합을 한 줄에 1개씩, 예: 1,3,11,18,30,42</span>
+            </label>
+            <textarea id="bulkNumbers" class="w-full p-2 border rounded" placeholder="예:&#10;1,3,11,18,30,42&#10;7,8,17,24,31,45&#10;..." rows="15" required></textarea>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">응원 메시지</label>
+            <select id="bulkCheerSelect" class="w-full p-2 border rounded mb-1">
+              <option value="이번 주에는 행운이 함께 하시길!">이번 주에는 행운이 함께 하시길!</option>
+              <option value="꿈은 이루어집니다!">꿈은 이루어집니다!</option>
+              <option value="매주 행복한 한 주 보내세요!">매주 행복한 한 주 보내세요!</option>
+              <option value="로또1081이 늘 응원합니다!">로또1081이 늘 응원합니다!</option>
+            </select>
+            <input type="text" id="bulkCustomCheer" class="w-full p-2 border rounded mt-1" placeholder="직접 입력 (선택)" />
+            <small class="text-gray-400">직접 입력하면 선택 메시지 대신 사용됩니다.</small>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" class="px-4 py-1 bg-primary text-white rounded font-bold">일괄 발송</button>
+            <button type="button" id="closeBulkSendModal2" class="ml-auto px-4 py-1 bg-gray-200 rounded">취소</button>
+          </div>
+          <div id="bulkSendResult" class="text-sm text-gray-700 mt-2"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 회원별 추천번호 이력 모달 -->
+    <div id="historyModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-xl shadow-xl p-8 max-w-2xl w-full relative">
+        <button id="closeHistoryModal" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl">&times;</button>
+        <h3 class="text-lg font-bold text-primary mb-4">회차별 추천번호 이력</h3>
+        <div id="historyContent" class="max-h-[75vh] overflow-y-auto"></div>
+      </div>
+    </div>
   </main>
 
-
-
-
-
-<div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
-  <div>
-    <input id="adminPw" type="password" placeholder="비밀번호 입력" />
-    <button onclick="checkPw()">확인</button>
-  </div>
-</div>
+  <!-- <div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
+    <div>
+      <input id="adminPw" type="password" placeholder="비밀번호 입력" />
+      <button onclick="checkPw()">확인</button>
+    </div>
+  </div> -->
 
   <script>
-    // 1. 회차 자동계산 함수 (2025-06-21 = 1177회차)
+    // ---- 회차 계산 함수 ----
     function getCurrentRound(today = new Date()) {
       const baseRound = 1177;
       const baseDate = new Date(2025, 5, 21); // 2025-06-21 (month 0-indexed)
@@ -187,22 +225,26 @@
       return baseRound + diffWeeks;
     }
 
-    // 2. 탭 전환
+    // ---- 탭 전환 ----
     document.getElementById('tab-users').onclick = function() {
       document.getElementById('userSection').classList.remove('hidden');
       document.getElementById('qnaSection').classList.add('hidden');
       this.classList.add('tab-active');
+      this.classList.remove('text-gray-500');
       document.getElementById('tab-qna').classList.remove('tab-active');
+      document.getElementById('tab-qna').classList.add('text-gray-500');
     };
     document.getElementById('tab-qna').onclick = function() {
       document.getElementById('userSection').classList.add('hidden');
       document.getElementById('qnaSection').classList.remove('hidden');
       this.classList.add('tab-active');
+      this.classList.remove('text-gray-500');
       document.getElementById('tab-users').classList.remove('tab-active');
+      document.getElementById('tab-users').classList.add('text-gray-500');
       loadQnaList();
     };
 
-    // 3. 회원 목록 불러오기 + 이메일 클릭시 이력 확인
+    // ---- 회원 목록 불러오기 ----
     function loadUsers() {
       const tbody = document.querySelector('#userList tbody');
       tbody.innerHTML = '';
@@ -232,14 +274,13 @@
       });
     }
 
-    // 4. 추천번호 발송 모달 열기 (회차 안내 포함)
+    // ---- 추천번호 개별 발송 모달 ----
     function openSendModal(userId) {
       document.getElementById('sendEmail').value = userId;
       document.getElementById('sendNumbers').value = '';
-      // 회차 정보 안내
       const round = getCurrentRound();
       const today = new Date();
-      const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay())); // 토요일(6)까지 남은 날
+      const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
       document.getElementById('currentRoundInfo').innerHTML = `<span class="text-primary font-bold">${round}회차</span> (${weekEnd.getFullYear()}-${String(weekEnd.getMonth()+1).padStart(2,'0')}-${String(weekEnd.getDate()).padStart(2,'0')}) 추첨분`;
       document.getElementById('sendModal').classList.remove('hidden');
     }
@@ -247,65 +288,243 @@
       document.getElementById('sendModal').classList.add('hidden');
     };
 
-    // 5. 자동 추천번호(랜덤)
-    document.getElementById('autoNumber').onclick = function(e) {
+    // ---- 추천번호 "개별 발송" (랜덤 30개) ----
+    document.getElementById('sendForm').onsubmit = async function(e) {
       e.preventDefault();
-      const nums = [];
-      while (nums.length < 6) {
-        const n = Math.floor(Math.random() * 45) + 1;
-        if (!nums.includes(n)) nums.push(n);
-      }
-      nums.sort((a, b) => a - b);
-      document.getElementById('sendNumbers').value = nums.join(', ');
-    };
+      const userId = document.getElementById('sendEmail').value;
+      const textareaValue = document.getElementById('sendNumbers').value.trim();
+      const round = getCurrentRound();
+      const now = new Date();
+      const selectMsg = document.getElementById('cheerSelect').value;
+      const customMsg = document.getElementById('customCheer').value.trim();
+      const cheerMsg = customMsg ? customMsg : selectMsg;
 
-    // 6. 추천번호 발송(파이어스토어에 회차까지 기록)
-
-    // 7. 회원 이력 모달 열기 (회차별 추천번호 보기)
-function openHistoryModal(userId) {
-  const modal = document.getElementById('historyModal');
-  const contentDiv = document.getElementById('historyContent');
-  contentDiv.innerHTML = '<div class="text-gray-500 text-center py-4">로딩 중...</div>';
-  modal.classList.remove('hidden');
-
-  firebase.firestore().collection('recommendations')
-    .where('userId', '==', userId)
-    .orderBy('sentAt', 'desc') // ← 여기만 바꿔주면 됨
-    .get()
-    .then(snapshot => {
-      if (snapshot.empty) {
-        contentDiv.innerHTML = '<div class="text-gray-500 text-center py-4">추천번호 이력이 없습니다.</div>';
+      // 파싱 및 30개 미만 차단
+      const lines = textareaValue
+        .split('\n')
+        .map(line => line.replace(/\s/g, ''))
+        .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
+      const uniqueLines = Array.from(new Set(lines));
+      if (uniqueLines.length < 30) {
+        alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
         return;
       }
-      let html = `<table class="w-full text-center border mt-2">
-        <thead>
-          <tr class="bg-gray-50">
-            <th class="py-1 px-2">회차</th>
-            <th class="py-1 px-2">추천번호</th>
-            <th class="py-1 px-2">발송일</th>
-          </tr>
-        </thead>
-        <tbody>`;
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const dt = data.sentAt && data.sentAt.toDate ? data.sentAt.toDate().toLocaleDateString() : '';
-        html += `<tr>
-          <td class="py-1 px-2 font-bold">${data.round || '-'}</td>
-          <td class="py-1 px-2">${data.numbers}</td>
-          <td class="py-1 px-2">${dt}</td>
-        </tr>`;
+      // 30개 랜덤 선택
+      const shuffled = uniqueLines
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+      const selectedNumbersArr = shuffled.slice(0, 30);
+
+      // Firestore 저장
+      await firebase.firestore().collection('recommendations').add({
+        userId,
+        numbers: selectedNumbersArr.join('\n'),
+        round,
+        sentAt: now,
+        cheerMsg,
+        totalCount: uniqueLines.length
       });
-      html += '</tbody></table>';
-      contentDiv.innerHTML = html;
-    });
-}
+      // === 관리자 이력에도 기록 ===
+      await firebase.firestore().collection('recommendationLogs').add({
+        userId,
+        numbers: selectedNumbersArr.join('\n'),
+        round,
+        sentAt: now,
+        cheerMsg,
+        type: '개별'
+      });
 
+      // 사용자 전화번호 찾기
+      let phone = '';
+      const userDoc = await firebase.firestore().collection('users').where('userId', '==', userId).get();
+      if (!userDoc.empty) {
+        phone = userDoc.docs[0].data().phone;
+      }
+      if (콜) {
+        fetch('http://localhost:4000/send-sms', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            to: phone,
+            numbers: selectedNumbersArr.join('\n'),
+            message: cheerMsg
+          })
+        })
+          .then(r => r.json())
+          .then(result => {
+            if (result.success) {
+              alert('추천번호 30개가 저장되고 문자로 발송되었습니다.');
+            } else {
+              alert('문자 발송 실패: ' + JSON.stringify(result.error));
+            }
+          })
+          .catch(err => alert('문자 발송 에러: ' + err));
+      } else {
+        alert('사용자 전화번호를 찾을 수 없습니다. Firestore에 전화번호를 추가해 주세요.');
+      }
+      document.getElementById('sendModal').classList.add('hidden');
+      // 이력 새로고침
+      loadRecommendationLogs();
+    };
 
+    // ---- 일괄 발송 모달 열기 ----
+    document.getElementById('bulkSendBtn').onclick = () => {
+      document.getElementById('bulkNumbers').value = '';
+      document.getElementById('bulkCustomCheer').value = '';
+      document.getElementById('bulkSendResult').textContent = '';
+      document.getElementById('bulkSendModal').classList.remove('hidden');
+    };
+    document.getElementById('closeBulkSendModal').onclick = () => {
+      document.getElementById('bulkSendModal').classList.add('hidden');
+    };
+    document.getElementById('closeBulkSendModal2').onclick = () => {
+      document.getElementById('bulkSendModal').classList.add('hidden');
+    };
+
+    // ---- 일괄 발송 (각 유저에 30개 랜덤/조합은 다름) ----
+    document.getElementById('bulkSendForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const textareaValue = document.getElementById('bulkNumbers').value.trim();
+      const round = getCurrentRound();
+      const now = new Date();
+      const selectMsg = document.getElementById('bulkCheerSelect').value;
+      const customMsg = document.getElementById('bulkCustomCheer').value.trim();
+      const cheerMsg = customMsg ? customMsg : selectMsg;
+      const statusDiv = document.getElementById('bulkSendResult');
+      statusDiv.textContent = '발송 중...';
+
+      // 조합 파싱
+      const lines = textareaValue
+        .split('\n')
+        .map(line => line.replace(/\s/g, ''))
+        .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
+      const uniqueLines = Array.from(new Set(lines));
+      if (uniqueLines.length < 30) {
+        alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
+        statusDiv.textContent = '';
+        return;
+      }
+
+      // 모든 회원 가져오기
+      const usersSnap = await firebase.firestore().collection('users').get();
+      if (usersSnap.empty) {
+        alert('회원이 없습니다.');
+        statusDiv.textContent = '';
+        return;
+      }
+
+      // 회원별로 순차 발송(랜덤 30개), Firestore저장+문자 전송
+      let sentCount = 0, failList = [];
+      for (const doc of usersSnap.docs) {
+        const user = doc.data();
+        const userId = user.userId;
+        const phone = user.phone;
+        if (!userId || !phone) {
+          failList.push(user.name || userId || '(정보누락)');
+          continue;
+        }
+        // 30개 랜덤 샘플
+        const shuffled = uniqueLines
+          .map(value => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value);
+        const selectedNumbersArr = shuffled.slice(0, 30);
+
+        // Firestore 기록
+        await firebase.firestore().collection('recommendations').add({
+          userId,
+          numbers: selectedNumbersArr.join('\n'),
+          round,
+          sentAt: now,
+          cheerMsg,
+          totalCount: uniqueLines.length
+        });
+        // === 관리자 이력도 기록 ===
+        await firebase.firestore().collection('recommendationLogs').add({
+          userId,
+          numbers: selectedNumbersArr.join('\n'),
+          round,
+          sentAt: now,
+          cheerMsg,
+          type: '일괄'
+        });
+
+        // 문자 발송
+        try {
+          const res = await fetch('http://localhost:4000/send-sms', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              to: phone,
+              numbers: selectedNumbersArr.join('\n'),
+              message: cheerMsg
+            })
+          });
+          const result = await res.json();
+          if (result.success) sentCount++;
+          else failList.push(user.name || userId);
+        } catch (err) {
+          failList.push(user.name || userId);
+        }
+      }
+
+      // 결과 안내
+      statusDiv.innerHTML =
+        `<b>${sentCount}명에게 발송 완료!</b> ` +
+        (failList.length ? `<br>실패: ${failList.join(', ')}` : '');
+      if (failList.length === 0) {
+        alert('전체 회원에게 추천번호가 일괄 발송되었습니다!');
+        document.getElementById('bulkSendModal').classList.add('hidden');
+      } else {
+        alert('일부 회원에게 발송이 실패했습니다. (아래 실패명단 참고)');
+      }
+      // 이력 새로고침
+      loadRecommendationLogs();
+    };
+
+    // ---- 회원 이력 모달 ----
+    function openHistoryModal(userId) {
+      const modal = document.getElementById('historyModal');
+      const contentDiv = document.getElementById('historyContent');
+      contentDiv.innerHTML = '<div class="text-gray-500 text-center py-4">로딩 중...</div>';
+      modal.classList.remove('hidden');
+      firebase.firestore().collection('recommendations')
+        .where('userId', '==', userId)
+        .orderBy('sentAt', 'desc')
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            contentDiv.innerHTML = '<div class="text-gray-500 text-center py-4">추천번호 이력이 없습니다.</div>';
+            return;
+          }
+          let html = `<table class="w-full text-center border mt-2">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="py-1 px-2">회차</th>
+                <th class="py-1 px-2">추천번호(최대 30줄)</th>
+                <th class="py-1 px-2">발송일</th>
+              </tr>
+            </thead>
+            <tbody>`;
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const dt = data.sentAt && data.sentAt.toDate ? data.sentAt.toDate().toLocaleDateString() : '';
+            html += `<tr>
+              <td class="py-1 px-2 font-bold">${data.round || '-'}</td>
+              <td class="py-1 px-2 text-xs whitespace-pre-line">${data.numbers}</td>
+              <td class="py-1 px-2">${dt}</td>
+            </tr>`;
+          });
+          html += '</tbody></table>';
+          contentDiv.innerHTML = html;
+        });
+    }
     document.getElementById('closeHistoryModal').onclick = () => {
       document.getElementById('historyModal').classList.add('hidden');
     };
 
-    // 8. QnA 전체 목록 불러오기 (기존 코드 유지)
+    // ---- QnA 전체 목록 불러오기 ----
     function loadQnaList() {
       const div = document.getElementById('qnaList');
       div.innerHTML = '';
@@ -363,7 +582,7 @@ function openHistoryModal(userId) {
       });
     }
 
-    // QnA 답변 모달 열기/닫기
+    // ---- QnA 답변 모달 ----
     function openAnswerModal(id, title, content, answer) {
       document.getElementById('answerModal').classList.remove('hidden');
       document.getElementById('modalQTitle').textContent = title;
@@ -383,364 +602,236 @@ function openHistoryModal(userId) {
       document.getElementById('answerModal').classList.add('hidden');
     };
 
-    // 첫 진입시 회원 목록 로드
-    loadUsers();
-document.getElementById('sendForm').onsubmit = async function(e) {
-  e.preventDefault();
-  const userId = document.getElementById('sendEmail').value;
-  const numbers = document.getElementById('sendNumbers').value;
-  const round = getCurrentRound();
-  const now = new Date();
-  const selectMsg = document.getElementById('cheerSelect').value;
-  const customMsg = document.getElementById('customCheer').value.trim();
-  // 직접 입력이 있으면 custom, 아니면 select 값
-  const cheerMsg = customMsg ? customMsg : selectMsg;
-
-  // 1. 파이어스토어 저장
-  await firebase.firestore().collection('recommendations').add({
-    userId,
-    numbers,
-    round,
-    sentAt: now,
-    cheerMsg  // 추가로 응원 메시지도 저장하면 좋음
-  });
-
-  // 2. 사용자 전화번호 찾기
-  let phone = '';
-  const userDoc = await firebase.firestore().collection('users').where('userId', '==', userId).get();
-  if (!userDoc.empty) {
-    phone = userDoc.docs[0].data().phone;
-  }
-  if (phone) {
-    fetch('http://localhost:4000/send-sms', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        to: phone,
-        numbers: numbers,
-        message: cheerMsg   // ← 메시지도 함께 전송
-      })
-    })
-      .then(r => r.json())
-      .then(result => {
-        if (result.success) {
-          alert('추천번호가 저장되고 문자로도 발송되었습니다.');
-        } else {
-          alert('문자 발송 실패: ' + JSON.stringify(result.error));
-        }
-      })
-      .catch(err => alert('문자 발송 에러: ' + err));
-  } else {
-    alert('사용자 전화번호를 찾을 수 없습니다. Firestore에 전화번호를 추가해 주세요.');
-  }
-
-  document.getElementById('sendModal').classList.add('hidden');
-};
-
-
-//여기서부터 아래는 금주의 당첨번호
-
-// 금주 당첨번호 입력 및 Firestore 저장
-document.getElementById('winningForm').onsubmit = async function(e) {
-  e.preventDefault();
-  const round = getCurrentRound();
-  const numbers = [
-    Number(document.getElementById('win1').value),
-    Number(document.getElementById('win2').value),
-    Number(document.getElementById('win3').value),
-    Number(document.getElementById('win4').value),
-    Number(document.getElementById('win5').value),
-    Number(document.getElementById('win6').value)
-  ];
-  const bonus = Number(document.getElementById('winBonus').value) || null;
-
-  // 중복/범위 체크
-  if (new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 45)) {
-    alert('1~45 사이의 중복 없는 6개 번호를 입력하세요.');
-    return;
-  }
-  if (bonus && (numbers.includes(bonus) || bonus < 1 || bonus > 45)) {
-    alert('보너스 번호는 1~45 사이, 기존 6개와 겹치면 안됩니다.');
-    return;
-  }
-
-  await firebase.firestore().collection('winningNumbers').add({
-    round,
-    numbers,
-    bonus,
-    createdAt: new Date()
-  });
-  alert('금주 당첨번호가 저장되었습니다.');
-  loadLatestWinningNumber(); // 최신 당첨번호 다시 로드
-};
-
-// 최신 당첨번호 보여주기
-async function loadLatestWinningNumber() {
-  const div = document.getElementById('winningLatest');
-  div.textContent = '불러오는 중...';
-  const round = Number(getCurrentRound());
-  const q = await firebase.firestore()
-    .collection('winningNumbers')
-    .where('round', '==', round)
-    .orderBy('createdAt', 'desc')
-    .limit(1)
-    .get();
-  if (q.empty) {
-    div.textContent = `이번주(${round}회차) 당첨번호가 입력되지 않았습니다.`;
-  } else {
-    const data = q.docs[0].data();
-    div.innerHTML = `<b>${data.round}회차</b> | ${data.numbers.join(', ')}${data.bonus ? ' + 보너스: ' + data.bonus : ''}`;
-    // 입력폼에도 불러오기
-    data.numbers.forEach((num, idx) => {
-      document.getElementById('win' + (idx+1)).value = num;
-    });
-    if (data.bonus) document.getElementById('winBonus').value = data.bonus;
-  }
-}
-
-
-// 진입시 최신 당첨번호도 같이 로드
-loadLatestWinningNumber();
-
-
-// 여기서부터 유저 성적 확인
-async function checkUserResult(userId) {
-  const round = Number(getCurrentRound());
-  // 추천번호 불러오기
-  const recSnap = await firebase.firestore()
-    .collection('recommendations')
-    .where('userId', '==', userId)
-    .where('round', '==', round)
-    .limit(1)
-    .get();
-  if (recSnap.empty) return { error: "추천번호 기록 없음" };
-  const recData = recSnap.docs[0].data();
-  const userNums = recData.numbers
-    .split(',')
-    .map(s => Number(s.trim()))
-    .filter(n => !isNaN(n));
-
-  // 당첨번호 불러오기
-  const winSnap = await firebase.firestore()
-    .collection('winningNumbers')
-    .where('round', '==', round)
-    .orderBy('createdAt', 'desc')
-    .limit(1)
-    .get();
-  if (winSnap.empty) return { error: "해당 회차 당첨번호 없음" };
-  const winData = winSnap.docs[0].data();
-  const winNums = winData.numbers.map(n => Number(n));
-  const bonus = Number(winData.bonus);
-
-  // 일치 계산
-  const match = userNums.filter(n => winNums.includes(n));
-  const matchCount = match.length;
-  const bonusMatch = bonus && userNums.includes(bonus);
-
-  return {
-    userId,
-    round,
-    userNums,
-    winNums,
-    match,
-    matchCount,
-    bonus,
-    bonusMatch
-  };
-}
-
-
-//여기서부터 불러오기
-async function loadUserResults() {
-  const div = document.getElementById('userResults');
-  div.innerHTML = '<div class="text-gray-500">불러오는 중...</div>';
-  const round = Number(getCurrentRound());
-
-  const [usersSnap, winSnap, recsSnap] = await Promise.all([
-    firebase.firestore().collection('users').get(),
-    firebase.firestore().collection('winningNumbers').where('round', '==', round).orderBy('createdAt', 'desc').limit(1).get(),
-    firebase.firestore().collection('recommendations').where('round', '==', round).get(),
-  ]);
-
-  if (usersSnap.empty) {
-    div.innerHTML = '<div class="text-gray-500">가입한 회원이 없습니다.</div>';
-    return;
-  }
-  if (winSnap.empty) {
-    div.innerHTML = '<div class="text-gray-500">이번 회차 당첨번호가 없습니다.</div>';
-    return;
-  }
-
-  const winData = winSnap.docs[0].data();
-  const winNums = winData.numbers.map(Number);
-  const bonus = Number(winData.bonus);
-  
-  // map: userId → 추천번호
-// map: userId → 추천번호 배열
-const recsMap = {};
-recsSnap.forEach(doc => {
-  const rec = doc.data();
-  // 모든 userId, numbers 값에 trim 적용
-  const key = (rec.userId || '').trim();
-  const nums = (rec.numbers || '').trim();
-  if (!recsMap[key]) recsMap[key] = [];
-  recsMap[key].push(nums);
-});
-
-    let html = `
-      <table class="table w-full text-center mt-4">
-        <thead>
-          <tr>
-            <th class="py-2 px-3">이메일</th>
-            <th class="py-2 px-3">닉네임</th>
-            <th class="py-2 px-3">추천번호</th>
-            <th class="py-2 px-3">일치</th>
-            <th class="py-2 px-3">보너스</th>
-            <th class="py-2 px-3">등수</th>   <!-- 👈 추가 -->
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-
-usersSnap.forEach(doc => {
-  const user = doc.data();
-  const userId = user.userId;
-  const name = user.name || '-';
-  const numsArr = recsMap[userId];
-   console.log("userId:", userId, "numsArr:", numsArr); // 디버깅 로그
-  if (!numsArr || numsArr.length === 0) {
-    html += `<tr>
-      <td class="py-1 px-2">${userId}</td>
-      <td class="py-1 px-2">${name}</td>
-      <td class="py-1 px-2 text-gray-400">-</td>
-      <td class="py-1 px-2 text-gray-400">-</td>
-      <td class="py-1 px-2 text-gray-400">-</td>
-      <td class="py-1 px-2 text-gray-400">-</td>
-    </tr>`;
-    return;
-  }
-
-  // 여러 추천번호 중 “최고 등수”로 채택
-  let best = {
-    matchCount: 0,
-    match: [],
-    bonusMatch: false,
-    rankValue: 10, // 1등:1, 2등:2... 5등:5, -:10
-    rank: "-",
-    nums: ""
-    
-  };
-numsArr.forEach(numsStr => {
-    const userNums = numsStr.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
-    console.log("userNums:", userNums, "| winNums:", winNums); // 여기까지만 디버깅
-    const match = userNums.filter(n => winNums.includes(n));
-    const bonusMatch = bonus && userNums.includes(bonus);
-    const rank = getLottoRank(match.length, bonusMatch);
-    const rankValue = getRankValue(match.length, bonusMatch);
-    if (rankValue < best.rankValue) {
-      best = {
-        matchCount: match.length,
-        match,
-        bonusMatch,
-        rankValue,
-        rank,
-        nums: userNums.join(', ')
-      };
+    // ---- 당첨번호 및 회원별 성적 ----
+    async function loadLatestWinningNumber() {
+      const div = document.getElementById('winningLatest');
+      div.textContent = '불러오는 중...';
+      const round = Number(getCurrentRound());
+      const q = await firebase.firestore()
+        .collection('winningNumbers')
+        .where('round', '==', round)
+        .orderBy('createdAt', 'desc')
+        .limit(1)
+        .get();
+      if (q.empty) {
+        div.textContent = `이번주(${round}회차) 당첨번호가 입력되지 않았습니다.`;
+      } else {
+        const data = q.docs[0].data();
+        div.innerHTML = `<b>${data.round}회차</b> | ${data.numbers.join(', ')}${data.bonus ? ' + 보너스: ' + data.bonus : ''}`;
+        data.numbers.forEach((num, idx) => {
+          document.getElementById('win' + (idx+1)).value = num;
+        });
+        if (data.bonus) document.getElementById('winBonus').value = data.bonus;
+      }
     }
-  });
+    async function loadUserResults() {
+      const div = document.getElementById('userResults');
+      div.innerHTML = '<div class="text-gray-500">불러오는 중...</div>';
+      const round = Number(getCurrentRound());
+      const [usersSnap, winSnap, recsSnap] = await Promise.all([
+        firebase.firestore().collection('users').get(),
+        firebase.firestore().collection('winningNumbers').where('round', '==', round).orderBy('createdAt', 'desc').limit(1).get(),
+        firebase.firestore().collection('recommendations').where('round', '==', round).get(),
+      ]);
+      if (usersSnap.empty) {
+        div.innerHTML = '<div class="text-gray-500">가입한 회원이 없습니다.</div>';
+        return;
+      }
+      if (winSnap.empty) {
+        div.innerHTML = '<div class="text-gray-500">이번 회차 당첨번호가 없습니다.</div>';
+        return;
+      }
+      const winData = winSnap.docs[0].data();
+      const winNums = winData.numbers.map(Number);
+      const bonus = Number(winData.bonus);
+      const recsMap = {};
+      recsSnap.forEach(doc => {
+        const rec = doc.data();
+        const key = (rec.userId || '').trim();
+        const nums = (rec.numbers || '').trim();
+        if (!recsMap[key]) recsMap[key] = [];
+        nums.split('\n').forEach(oneSet => {
+          if (oneSet) recsMap[key].push(oneSet);
+        });
+      });
 
-  html += `<tr>
-    <td class="py-1 px-2">${userId}</td>
-    <td class="py-1 px-2">${name}</td>
-    <td class="py-1 px-2">${best.nums}</td>
-    <td class="py-1 px-2 font-bold">${best.matchCount}개 (${best.match.join(', ')})</td>
-    <td class="py-1 px-2">${best.bonusMatch ? 'O' : 'X'}</td>
-    <td class="py-1 px-2 font-bold">${best.rank}</td>
-  </tr>`;
-});
+      let html = `
+        <table class="table w-full text-center mt-4">
+          <thead>
+            <tr>
+              <th class="py-2 px-3">이메일</th>
+              <th class="py-2 px-3">닉네임</th>
+              <th class="py-2 px-3">추천번호</th>
+              <th class="py-2 px-3">일치</th>
+              <th class="py-2 px-3">보너스</th>
+              <th class="py-2 px-3">등수</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      usersSnap.forEach(doc => {
+        const user = doc.data();
+        const userId = user.userId;
+        const name = user.name || '-';
+        const numsArr = recsMap[userId];
+        if (!numsArr || numsArr.length === 0) {
+          html += `<tr>
+            <td class="py-1 px-2">${userId}</td>
+            <td class="py-1 px-2">${name}</td>
+            <td class="py-1 px-2 text-gray-400">-</td>
+            <td class="py-1 px-2 text-gray-400">-</td>
+            <td class="py-1 px-2 text-gray-400">-</td>
+            <td class="py-1 px-2 text-gray-400">-</td>
+          </tr>`;
+          return;
+        }
 
-// 등수의 숫자값 (등수가 낮을수록 1등)
-function getRankValue(matchCount, bonusMatch) {
-  if (matchCount === 6) return 1;
-  if (matchCount === 5 && bonusMatch) return 2;
-  if (matchCount === 5) return 3;
-  if (matchCount === 4) return 4;
-  if (matchCount === 3) return 5;
-  return 10; // 미당첨
-}
+        let best = {
+          matchCount: 0,
+          match: [],
+          bonusMatch: false,
+          rankValue: 10,
+          rank: "-",
+          nums: ""
+        };
+        numsArr.forEach(numsStr => {
+          const userNums = numsStr.split(',').map(s => Number(s.trim())).filter(n => !isNaN(n));
+          const match = userNums.filter(n => winNums.includes(n));
+          const bonusMatch = bonus && userNums.includes(bonus);
+          const rank = getLottoRank(match.length, bonusMatch);
+          const rankValue = getRankValue(match.length, bonusMatch);
+          if (rankValue < best.rankValue) {
+            best = {
+              matchCount: match.length,
+              match,
+              bonusMatch,
+              rankValue,
+              rank,
+              nums: userNums.join(', ')
+            };
+          }
+        });
 
+        html += `<tr>
+          <td class="py-1 px-2">${userId}</td>
+          <td class="py-1 px-2">${name}</td>
+          <td class="py-1 px-2">${best.nums}</td>
+          <td class="py-1 px-2 font-bold">${best.matchCount}개 (${best.match.join(', ')})</td>
+          <td class="py-1 px-2">${best.bonusMatch ? 'O' : 'X'}</td>
+          <td class="py-1 px-2 font-bold">${best.rank}</td>
+        </tr>`;
+      });
 
+      html += '</tbody></table>';
+      div.innerHTML = html;
+    }
+    function getRankValue(matchCount, bonusMatch) {
+      if (matchCount === 6) return 1;
+      if (matchCount === 5 && bonusMatch) return 2;
+      if (matchCount === 5) return 3;
+      if (matchCount === 4) return 4;
+      if (matchCount === 3) return 5;
+      return 10; // 미당첨
+    }
+    function getLottoRank(matchCount, bonusMatch) {
+      if (matchCount === 6) return "1등";
+      if (matchCount === 5 && bonusMatch) return "2등";
+      if (matchCount === 5) return "3등";
+      if (matchCount === 4) return "4등";
+      if (matchCount === 3) return "5등";
+      return "-";
+    }
 
-  html += '</tbody></table>';
-  div.innerHTML = html;
-}
+    // ---- 당첨번호 저장 ----
+    document.getElementById('winningForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const round = getCurrentRound();
+      const numbers = [
+        Number(document.getElementById('win1').value),
+        Number(document.getElementById('win2').value),
+        Number(document.getElementById('win3').value),
+        Number(document.getElementById('win4').value),
+        Number(document.getElementById('win5').value),
+        Number(document.getElementById('win6').value)
+      ];
+      const bonus = Number(document.getElementById('winBonus').value) || null;
 
-function getLottoRank(matchCount, bonusMatch) {
-  if (matchCount === 6) return "1등";
-  if (matchCount === 5 && bonusMatch) return "2등";
-  if (matchCount === 5) return "3등";
-  if (matchCount === 4) return "4등";
-  if (matchCount === 3) return "5등";
-  return "-";
-}
+      if (new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 45)) {
+        alert('1~45 사이의 중복 없는 6개 번호를 입력하세요.');
+        return;
+      }
+      if (bonus && (numbers.includes(bonus) || bonus < 1 || bonus > 45)) {
+        alert('보너스 번호는 1~45 사이, 기존 6개와 겹치면 안됩니다.');
+        return;
+      }
 
+      await firebase.firestore().collection('winningNumbers').add({
+        round,
+        numbers,
+        bonus,
+        createdAt: new Date()
+      });
+      alert('금주 당첨번호가 저장되었습니다.');
+      loadLatestWinningNumber();
+      loadUserResults();
+    };
 
+    // ---- 진입시 데이터 로드 ----
+    loadUsers();
+    loadLatestWinningNumber();
+    loadUserResults();
+    loadRecommendationLogs();
 
-// 진입시 최신 당첨번호도 같이 로드
-loadLatestWinningNumber();
-loadUserResults();
-
-document.getElementById('winningForm').onsubmit = async function(e) {
-  e.preventDefault();
-  const round = getCurrentRound();
-  const numbers = [
-    Number(document.getElementById('win1').value),
-    Number(document.getElementById('win2').value),
-    Number(document.getElementById('win3').value),
-    Number(document.getElementById('win4').value),
-    Number(document.getElementById('win5').value),
-    Number(document.getElementById('win6').value)
-  ];
-  const bonus = Number(document.getElementById('winBonus').value) || null;
-
-  // 중복/범위 체크
-  if (new Set(numbers).size !== 6 || numbers.some(n => n < 1 || n > 45)) {
-    alert('1~45 사이의 중복 없는 6개 번호를 입력하세요.');
-    return;
-  }
-  if (bonus && (numbers.includes(bonus) || bonus < 1 || bonus > 45)) {
-    alert('보너스 번호는 1~45 사이, 기존 6개와 겹치면 안됩니다.');
-    return;
-  }
-
-  await firebase.firestore().collection('winningNumbers').add({
-    round,
-    numbers,
-    bonus,
-    createdAt: new Date()
-  });
-  alert('금주 당첨번호가 저장되었습니다.');
-  loadLatestWinningNumber();
-  loadUserResults();
-};
-
-
-
-
-
+    // // ---- PW 커버 ----
+    // function checkPw() {
+    //   const pw = document.getElementById('adminPw').value;
+    //   if (pw === '1081') {
+    //     document.getElementById('pwCover').style.display = 'none';
+    //   } else {
+    //     alert('비밀번호가 틀렸습니다.');
+    //   }
+    // }
   </script>
 
-
-<script>
-  function checkPw() {
-    const pw = document.getElementById('adminPw').value;
-    if (pw === '1081') {
-      document.getElementById('pwCover').style.display = 'none';
-    } else {
-      alert('비밀번호가 틀렸습니다.');
-    }
+  <script> //엑셀 다운로드 스크립트
+    document.getElementById('downloadResultCSV').onclick = function () {
+  // 1. 표 헤더 및 데이터 수집
+  const table = document.querySelector('#userResults table');
+  if (!table) {
+    alert('다운로드할 데이터가 없습니다.');
+    return;
   }
-</script>
+
+  let csv = '';
+
+  // --- 상단에 회차 및 당첨번호 정보 추가
+  const roundInfo = document.getElementById('winningLatest').textContent.replace(/\s+/g, ' ').trim();
+  csv += `"${roundInfo}"\r\n\r\n`;
+
+  // --- 헤더
+  const headers = Array.from(table.querySelectorAll('thead th')).map(th => `"${th.innerText.replace(/\n/g,' ').trim()}"`);
+  csv += headers.join(',') + '\r\n';
+
+  // --- 데이터
+  const rows = table.querySelectorAll('tbody tr');
+  rows.forEach(tr => {
+    const cells = Array.from(tr.querySelectorAll('td')).map(td => `"${td.innerText.replace(/\n/g, ' ').trim()}"`);
+    csv += cells.join(',') + '\r\n';
+  });
+
+  // **BOM 추가!!**
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '로또1081_금주성적표.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+  </script>
 </body>
 </html>

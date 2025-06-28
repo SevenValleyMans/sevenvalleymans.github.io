@@ -24,6 +24,10 @@
   firebase.initializeApp(firebaseConfig);
 </script>
 
+<!-- 아임포트(PortOne) JS SDK 추가 -->
+<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+
 
   <script>
     tailwind.config = {
@@ -182,6 +186,12 @@
     </div>
   </section>
 
+ <!-- 기존 카카오페이 결제 버튼 -->
+<button onclick="requestKakaoPaySubscribe('1달 도전 패스', 15000)">카카오페이 정기결제</button>
+<!-- 신규 토스 정기결제 버튼 -->
+<button onclick="requestTossPaySubscribe('1달 도전 패스', 15000)">토스 정기결제</button>
+
+
 
   <!-- Footer -->
 <footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
@@ -212,7 +222,7 @@
         </div>
       </div>
       <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-        <p>&copy; 2024 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
+        <p>&copy; 2025 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
       </div>
     </div>
   </div>
@@ -302,5 +312,59 @@ document.addEventListener('DOMContentLoaded', function() {
   mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>
 
+
+
+<script>//카카오페이 테스트
+function requestKakaoPaySubscribe(product, amount) {
+  var IMP = window.IMP;
+  IMP.init("imp12572183"); // ← 본인 imp_코드 정확히 입력
+
+  IMP.request_pay({
+    pg: "kakaopay.TCSUBSCRIP", // ← MID, PG 정확히 입력
+    pay_method: "card",
+    merchant_uid: "orderid_" + new Date().getTime(),
+    name: product,
+    amount: amount,
+    customer_uid: "user_" + (firebase.auth().currentUser ? firebase.auth().currentUser.uid : "testuser"),
+    buyer_email: "test@lotto1081.com",
+    buyer_name: "테스트유저"
+  }, function(rsp) {
+    if (rsp.success) {
+      alert('결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
+      // 실제로는 서버에 결제정보/빌링키를 저장해야 함
+    } else {
+      alert("결제 실패: " + rsp.error_msg);
+    }
+  });
+}
+
+
+</script>
+<script>//토스페이 정기결제
+function requestTossPaySubscribe(product, amount) {
+  var IMP = window.IMP;
+  IMP.init("iamporttest_4"); // ← 새로 등록된 정기결제용 MID
+
+  IMP.request_pay({
+    pg: "tosspayments.billing",
+    pay_method: "card",
+    merchant_uid: "orderid_" + new Date().getTime(),
+    name: product,
+    amount: amount,
+    customer_uid: "user_" + (firebase.auth().currentUser ? firebase.auth().currentUser.uid : "testuser"),
+    buyer_email: "test@lotto1081.com",
+    buyer_name: "테스트유저"
+  }, function(rsp) {
+    if (rsp.success) {
+      alert('토스 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
+      // 실제로는 서버에 결제정보/빌링키를 저장해야 함
+    } else {
+      alert("토스 결제 실패: " + rsp.error_msg);
+    }
+  });
+}
+
+
+</script>
 </body>
 </html>

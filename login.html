@@ -22,6 +22,7 @@
     measurementId: "G-EMCRJS1KM2"
   };
   firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 </script>
 
   <script>
@@ -102,6 +103,25 @@
   </form>
 </div>
 
+<div class="mt-2 text-right">
+  <button id="resetPasswordBtn" class="text-xs text-primary underline hover:text-secondary">비밀번호를 잊으셨나요?</button>
+</div>
+
+<div id="pwResetSection" class="space-y-4 mt-6 bg-white p-6 rounded-xl border border-accent shadow-lg max-w-md w-full hidden">
+  <h3 class="font-bold text-lg text-primary">비밀번호 재설정</h3>
+  <input type="text" id="resetName" placeholder="이름" class="w-full p-2 border rounded-lg border-accent" />
+  <input type="tel" id="resetPhone" placeholder="휴대폰번호" class="w-full p-2 border rounded-lg border-accent" maxlength="11" />
+  <div id="smsVerifySection">
+    <button id="sendSmsBtn" class="bg-primary text-white px-3 py-1 rounded">인증번호 발송</button>
+    <input type="text" id="smsCodeInput" placeholder="인증번호 입력" class="w-full mt-2 p-2 border rounded-lg border-accent" />
+  </div>
+  <input type="password" id="resetPw1" placeholder="새 비밀번호" class="w-full p-2 border rounded-lg border-accent" />
+  <input type="password" id="resetPw2" placeholder="새 비밀번호 확인" class="w-full p-2 border rounded-lg border-accent" />
+  <button id="doPwResetBtn" class="bg-primary text-white px-3 py-2 rounded w-full font-bold">비밀번호 재설정</button>
+  <div id="pwResetMsg" class="text-sm mt-2 text-accent"></div>
+</div>
+
+
 <script>
 /* --- 탭 전환 UX --- */
 const loginTab = document.getElementById('loginTab');
@@ -155,18 +175,31 @@ document.getElementById('signupBtn').onclick = function() {
     // 회원가입
     firebase.auth().createUserWithEmailAndPassword(virtualEmail, pw)
       .then((userCredential) => {
-        db.collection('users').doc(userCredential.user.uid).set({
-          name: name,
-          phone: phone,
-          userId: virtualEmail,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        signupMessage.textContent = "회원가입이 완료되었습니다!";
-        setTimeout(() => { location.href = "index.html"; }, 1000);
-      })
-      .catch((error) => {
-        signupMessage.textContent = "회원가입 실패: " + error.message;
-      });
+  db.collection('users').doc(userCredential.user.uid).set({
+    name: name,
+    phone: phone,
+    userId: virtualEmail,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // 문자 전송 실패는 무시
+  fetch("http://localhost:4000/send-welcome-sms", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: phone,
+      name: name
+    })
+  }).catch((err) => {
+    console.warn("문자 발송 실패(무시):", err);
+  });
+
+  signupMessage.textContent = "회원가입이 완료되었습니다!";
+  setTimeout(() => { location.href = "index.html"; }, 1000);
+})
+.catch((error) => {
+  signupMessage.textContent = "회원가입 실패: " + error.message;
+});
   });
 };
 
@@ -193,6 +226,66 @@ document.getElementById('loginBtn').onclick = function() {
       loginMessage.textContent = "로그인 실패: " + (error.code === "auth/user-not-found" ? "가입되지 않은 번호입니다." : error.message);
     });
 };
+</script>
+
+<script>//비밀번호 재설정
+// 1. 인증번호 발송 (서버에서 sms 보내는 API 필요)
+document.getElementById('sendSmsBtn').onclick = function() {
+  const phone = document.getElementById('resetPhone').value.trim();
+  // 이름 일치도 추가 체크 권장!
+  fetch('http://localhost:4000/send-reset-sms', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({to: phone})
+  }).then(()=>alert('인증번호가 발송되었습니다!'));
+}
+
+// 2. 비밀번호 재설정
+document.getElementById('doPwResetBtn').onclick = async function() {
+  const name = document.getElementById('resetName').value.trim();
+  const phone = document.getElementById('resetPhone').value.trim();
+  const smsCode = document.getElementById('smsCodeInput').value.trim();
+  const pw1 = document.getElementById('resetPw1').value;
+  const pw2 = document.getElementById('resetPw2').value;
+  const msg = document.getElementById('pwResetMsg');
+
+  // (1) 입력 체크, 인증번호 확인 (서버 검증 필요)
+  if (!name || !phone || !smsCode || !pw1 || !pw2) { msg.textContent = '모든 정보를 입력하세요.'; return; }
+  if (pw1 !== pw2) { msg.textContent = '비밀번호가 일치하지 않습니다.'; return; }
+  // (2) SMS 인증번호 서버로 검증
+  const verifyRes = await fetch('http://localhost:4000/verify-sms', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({phone, code: smsCode})
+  }).then(res => res.json());
+  if (!verifyRes.success) { msg.textContent = '인증번호가 틀렸습니다.'; return; }
+
+  // (3) 사용자 존재 여부 확인
+  const virtualEmail = phone + "@lotto1081.com";
+  const userSnap = await db.collection('users').where('phone', '==', phone).where('name','==',name).get();
+  if (userSnap.empty) { msg.textContent = '가입 정보가 없습니다.'; return; }
+
+  // (4) 관리자 권한(Cloud Functions 등)에서 비밀번호 재설정 API 호출
+  const resetRes = await fetch('http://localhost:4000/admin-reset-pw', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({email: virtualEmail, newPassword: pw1})
+  }).then(res => res.json());
+  if (resetRes.success) {
+    msg.textContent = '비밀번호가 성공적으로 변경되었습니다. 새 비밀번호로 로그인하세요.';
+  } else {
+    msg.textContent = '비밀번호 변경 실패: ' + resetRes.message;
+  }
+}
+
+
+document.getElementById('resetPasswordBtn').onclick = function() {
+  document.getElementById('pwResetSection').classList.remove('hidden');
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('signupSection').classList.add('hidden');
+};
+
+
 </script>
 </body>
 </html>

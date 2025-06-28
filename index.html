@@ -274,7 +274,7 @@
           <!-- 기존 이야기 2 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
             <div class="md:w-1/2">
-              <img src="story2.jpg" alt="연구" class="rounded-2xl shadow-lg" />
+              <img src="indexFile/story2.jpg" alt="연구" class="rounded-2xl shadow-lg" />
             </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">10년간의 연구</h3>
@@ -409,29 +409,40 @@
 
   <div class="section-divider reverse"></div>
 
+  
   <!-- Reviews Section -->
- <section id="reviews" class="py-24 bg-gradient-to-b from-white to-light relative">
-  <div class="container mx-auto px-4 max-w-8xl">
-    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
-    <div class="section-content relative">
-      <button id="reviewPrev" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-primary/80 text-primary hover:text-white shadow rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <div id="dynamicReviews" class="flex gap-8 overflow-hidden"></div>
-      <button id="reviewNext" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-primary/80 text-primary hover:text-white shadow rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-      <div id="reviewsLoading" class="text-center text-gray-400 mt-8">후기 불러오는 중...</div>
-      <div id="reviewsEmpty" class="text-center text-gray-500 mt-8 hidden">아직 등록된 후기가 없습니다.</div>
+  <section id="reviews" class="py-20 bg-light relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
+    <div class="container mx-auto px-4 relative">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
+        <div class="section-content">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="premium-card rounded-2xl p-6">
+              <div class="flex items-center mb-4">
+                <img src="indexFile/review1.png" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
+                <div>
+                  <h4 class="font-bold">박*진 님</h4>
+                  <div class="text-yellow-400">★★★★★</div>
+                </div>
+              </div>
+              <p class="text-gray-600">"처음에는 반신반의했는데, 실제로 4등 당첨이 되었어요! 꾸준히 구매하려고 해요! 감사합니다!!"</p>
+            </div>
+            <div class="premium-card rounded-2xl p-6">
+              <div class="flex items-center mb-4">
+                <img src="indexFile/review2.png" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
+                <div>
+                  <h4 class="font-bold">이*희 님</h4>
+                  <div class="text-yellow-400">★★★★★</div>
+                </div>
+              </div>
+              <p class="text-gray-600">"운영자님의 노하우가 정말 대단해요. 3등 당첨으로 큰 행복을 누렸습니다."</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-
-
+  </section>
 
   <div class="section-divider"></div>
 
@@ -465,7 +476,7 @@
     <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
     <div class="container mx-auto px-4 relative">
       <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">자주 묻는 질문</h2>
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">FAQ</h2>
         <div class="section-content">
           <div class="space-y-4">
             <div class="premium-card rounded-xl p-6">
@@ -474,11 +485,11 @@
             </div>
             <div class="premium-card rounded-xl p-6">
               <h3 class="text-xl font-bold mb-2">Q. 결제 후 언제 번호를 받을 수 있나요?</h3>
-              <p class="text-gray-600">결제 즉시 문자 메시지 및 마이페이지에서 추천 번호를 확인하실 수 있습니다.</p>
+              <p class="text-gray-600">결제 후 수요일 10시 혹은 토요일 16시에 문자 메시지 및 마이페이지에서 추천 번호를 확인하실 수 있습니다.</p>
             </div>
             <div class="premium-card rounded-xl p-6">
               <h3 class="text-xl font-bold mb-2">Q. 환불 정책은 어떻게 되나요?</h3>
-              <p class="text-gray-600">번호 확인 전까지는 100% 환불이 가능합니다. 자세한 내용은 고객센터로 문의해 주세요.</p>
+              <p class="text-gray-600">번호 확인 전까지는 100% 환불이 가능합니다. 자세한 내용은 고객센터 및 메일로 문의해 주세요.</p>
             </div>
           </div>
         </div>
@@ -546,100 +557,7 @@ lottoBalls.innerHTML = lottoNumbers.map(num => `
 
 
 <script>
-  const reviewsRef = firebase.firestore().collection('reviews').orderBy('createdAt', 'desc');
-let allReviews = [];
-let currentStart = 0;
-const REVIEWS_PER_PAGE = 4;
 
-function renderStars(rating) {
-  return (
-    `<div class="flex gap-0.5 items-center">
-      ${Array.from({ length: 5 }).map((_, i) =>
-        i < rating
-          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
-          : `<svg class="w-5 h-5 md:w-6 md:h-6 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
-      ).join('')}
-    </div>`
-  );
-}
-function escapeHtml(text) {
-  return text.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-}
-
-const pastel = [
-  "from-yellow-200 via-pink-100 to-secondary/40",
-  "from-primary/20 via-secondary/30 to-accent/10",
-  "from-blue-100 via-accent/20 to-blue-300",
-  "from-green-100 via-green-300 to-green-200"
-];
-
-function renderReviews() {
-  const reviewsDiv = document.getElementById('dynamicReviews');
-  const loadingDiv = document.getElementById('reviewsLoading');
-  const emptyDiv = document.getElementById('reviewsEmpty');
-  reviewsDiv.innerHTML = '';
-  if (allReviews.length === 0) {
-    loadingDiv.style.display = "none";
-    emptyDiv.classList.remove('hidden');
-    return;
-  }
-  loadingDiv.style.display = "none";
-  emptyDiv.classList.add('hidden');
-  // 슬라이드: currentStart ~ currentStart+4
-  let idx = currentStart;
-  allReviews.slice(currentStart, currentStart + REVIEWS_PER_PAGE).forEach((data, i) => {
-    const color = pastel[(idx + i) % pastel.length];
-    reviewsDiv.innerHTML += `
-  <div class="rounded-3xl shadow-lg bg-white/70 backdrop-blur-[2px] border border-secondary/10 p-8 md:p-10 flex flex-col relative min-w-[320px] w-full max-w-[500px] md:min-w-[380px] md:max-w-[540px] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-    <div class="flex items-center gap-5 mb-6">
-      <div class="w-14 h-14 bg-gradient-to-br ${color} rounded-full flex items-center justify-center font-extrabold text-xl text-white/90 shadow border border-white/80">
-        ${escapeHtml((data.nickname||'?')[0])}
-      </div>
-      <div class="flex flex-col">
-        <span class="font-bold text-lg text-gray-900">${escapeHtml(data.nickname||'익명')} 님</span>
-        <span class="text-sm text-gray-400">${data.createdAtStr || ''}</span>
-        <div>${renderStars(data.rating || 5)}</div>
-      </div>
-    </div>
-    <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mt-1 border-l-4 border-secondary/40 pl-4 italic bg-secondary/5 rounded-lg py-4 px-1">
-      “${escapeHtml(data.text||'') }”
-    </blockquote>
-  </div>
-`;
-  });
-  // 슬라이드 끝-처리
-  document.getElementById('reviewPrev').disabled = (currentStart === 0);
-  document.getElementById('reviewNext').disabled = (currentStart + REVIEWS_PER_PAGE >= allReviews.length);
-}
-
-// DB에서 한 번만 불러와 메모리에 저장
-reviewsRef.get().then(snapshot => {
-  allReviews = [];
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    // 날짜 표기 가공
-    if (data.createdAt && data.createdAt.toDate) {
-      data.createdAtStr = data.createdAt.toDate().toLocaleDateString('ko-KR');
-    } else {
-      data.createdAtStr = '';
-    }
-    allReviews.push(data);
-  });
-  renderReviews();
-});
-
-document.getElementById('reviewPrev').addEventListener('click', () => {
-  if (currentStart >= REVIEWS_PER_PAGE) {
-    currentStart -= REVIEWS_PER_PAGE;
-    renderReviews();
-  }
-});
-document.getElementById('reviewNext').addEventListener('click', () => {
-  if (currentStart + REVIEWS_PER_PAGE < allReviews.length) {
-    currentStart += REVIEWS_PER_PAGE;
-    renderReviews();
-  }
-});
 
   // 네비게이션 상태 변경(로그인/로그아웃)
 document.addEventListener('DOMContentLoaded', function() {

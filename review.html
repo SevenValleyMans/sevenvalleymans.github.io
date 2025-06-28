@@ -122,51 +122,97 @@
 </div>
 <div class="h-16 md:h-16"></div>
 <!-- 네비게이션 복붙 끝 -->
-    <div class="container mx-auto px-4 max-w-xl py-16">
-      <!-- 감성 안내문: 배경 위 자연스러운 중앙 정렬, 컨테이너/배너 없이 -->
-      <div class="flex flex-col items-center justify-center mb-10" style="width:100%;">
-        <div class="mb-3">
-          <svg class="w-12 h-12 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        </div>
-        <p class="text-2xl font-extrabold text-primary mb-2 text-center">여러분의 한마디가 큰 힘이 됩니다</p>
-        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center">로또1081은 <span class="text-secondary font-bold">‘진짜 1등의 경험’</span>을 바탕으로<br>누군가에게 작은 희망과 용기가 되고자 합니다.</p>
-        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center">여러분의 생생한 이야기가, 아직 망설이는 누군가에게<br><span class="text-primary font-semibold">특별한 응원</span>이 될 수 있어요.</p>
-        <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2 text-center"><span class="text-secondary font-bold">진심이 담긴 후기</span>를 남겨주시면<br>저희가 더욱 노력하는 데 큰 힘이 됩니다.</p>
-        <p class="text-primary font-semibold text-base md:text-lg mb-2 text-center">오늘의 소중한 경험을 들려주세요.</p>
-        <p class="block mt-2 text-sm text-gray-500 text-center">* 따뜻한 격려, 아쉬웠던 점, 작은 변화 모두 진심으로 귀 기울이겠습니다.</p>
+
+
+
+<!-- 후기 안내문 + 후기 작성 폼 (좌우 2단) -->
+<div class="container mx-auto px-4 max-w-3xl py-16">
+  <div class="md:flex md:items-start md:gap-10">
+    <!-- 안내문 (좌측, 모바일 상단) -->
+    <div class="md:w-1/2 mb-10 md:mb-0 flex flex-col items-center md:items-start text-center md:text-left">
+      <div class="mb-3">
+        <svg class="w-12 h-12 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
       </div>
-      <!-- 후기 작성 카드 -->
-      <div class="premium-card rounded-2xl p-8 shadow-2xl w-full" style="max-width:100%;">
-        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 section-title">후기 작성</h2>
-        <div id="authMessage" class="text-center text-red-500 mb-6 hidden">로그인 후 후기를 작성할 수 있습니다.</div>
-        <form id="reviewForm" class="space-y-6">
-          <div>
-            <label class="block mb-2 font-bold text-gray-700">닉네임/별명</label>
-            <input type="text" id="nickname" required maxlength="12"
-              class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary font-semibold bg-white text-gray-800"/>
+      <p class="text-2xl font-extrabold text-primary mb-2">여러분의 한마디가 큰 힘이 됩니다</p>
+      <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2">
+        로또1081은 <span class="text-secondary font-bold">‘진짜 1등의 경험’</span>을 바탕으로<br>
+        누군가에게 작은 희망과 용기가 되고자 합니다.
+      </p>
+      <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2">
+        여러분의 생생한 이야기가, 아직 망설이는 누군가에게<br>
+        <span class="text-primary font-semibold">특별한 응원</span>이 될 수 있어요.
+      </p>
+      <p class="text-gray-700 text-base md:text-lg leading-relaxed mb-2">
+        <span class="text-secondary font-bold">진심이 담긴 후기</span>를 남겨주시면<br>
+        저희가 더욱 노력하는 데 큰 힘이 됩니다.
+      </p>
+      <p class="text-primary font-semibold text-base md:text-lg mb-2">오늘의 소중한 경험을 들려주세요.</p>
+      <p class="block mt-2 text-sm text-gray-500">
+        * 따뜻한 격려, 아쉬웠던 점, 작은 변화 모두 진심으로 귀 기울이겠습니다.
+      </p>
+    </div>
+    <!-- 후기 작성 폼 (우측, 모바일 하단) -->
+    <div class="premium-card rounded-2xl p-8 shadow-2xl w-full md:w-1/2">
+      <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 section-title">후기 작성</h2>
+      <div id="authMessage" class="text-center text-red-500 mb-6 hidden">로그인 후 후기를 작성할 수 있습니다.</div>
+      <form id="reviewForm" class="space-y-6">
+        <div>
+          <label class="block mb-2 font-bold text-gray-700">닉네임/별명</label>
+          <input type="text" id="nickname" required maxlength="12"
+            class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary font-semibold bg-white text-gray-800"/>
+        </div>
+        <div>
+          <label class="block mb-2 font-bold text-gray-700">별점</label>
+          <div class="flex items-center gap-1">
+            <div id="starRating" class="flex gap-1"></div>
+            <span id="starValue" class="ml-3 text-secondary font-bold"></span>
           </div>
-          <div>
-            <label class="block mb-2 font-bold text-gray-700">별점</label>
-            <div class="flex items-center gap-1">
-              <div id="starRating" class="flex gap-1"></div>
-              <span id="starValue" class="ml-3 text-secondary font-bold"></span>
-            </div>
-          </div>
-          <div>
-            <label class="block mb-2 font-bold text-gray-700">후기 내용</label>
-            <textarea id="reviewText" rows="5" required maxlength="300"
-              class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary bg-white text-gray-800"></textarea>
-          </div>
-          <button type="submit"
-            class="w-full py-3 bg-primary text-white rounded-full font-bold text-lg hover:bg-opacity-90 transition">후기 등록</button>
-        </form>
-        <div id="submitMsg" class="mt-6 text-center text-lg font-bold text-primary hidden">후기가 정상적으로 등록되었습니다!<br>감사합니다.</div>
+        </div>
+        <div>
+          <label class="block mb-2 font-bold text-gray-700">후기 내용</label>
+          <textarea id="reviewText" rows="5" required maxlength="300"
+            class="w-full px-4 py-2 rounded border border-accent/40 focus:ring-2 focus:ring-secondary bg-white text-gray-800"></textarea>
+        </div>
+        <button type="submit"
+          class="w-full py-3 bg-primary text-white rounded-full font-bold text-lg hover:bg-opacity-90 transition">후기 등록</button>
+      </form>
+      <div id="submitMsg" class="mt-6 text-center text-lg font-bold text-primary hidden">
+        후기가 정상적으로 등록되었습니다!<br>감사합니다.
       </div>
     </div>
+  </div>
+</div>
+
 
 <!-- section-divider -->
 <div class="h-6"></div>
 <div class="section-divider"></div>
+
+  <!-- Reviews Section -->
+ <section id="reviews" class="py-24 bg-gradient-to-b from-white to-light relative">
+  <div class="container mx-auto px-4 max-w-8xl">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
+    <div class="section-content relative">
+      <button id="reviewPrev" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-primary/80 text-primary hover:text-white shadow rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div id="dynamicReviews" class="flex gap-8 overflow-hidden"></div>
+      <button id="reviewNext" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-primary/80 text-primary hover:text-white shadow rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      <div id="reviewsLoading" class="text-center text-gray-400 mt-8">후기 불러오는 중...</div>
+      <div id="reviewsEmpty" class="text-center text-gray-500 mt-8 hidden">아직 등록된 후기가 없습니다.</div>
+    </div>
+  </div>
+</section>
+
+
 
 <!-- 푸터 복붙 시작 -->
 <footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
@@ -203,6 +249,104 @@
   </div>
 </footer>
 <!-- 푸터 복붙 끝 -->
+
+<script>
+  //리뷰 스크립트
+    const reviewsRef = firebase.firestore().collection('reviews').orderBy('createdAt', 'desc');
+let allReviews = [];
+let currentStart = 0;
+const REVIEWS_PER_PAGE = 4;
+
+function renderStars(rating) {
+  return (
+    `<div class="flex gap-0.5 items-center">
+      ${Array.from({ length: 5 }).map((_, i) =>
+        i < rating
+          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
+          : `<svg class="w-5 h-5 md:w-6 md:h-6 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
+      ).join('')}
+    </div>`
+  );
+}
+function escapeHtml(text) {
+  return text.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+
+const pastel = [
+  "from-yellow-200 via-pink-100 to-secondary/40",
+  "from-primary/20 via-secondary/30 to-accent/10",
+  "from-blue-100 via-accent/20 to-blue-300",
+  "from-green-100 via-green-300 to-green-200"
+];
+
+function renderReviews() {
+  const reviewsDiv = document.getElementById('dynamicReviews');
+  const loadingDiv = document.getElementById('reviewsLoading');
+  const emptyDiv = document.getElementById('reviewsEmpty');
+  reviewsDiv.innerHTML = '';
+  if (allReviews.length === 0) {
+    loadingDiv.style.display = "none";
+    emptyDiv.classList.remove('hidden');
+    return;
+  }
+  loadingDiv.style.display = "none";
+  emptyDiv.classList.add('hidden');
+  // 슬라이드: currentStart ~ currentStart+4
+  let idx = currentStart;
+  allReviews.slice(currentStart, currentStart + REVIEWS_PER_PAGE).forEach((data, i) => {
+    const color = pastel[(idx + i) % pastel.length];
+    reviewsDiv.innerHTML += `
+  <div class="rounded-3xl shadow-lg bg-white/70 backdrop-blur-[2px] border border-secondary/10 p-8 md:p-10 flex flex-col relative min-w-[320px] w-full max-w-[500px] md:min-w-[380px] md:max-w-[540px] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+    <div class="flex items-center gap-5 mb-6">
+      <div class="w-14 h-14 bg-gradient-to-br ${color} rounded-full flex items-center justify-center font-extrabold text-xl text-white/90 shadow border border-white/80">
+        ${escapeHtml((data.nickname||'?')[0])}
+      </div>
+      <div class="flex flex-col">
+        <span class="font-bold text-lg text-gray-900">${escapeHtml(data.nickname||'익명')} 님</span>
+        <span class="text-sm text-gray-400">${data.createdAtStr || ''}</span>
+        <div>${renderStars(data.rating || 5)}</div>
+      </div>
+    </div>
+    <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mt-1 border-l-4 border-secondary/40 pl-4 italic bg-secondary/5 rounded-lg py-4 px-1">
+      “${escapeHtml(data.text||'') }”
+    </blockquote>
+  </div>
+`;
+  });
+  // 슬라이드 끝-처리
+  document.getElementById('reviewPrev').disabled = (currentStart === 0);
+  document.getElementById('reviewNext').disabled = (currentStart + REVIEWS_PER_PAGE >= allReviews.length);
+}
+
+// DB에서 한 번만 불러와 메모리에 저장
+reviewsRef.get().then(snapshot => {
+  allReviews = [];
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    // 날짜 표기 가공
+    if (data.createdAt && data.createdAt.toDate) {
+      data.createdAtStr = data.createdAt.toDate().toLocaleDateString('ko-KR');
+    } else {
+      data.createdAtStr = '';
+    }
+    allReviews.push(data);
+  });
+  renderReviews();
+});
+
+document.getElementById('reviewPrev').addEventListener('click', () => {
+  if (currentStart >= REVIEWS_PER_PAGE) {
+    currentStart -= REVIEWS_PER_PAGE;
+    renderReviews();
+  }
+});
+document.getElementById('reviewNext').addEventListener('click', () => {
+  if (currentStart + REVIEWS_PER_PAGE < allReviews.length) {
+    currentStart += REVIEWS_PER_PAGE;
+    renderReviews();
+  }
+});
+</script>
 
 <script>
   // 별점 UI

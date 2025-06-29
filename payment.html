@@ -121,75 +121,89 @@
 </div>
 <!-- 네비 겹침 방지 padding-top 적용 예시 -->
 <div class="h-16 md:h-16"></div>
+<!-- 결제 섹션 -->
+<!-- 결제 섹션 -->
+<section class="py-20 bg-gradient-to-b from-white to-light min-h-screen">
+  <div class="container mx-auto px-4">
 
-  <!-- 결제 섹션 -->
-  <section class="py-20 bg-gradient-to-b from-white to-light min-h-screen">
-    <div class="container mx-auto px-4">
-      <div class="max-w-3xl mx-auto text-center mb-16">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">나만의 기적, 오늘 시작해보세요</h1>
-<p class="text-lg text-gray-600">
-  "평범했던 누군가가 1등의 주인공이 되기까지, 단 한 번의 선택이었습니다."<br>
-  지금 이 순간, <span class="font-bold text-primary">로또1081</span>의 특별한 번호와 함께<br>
-  여러분의 인생에도 작은 기적이 찾아올지 모릅니다.<br>
-  <span class="block mt-2 text-accent">진짜 주인공이 되고 싶은 바로 '그 주'라면, 망설이지 마세요.</span>
-</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-10">
-        <!-- 상품 1 -->
-        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
-          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
-            <span class="text-3xl">🔖</span>
-          </div>
-          <h2 class="text-2xl font-bold mb-2 text-primary">1주 특별 기회</h2>
-<p class="mb-6 text-gray-600">“혹시 나도?” 하는 마음, 바로 이 한 주가 기회가 될 수 있습니다. 매주 단 한 번, 나를 위한 행운의 번호를 받아보세요.</p>
-          <div class="mb-8">
-            <span class="text-3xl font-bold text-secondary">5,000원</span>
-          </div>
-          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('1주 추천 번호')">
-            결제하기
-          </button>
-        </div>
-        <!-- 상품 2 -->
-        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
-          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
-            <span class="text-3xl">🎫</span>
-          </div>
-          <h2 class="text-2xl font-bold mb-2 text-primary">1달 도전 패스</h2>
-<p class="mb-6 text-gray-600">단 한 번의 선택으로 4주간 내 곁에 행운이!<br>꾸준히 도전하는 당신에게만 찾아오는 찬스, 직접 경험해보세요.</p>
-          <div class="mb-8">
-            <span class="text-3xl font-bold text-secondary">15,000원</span>
-          </div>
-          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('1달 추천 번호')">
-            결제하기
-          </button>
-        </div>
-        <!-- 상품 3 -->
-        <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
-          <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
-            <span class="text-3xl">💎</span>
-          </div>
-          <h2 class="text-2xl font-bold mb-2 text-primary">평생 프리패스</h2>
-<p class="mb-6 text-gray-600">“언젠가 꼭!” 평생 나의 곁에 1등 당첨자의 연구와 행운을 담아드립니다. 언제 어디서나 내 인생의 터닝포인트, 지금 시작하세요.</p>
-          <div class="mb-8">
-            <span class="text-3xl font-bold text-secondary">99,000원</span>
-          </div>
-          <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition" onclick="paymentAlert('평생 이용권')">
-            결제하기
-          </button>
-        </div>
-      </div>
-      <p class="mt-12 text-accent text-sm">
-  ※ 결제 기능은 곧 오픈됩니다.<br>
-  궁금하거나 망설여진다면, 언제든 고객센터로 문의해주세요.<br>
-  <span class="text-primary font-semibold">잠깐의 주저함이, 인생의 기회를 놓치는 이유가 되지 않기를!</span>
-</p>
+    <!-- 상단 타이틀/설명 -->
+    <div class="max-w-3xl mx-auto text-center mb-16">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">나만의 기적, 오늘 시작해보세요</h1>
+      <p class="text-lg text-gray-600">
+        "평범했던 누군가가 1등의 주인공이 되기까지, 단 한 번의 선택이었습니다."<br>
+        지금 이 순간, <span class="font-bold text-primary">로또1081</span>의 특별한 번호와 함께<br>
+        여러분의 인생에도 작은 기적이 찾아올지 모릅니다.<br>
+        <span class="block mt-2 text-accent">진짜 주인공이 되고 싶은 바로 '그 주'라면, 망설이지 마세요.</span>
+      </p>
     </div>
-  </section>
 
- <!-- 기존 카카오페이 결제 버튼 -->
-<button onclick="requestKakaoPaySubscribe('1달 도전 패스', 15000)">카카오페이 정기결제</button>
-<!-- 신규 토스 정기결제 버튼 -->
-<button onclick="requestTossPaySubscribe('1달 도전 패스', 15000)">토스 정기결제</button>
+    <!-- 결제 카드 그룹 -->
+    <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-10">
+      <!-- 상품 1: 카카오페이 정기결제 -->
+      <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
+        <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
+          <span class="text-3xl">🔖</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2 text-primary">1주 특별 기회</h2>
+        <p class="mb-6 text-gray-600">“혹시 나도?” 하는 마음, 바로 이 한 주가 기회가 될 수 있습니다. 매주 단 한 번, 나를 위한 행운의 번호를 받아보세요.</p>
+        <div class="mb-8">
+          <span class="text-3xl font-bold text-secondary">30,000원</span>
+        </div>
+        <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition"
+          onclick="startPayment('1주 추천 번호', 30000)">
+          카카오페이 정기결제
+        </button>
+      </div>
+      <!-- 상품 2: 네이버페이 정기결제 -->
+      <div class="premium-card rounded-2xl p-8 flex flex-col items-center gold-border">
+        <div class="w-16 h-16 flex items-center justify-center bg-secondary/10 rounded-full mb-5">
+          <span class="text-3xl">🎫</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2 text-primary">1달 도전 패스</h2>
+        <p class="mb-6 text-gray-600">단 한 번의 선택으로 4주간 내 곁에 행운이!<br>꾸준히 도전하는 당신에게만 찾아오는 찬스, 직접 경험해보세요.</p>
+        <div class="mb-8">
+          <span class="text-3xl font-bold text-secondary">15,000원</span>
+        </div>
+        <button class="w-full bg-green-500 text-white font-bold py-3 rounded-full text-lg hover:bg-green-600 transition"
+          onclick="startNPayPayment('1달 도전 패스', 15000)">
+          네이버페이 정기결제
+        </button>
+      </div>
+    </div>
+
+    <!-- 안내문구 (카드 아래) -->
+    <div class="max-w-3xl mx-auto mt-16 text-left">
+      <p class="text-accent text-sm">
+        ※ 결제 기능은 곧 오픈됩니다.<br>
+        궁금하거나 망설여진다면, 언제든 고객센터로 문의해주세요.<br>
+        <span class="text-primary font-semibold">
+          잠깐의 주저함이, 인생의 기회를 놓치는 이유가 되지 않기를!
+        </span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 이름/전화번호 입력 모달 -->
+<div id="userInfoModal"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg p-8 max-w-sm w-full">
+    <h2 class="text-xl font-bold mb-4 text-primary">정보 입력 후 결제 진행</h2>
+    <p>문자 발송을 위해, 이름과 전화번호를 입력해주세요</p>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold text-gray-700">이름</label>
+      <input id="userNameInput" type="text" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" placeholder="이름 입력" />
+    </div>
+    <div class="mb-6">
+      <label class="block mb-1 font-semibold text-gray-700">전화번호</label>
+      <input id="userPhoneInput" type="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" placeholder="010-1234-5678" />
+    </div>
+    <div class="flex justify-between">
+      <button onclick="closeUserInfoModal()" class="px-4 py-2 rounded bg-gray-200 font-bold hover:bg-gray-300">취소</button>
+      <button onclick="handleUserInfoSubmit()" class="px-4 py-2 rounded bg-primary text-white font-bold hover:bg-secondary">다음</button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -218,6 +232,7 @@
             <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
             <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
             <li><a href="discalmier.html" class="text-gray-400 hover:text-white transition">면책조항</a></li>
+            <li><a href="refund-policy.html" class="text-gray-400 hover:text-white transition">환불정책</a></li>
           </ul>
         </div>
       </div>
@@ -315,54 +330,152 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <script>//카카오페이 테스트
-function requestKakaoPaySubscribe(product, amount) {
-  var IMP = window.IMP;
-  IMP.init("imp12572183"); // ← 본인 imp_코드 정확히 입력
+// ========== 카카오페이(상품1) ==========
+let paymentProduct = '';
+let paymentAmount = 0;
 
+function startPayment(product, amount) {
+  paymentProduct = product;
+  paymentAmount = amount;
+  const user = firebase.auth().currentUser;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          requestKakaoPaySubscribe(
+            paymentProduct,
+            paymentAmount,
+            data.name || "회원님",
+            data.phone || "",
+            user.uid
+          );
+        } else {
+          alert("회원 정보가 없습니다. 다시 로그인해 주세요.");
+        }
+      })
+      .catch(() => {
+        alert("회원 정보 불러오기에 실패했습니다.");
+      });
+  } else {
+    document.getElementById('userInfoModal').classList.remove('hidden');
+    window._pendingNPay = false; // 카카오페이임을 명확하게!
+  }
+}
+
+function requestKakaoPaySubscribe(product, amount, name, phone, userId) {
+  var IMP = window.IMP;
+  IMP.init("imp12572183");
   IMP.request_pay({
-    pg: "kakaopay.TCSUBSCRIP", // ← MID, PG 정확히 입력
+    pg: "kakaopay.TCSUBSCRIP",
     pay_method: "card",
     merchant_uid: "orderid_" + new Date().getTime(),
     name: product,
     amount: amount,
-    customer_uid: "user_" + (firebase.auth().currentUser ? firebase.auth().currentUser.uid : "testuser"),
-    buyer_email: "test@lotto1081.com",
-    buyer_name: "테스트유저"
+    customer_uid: userId,
+    buyer_email: userId + "@guest.lotto1081.com",
+    buyer_name: name,
+    buyer_tel: phone
   }, function(rsp) {
     if (rsp.success) {
-      alert('결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
-      // 실제로는 서버에 결제정보/빌링키를 저장해야 함
+      alert('카카오페이 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
     } else {
-      alert("결제 실패: " + rsp.error_msg);
+      alert("카카오페이 결제 실패: " + rsp.error_msg);
     }
   });
 }
 
+// ========== 네이버페이(상품2) ==========
+let nPayProduct = '';
+let nPayAmount = 0;
 
-</script>
-<script>//토스페이 정기결제
-function requestTossPaySubscribe(product, amount) {
+function startNPayPayment(product, amount) {
+  nPayProduct = product;
+  nPayAmount = amount;
+  const user = firebase.auth().currentUser;
+  if (user) {
+    firebase.firestore().collection('users').doc(user.uid).get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          requestNPaySubscribe(
+            nPayProduct,
+            nPayAmount,
+            data.name || "회원님",
+            data.phone || "",
+            user.uid
+          );
+        } else {
+          alert("회원 정보가 없습니다. 다시 로그인해 주세요.");
+        }
+      })
+      .catch(() => {
+        alert("회원 정보 불러오기에 실패했습니다.");
+      });
+  } else {
+    document.getElementById('userInfoModal').classList.remove('hidden');
+    window._pendingNPay = true; // 네이버페이 결제 플래그
+  }
+}
+
+function requestNPaySubscribe(product, amount, name, phone, userId) {
   var IMP = window.IMP;
-  IMP.init("iamporttest_4"); // ← 새로 등록된 정기결제용 MID
-
+  IMP.init("여기에_네이버페이_MID_입력"); // 실제 네이버페이 MID로 변경
   IMP.request_pay({
-    pg: "tosspayments.billing",
+    pg: "naverco.billing",
     pay_method: "card",
     merchant_uid: "orderid_" + new Date().getTime(),
     name: product,
     amount: amount,
-    customer_uid: "user_" + (firebase.auth().currentUser ? firebase.auth().currentUser.uid : "testuser"),
-    buyer_email: "test@lotto1081.com",
-    buyer_name: "테스트유저"
+    customer_uid: userId,
+    buyer_email: userId + "@guest.lotto1081.com",
+    buyer_name: name,
+    buyer_tel: phone
   }, function(rsp) {
     if (rsp.success) {
-      alert('토스 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
-      // 실제로는 서버에 결제정보/빌링키를 저장해야 함
+      alert('네이버페이 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
     } else {
-      alert("토스 결제 실패: " + rsp.error_msg);
+      alert("네이버페이 결제 실패: " + rsp.error_msg);
     }
   });
 }
+
+// ========== 비회원 모달 입력 후 결제 ==========
+
+async function handleUserInfoSubmit() {
+  const name = document.getElementById('userNameInput').value.trim();
+  const phone = document.getElementById('userPhoneInput').value.trim();
+  if (!name || !phone) {
+    alert("이름과 전화번호를 모두 입력해 주세요.");
+    return;
+  }
+  const userId = phone.replace(/[^0-9]/g, '') + '_' + Date.now();
+  const userData = {
+    name,
+    phone,
+    userId,
+    createdAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+  };
+  try {
+    await firebase.firestore().collection('users').doc(userId).set(userData);
+    closeUserInfoModal();
+    if (window._pendingNPay) {
+      window._pendingNPay = false;
+      requestNPaySubscribe(nPayProduct, nPayAmount, name, phone, userId);
+    } else {
+      requestKakaoPaySubscribe(paymentProduct, paymentAmount, name, phone, userId);
+    }
+  } catch (e) {
+    alert("정보 저장에 실패했습니다. 다시 시도해 주세요.");
+  }
+}
+
+function closeUserInfoModal() {
+  document.getElementById('userInfoModal').classList.add('hidden');
+  document.getElementById('userNameInput').value = '';
+  document.getElementById('userPhoneInput').value = '';
+}
+
 
 
 </script>

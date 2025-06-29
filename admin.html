@@ -225,12 +225,12 @@
     </div>
   </main>
 
-  <div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
+  <!-- <div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
     <div>
       <input id="adminPw" type="password" placeholder="비밀번호 입력" />
       <button onclick="checkPw()">확인</button>
     </div>
-  </div>
+  </div> -->
 
   <!-- 아래 script 부분 전체 붙여넣기 -->
   <script>
@@ -328,7 +328,7 @@
         .map(line => line.replace(/\s/g, ''))
         .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
       const uniqueLines = Array.from(new Set(lines));
-      if (uniqueLines.length < 30) {
+      if (uniqueLines.length < 5) {
         alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
         return;
       }
@@ -384,7 +384,7 @@
       if (!userDoc.empty) {
         phone = userDoc.docs[0].data().phone;
       }
-      if (콜) {
+      if (phone) {
         fetch('http://localhost:4000/send-sms', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -886,15 +886,15 @@
     loadUserResults();
     loadSchedules();
 
-    // ---- PW 커버 ----
-    function checkPw() {
-      const pw = document.getElementById('adminPw').value;
-      if (pw === '1081') {
-        document.getElementById('pwCover').style.display = 'none';
-      } else {
-        alert('비밀번호가 틀렸습니다.');
-      }
-    }
+    // // ---- PW 커버 ----
+    // function checkPw() {
+    //   const pw = document.getElementById('adminPw').value;
+    //   if (pw === '1081') {
+    //     document.getElementById('pwCover').style.display = 'none';
+    //   } else {
+    //     alert('비밀번호가 틀렸습니다.');
+    //   }
+    // }
   </script>
 
     <script> //엑셀 다운로드 스크립트
@@ -936,6 +936,15 @@
   URL.revokeObjectURL(url);
 };
 
+  </script>
+
+  <script>
+    function loadRecommendationLogs() {
+  // 예: Firestore에서 recommendationLogs 데이터를 읽어와서
+  // #recommendationLogs 라는 div나 테이블에 출력하는 코드 작성
+  // 일단은 아래처럼 임시로 처리 가능:
+  console.log('loadRecommendationLogs called (구현 필요)');
+}
   </script>
 </body>
 </html>

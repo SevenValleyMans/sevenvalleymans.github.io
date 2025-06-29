@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://lotto1081.com/sitemap.xml

@@ -95,58 +95,69 @@
 <div class="h-16 md:h-16"></div>
 
 <main class="container mx-auto px-4 max-w-4xl pt-24 pb-10">
-  <section class="section-card mb-8 p-6 border border-accent/20">
-    <h2 class="text-2xl font-bold text-primary mb-3">결제 / 구독 현황</h2>
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <div class="text-lg font-semibold mb-1">정기구독 상태:
-          <span class="status-paid">구독중</span>
-        </div>
-        <div class="text-gray-500">최근 결제일: <span class="font-semibold text-gray-700">2024-06-20</span></div>
-        <div class="text-gray-500">결제 수단: <span class="font-semibold text-gray-700">카카오페이</span></div>
-        <div class="text-gray-500">다음 결제 예정일: <span class="font-semibold text-gray-700">2024-07-20</span></div>
+
+  <!-- 1. 구독/결제 현황 -->
+  <section class="rounded-2xl bg-white border-2 border-secondary/60 shadow-xl mb-8 p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+    <div class="flex-1">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+        <span class="text-xl font-extrabold text-primary">프리미엄 구독</span>
+        <span class="ml-2 px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold">구독중</span>
       </div>
-      <div>
-        <button class="mt-2 sm:mt-0 px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-primary transition">구독 해지</button>
-      </div>
+      <div class="text-gray-500 mb-1">최근 결제일: <span class="font-semibold text-gray-700">2024-06-20</span></div>
+      <div class="text-gray-500 mb-1">결제수단: <span class="font-semibold text-gray-700">카카오페이</span></div>
+      <div class="text-gray-500">다음 결제 예정일: <span class="font-semibold text-gray-700">2024-07-20</span></div>
     </div>
+    <button class="h-11 px-8 rounded-xl bg-accent text-white font-bold text-base shadow-md hover:bg-primary transition mt-4 sm:mt-0">구독 해지</button>
   </section>
-  <!-- 이번 주 로또 당첨번호 표시 -->
-  <section class="section-card mb-6 p-5 border border-accent/20 flex items-center gap-4">
-    <span id="roundLabel" class="font-bold text-lg text-primary"></span>
-    <span id="winningNumView" class="text-xl font-mono text-accent"></span>
+
+  <!-- 2. 이번 주 로또 당첨번호 -->
+  <section class="rounded-2xl bg-gradient-to-r from-secondary/10 to-white border-2 border-secondary/30 shadow-lg mb-7 px-6 py-5 flex items-center gap-5">
+    <span id="roundLabel" class="font-extrabold text-lg text-primary tracking-wide"></span>
+    <span id="winningNumView" class="text-2xl font-mono text-accent"></span>
   </section>
-  <section class="section-card mb-8 p-6 border border-accent/20">
-    <h2 class="text-2xl font-bold text-primary mb-3">받은 추천번호 이력</h2>
+
+  <!-- 3. 받은 추천번호 이력 -->
+  <section class="rounded-2xl bg-white border-2 border-secondary/20 shadow-lg mb-8 p-7">
+    <h2 class="flex items-center gap-2 text-2xl font-bold text-primary mb-4">
+      <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 17l4-4 4 4" /></svg>
+      받은 추천번호 이력
+    </h2>
     <div class="overflow-x-auto">
-      <table class="table w-full text-center text-gray-700">
-        <thead>
+      <table class="w-full rounded-xl overflow-hidden text-center shadow-sm">
+        <thead class="bg-secondary/10">
           <tr>
-            <th class="py-2 px-3">회차</th>
-            <th class="py-2 px-3">발송일</th>
-            <th class="py-2 px-3">추천번호</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">회차</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">발송일</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">추천번호</th>
           </tr>
         </thead>
-        <tbody id="recommendListTbody"></tbody>
+        <tbody id="recommendListTbody" class="bg-white/80"></tbody>
       </table>
     </div>
   </section>
-  <section class="section-card p-6 border border-accent/20">
-    <h2 class="text-2xl font-bold text-primary mb-3">내 Q&A 내역</h2>
+
+  <!-- 4. 내 Q&A 내역 -->
+  <section class="rounded-2xl bg-white border-2 border-secondary/20 shadow-lg p-7">
+    <h2 class="flex items-center gap-2 text-2xl font-bold text-primary mb-4">
+      <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
+      내 Q&A 내역
+    </h2>
     <div class="overflow-x-auto">
-      <table class="table w-full text-center text-gray-700">
-        <thead>
+      <table class="w-full rounded-xl overflow-hidden text-center shadow-sm">
+        <thead class="bg-secondary/10">
           <tr>
-            <th class="py-2 px-3">제목</th>
-            <th class="py-2 px-3">작성일</th>
-            <th class="py-2 px-3">답변상태</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">제목</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">작성일</th>
+            <th class="py-3 px-4 text-base font-semibold text-accent">답변상태</th>
           </tr>
         </thead>
-        <tbody id="myQnaTbody"></tbody>
+        <tbody id="myQnaTbody" class="bg-white/80"></tbody>
       </table>
     </div>
   </section>
 </main>
+
 
 <div id="qnaModal" class="fixed inset-0 bg-black/50 z-[100] items-center justify-center hidden">
   <div class="bg-white rounded-2xl shadow-xl max-w-lg w-[90vw] mx-auto p-8 relative">

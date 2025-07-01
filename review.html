@@ -46,8 +46,8 @@
   <style>
     .premium-card {
       background: linear-gradient(135deg, #fff 0%, #F8FAFC 100%);
-      border: 1px solid #64748B;
-      box-shadow: 0 4px 20px rgba(30,58,138,0.09);
+      border: 2px solid #D4AF37;
+      box-shadow: 0 4px 24px rgba(212,175,55,0.07);
       position: relative;
       overflow: hidden;
     }
@@ -55,27 +55,24 @@
       content: '';
       position: absolute; top:0; left:0; right:0;
       height: 4px;
-      background: linear-gradient(90deg, #1E3A8A 0%, #64748B 50%, #1E3A8A 100%);
-      opacity: 0;
+      background: linear-gradient(90deg, #D4AF37 0%, #8B0000 100%);
+      opacity: 0.25;
       transition: opacity 0.3s;
     }
-    .premium-card:hover { box-shadow: 0 8px 30px rgba(30,58,138,0.14);}
-    .premium-card:hover::before { opacity: 1;}
+    .premium-card:hover { box-shadow: 0 8px 36px rgba(212,175,55,0.16);}
+    .premium-card:hover::before { opacity: 0.9;}
     .section-title {
       position: relative; display: inline-block; padding-bottom: 10px;
     }
     .section-title::after {
       content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 60px; height: 3px;
-      background: linear-gradient(90deg, #1E3A8A 0%, #64748B 50%, #1E3A8A 100%);
-    }
-    .gold-border {
-      border: 2px solid #D4AF37;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+      background: linear-gradient(90deg, #8B0000 0%, #D4AF37 50%, #8B0000 100%);
     }
   </style>
 </head>
 <body class="bg-light font-sans">
+
 <!-- 네비게이션 복붙 시작 -->
 <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
   <div class="container mx-auto px-4">
@@ -124,7 +121,6 @@
 <!-- 네비게이션 복붙 끝 -->
 
 
-
 <!-- 후기 안내문 + 후기 작성 폼 (좌우 2단) -->
 <div class="container mx-auto px-4 max-w-3xl py-16">
   <div class="md:flex md:items-start md:gap-10">
@@ -154,8 +150,13 @@
       </p>
     </div>
     <!-- 후기 작성 폼 (우측, 모바일 하단) -->
-    <div class="premium-card rounded-2xl p-8 shadow-2xl w-full md:w-1/2">
-      <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 section-title">후기 작성</h2>
+    <div class="premium-card rounded-3xl p-8 shadow-2xl w-full md:w-1/2 relative">
+      <div class="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
+        <svg class="w-16 h-16 text-secondary drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
+          <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-center mb-6 text-primary section-title">후기 작성</h2>
       <div id="authMessage" class="text-center text-red-500 mb-6 hidden">로그인 후 후기를 작성할 수 있습니다.</div>
       <form id="reviewForm" class="space-y-6">
         <div>
@@ -165,9 +166,9 @@
         </div>
         <div>
           <label class="block mb-2 font-bold text-gray-700">별점</label>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-2">
             <div id="starRating" class="flex gap-1"></div>
-            <span id="starValue" class="ml-3 text-secondary font-bold"></span>
+            <span id="starValue" class="ml-2 text-secondary font-bold text-lg"></span>
           </div>
         </div>
         <div>
@@ -178,20 +179,22 @@
         <button type="submit"
           class="w-full py-3 bg-primary text-white rounded-full font-bold text-lg hover:bg-opacity-90 transition">후기 등록</button>
       </form>
-      <div id="submitMsg" class="mt-6 text-center text-lg font-bold text-primary hidden">
+      <div id="submitMsg" class="mt-8 flex flex-col items-center text-center text-lg font-bold text-primary hidden">
+        <svg class="w-14 h-14 mb-2 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
         후기가 정상적으로 등록되었습니다!<br>감사합니다.
       </div>
     </div>
   </div>
 </div>
 
-
 <!-- section-divider -->
 <div class="h-6"></div>
 <div class="section-divider"></div>
 
-  <!-- Reviews Section -->
- <section id="reviews" class="py-24 bg-gradient-to-b from-white to-light relative">
+<!-- Reviews Section -->
+<section id="reviews" class="py-24 bg-gradient-to-b from-white via-secondary/5 to-light relative">
   <div class="container mx-auto px-4 max-w-8xl">
     <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
     <div class="section-content relative">
@@ -207,11 +210,15 @@
         </svg>
       </button>
       <div id="reviewsLoading" class="text-center text-gray-400 mt-8">후기 불러오는 중...</div>
-      <div id="reviewsEmpty" class="text-center text-gray-500 mt-8 hidden">아직 등록된 후기가 없습니다.</div>
+      <div id="reviewsEmpty" class="flex flex-col items-center justify-center py-24 text-accent/80 mt-8 hidden">
+        <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+        </svg>
+        <span class="text-lg text-center">아직 등록된 후기가 없습니다.<br>여러분의 소중한 후기를 가장 먼저 남겨주세요!</span>
+      </div>
     </div>
   </div>
 </section>
-
 
 
 <!-- 푸터 복붙 시작 -->
@@ -260,13 +267,13 @@ const REVIEWS_PER_PAGE = 4;
 
 function renderStars(rating) {
   return (
-    `<div class="flex gap-0.5 items-center">
-      ${Array.from({ length: 5 }).map((_, i) =>
+    `<div class="flex gap-0.5 items-center">` +
+      Array.from({ length: 5 }).map((_, i) =>
         i < rating
-          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
+          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow-md scale-110" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
           : `<svg class="w-5 h-5 md:w-6 md:h-6 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
-      ).join('')}
-    </div>`
+      ).join('') +
+    `</div>`
   );
 }
 function escapeHtml(text) {
@@ -296,25 +303,30 @@ function renderReviews() {
   let idx = currentStart;
   allReviews.slice(currentStart, currentStart + REVIEWS_PER_PAGE).forEach((data, i) => {
     const color = pastel[(idx + i) % pastel.length];
-    reviewsDiv.innerHTML += `
-  <div class="rounded-3xl shadow-lg bg-white/70 backdrop-blur-[2px] border border-secondary/10 p-8 md:p-10 flex flex-col relative min-w-[320px] w-full max-w-[500px] md:min-w-[380px] md:max-w-[540px] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-    <div class="flex items-center gap-5 mb-6">
-      <div class="w-14 h-14 bg-gradient-to-br ${color} rounded-full flex items-center justify-center font-extrabold text-xl text-white/90 shadow border border-white/80">
+reviewsDiv.innerHTML += `
+  <div class="rounded-3xl bg-white border-2 border-secondary shadow-xl px-8 py-7 flex flex-col min-w-[320px] max-w-[420px] hover:scale-[1.03] transition group">
+    <div class="flex items-center gap-4 mb-3">
+      <div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary via-white to-primary/30 flex items-center justify-center text-xl font-bold text-primary border border-secondary shadow">
         ${escapeHtml((data.nickname||'?')[0])}
       </div>
-      <div class="flex flex-col">
-        <span class="font-bold text-lg text-gray-900">${escapeHtml(data.nickname||'익명')} 님</span>
-        <span class="text-sm text-gray-400">${data.createdAtStr || ''}</span>
-        <div>${renderStars(data.rating || 5)}</div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-lg text-primary">${escapeHtml(data.nickname||'익명')} 님</span>
+          ${(data.rating >= 5 ? `<span class="text-[12px] text-secondary font-bold bg-secondary/20 rounded px-2 py-0.5 ml-1">BEST</span>` : '')}
+        </div>
+        <span class="block text-xs text-gray-400">${data.createdAtStr || ''}</span>
       </div>
     </div>
-    <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mt-1 border-l-4 border-secondary/40 pl-4 italic bg-secondary/5 rounded-lg py-4 px-1">
+    <div class="flex items-center gap-1 mb-3 mt-2">
+      ${renderStars(data.rating || 5)}
+    </div>
+    <blockquote class="mt-2 bg-secondary/5 border-l-4 border-secondary pl-4 py-3 rounded text-gray-800 text-[1.07rem] leading-relaxed italic">
       “${escapeHtml(data.text||'') }”
     </blockquote>
   </div>
 `;
+
   });
-  // 슬라이드 끝-처리
   document.getElementById('reviewPrev').disabled = (currentStart === 0);
   document.getElementById('reviewNext').disabled = (currentStart + REVIEWS_PER_PAGE >= allReviews.length);
 }
@@ -324,7 +336,6 @@ reviewsRef.get().then(snapshot => {
   allReviews = [];
   snapshot.forEach(doc => {
     const data = doc.data();
-    // 날짜 표기 가공
     if (data.createdAt && data.createdAt.toDate) {
       data.createdAtStr = data.createdAt.toDate().toLocaleDateString('ko-KR');
     } else {
@@ -357,22 +368,20 @@ document.getElementById('reviewNext').addEventListener('click', () => {
   for(let i=1;i<=5;i++){
     const star = document.createElementNS("http://www.w3.org/2000/svg","svg");
     star.setAttribute("data-star",i);
-    star.setAttribute("class","w-8 h-8 text-gray-300 hover:text-secondary cursor-pointer transition");
+    star.setAttribute("class","w-8 h-8 text-gray-300 hover:text-secondary cursor-pointer transition hover:scale-125");
     star.setAttribute("fill","currentColor");
     star.setAttribute("viewBox","0 0 20 20");
     star.innerHTML = `<polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/>`;
     starRating.appendChild(star);
     star.addEventListener('mouseenter',()=>updateStars(i));
-    star.addEventListener('click',()=>{
-      rating=i;
-      updateStars(i,true);
-    });
+    star.addEventListener('click',()=>{ rating=i; updateStars(i,true); });
   }
   starRating.addEventListener('mouseleave',()=>updateStars(rating));
   function updateStars(val,force){
     [...starRating.children].forEach((s,idx)=>{
       s.classList[val>=idx+1?"add":"remove"]("text-secondary");
       s.classList[val>=idx+1?"remove":"add"]("text-gray-300");
+      s.classList[val>=idx+1?"add":"remove"]("drop-shadow-md");
     });
     starValue.textContent = val>0? val + "점" : "";
     if(force) rating=val;
@@ -401,7 +410,6 @@ document.getElementById('reviewNext').addEventListener('click', () => {
     const userNavMobile = document.getElementById('userNavMobile');
     const userNameMobile = document.getElementById('userNameMobile');
     if (user) {
-      // Firestore에서 유저명 불러오기(선택)
       firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
         let nameText = '회원님';
         if (doc.exists && doc.data().name) {

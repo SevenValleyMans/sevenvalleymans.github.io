@@ -224,16 +224,23 @@
 <!-- 네비 겹침 방지 padding-top 적용 예시 -->
 <div class="h-16 md:h-16"></div>
 
-  <!-- Hero Section -->
-  <section class="pt-24 pb-16 bg-gradient-to-b from-white to-light relative overflow-hidden">
-  <div class="absolute inset-0 z-0 pointer-events-none">
-    <canvas id="hero-bg-canvas" style="width:100%;height:100%;display:block;"></canvas>
+<!-- Hero Section (비디오+콘텐츠 함께) -->
+<section class="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden">
+  <!-- 비디오 배경 (absolute) -->
+  <div class="absolute inset-0 w-full h-full z-0 pointer-events-none">
+    <video autoplay muted loop playsinline class="w-full h-full object-cover" style="min-width:100vw; min-height:100vh;">
+      <source src="indexFile/video.mp4" type="video/mp4" />
+      브라우저가 비디오 태그를 지원하지 않습니다.
+    </video>
+    <!-- 어두운 오버레이 -->
+    <div class="absolute inset-0 bg-black/30"></div>
   </div>
+
+  <!-- Hero 텍스트 등(콘텐츠, z-10) -->
   <div class="container mx-auto px-4 relative z-10">
-    <div class="max-w-4xl mx-auto text-center bg-white/70 rounded-2xl shadow-lg py-12 px-6 md:px-16" style="backdrop-filter: blur(5px);">
+    <div class="max-w-4xl mx-auto text-center bg-white/70 rounded-2xl shadow-lg py-12 px-6 md:px-16">
       <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">『제1081회 1등 당첨자가<br/>
-        <span class="text-primary">10년간 연구한 추천번호</span>』
-      </h1>
+        <span class="text-primary">10년간 연구한 추천번호</span>』</h1>
       <p class="text-xl text-gray-600 mb-4 drop-shadow">
         당신에게 보내는 번호, 그저 '운'이 아닙니다.<br/>
         이 번호는 제1081회 로또 1등 당첨자가 지난 10년간 수천 회차의 통계와 흐름을 분석하고,<br/>
@@ -248,7 +255,6 @@
   </div>
 </section>
 
-  <div class="section-divider"></div>
 
   <!-- Story Section -->
 <section id="story" class="py-20 bg-white relative">
@@ -305,9 +311,11 @@
 
           <!-- 인생을 바꾼 당첨의 순간 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div class="md:w-1/2">
-              <img src="story4.jpg" alt="당첨의 순간" class="rounded-2xl shadow-lg" />
-            </div>
+            <div class="md:w-1/2 flex justify-center">
+            <img src="indexFile/main.jpg" alt="당첨의 순간"
+              class="rounded-2xl shadow-lg premium-card mx-auto w-4/5 md:w-3/5"
+            />
+          </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">포기하지 않은 시간의 가치</h3>
               <p class="text-gray-600 leading-relaxed">

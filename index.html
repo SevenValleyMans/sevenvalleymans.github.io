@@ -180,11 +180,11 @@
 }
 .story-img {
   width: 100%;
-  max-width: 380px;    /* 데스크탑 기준 적절한 최대폭 (조절 가능) */
+  max-width: 400px;    /* 데스크탑 기준 적절한 최대폭 (조절 가능) */
   aspect-ratio: 4/3;   /* 4:3 비율, 1:1도 추천 가능 */
   object-fit: cover;
   object-position: center;
-  height: auto;
+  height: 460px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -271,7 +271,7 @@
   <div class="absolute inset-0 z-10 md:hidden">
     <img src="indexFile/메인이미지.png"
       alt="모바일 히어로 이미지"
-      class="w-full h-full object-cover"
+      class="w-full h-full"
       style="object-position: center;"
     />
     <!-- 추가로 반투명 레이어 필요하면 이 안에 div를 하나 더 넣어도 됨 -->
@@ -352,7 +352,7 @@
           <!-- 인생을 바꾼 당첨의 순간 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
             <div class="md:w-1/2 flex justify-center">
-            <img src="indexFile/story4.png" alt="당첨의 순간" class="story-img rounded-2xl shadow-lg premium-card mx-auto w-4/5 md:w-3/5" />
+            <img src="indexFile/story4.png" alt="당첨의 순간" class="story-img rounded-2xl shadow-lg premium-card" />
           </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">포기하지 않은 시간의 가치</h3>

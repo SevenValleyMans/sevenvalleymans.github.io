@@ -162,6 +162,39 @@
         #1E3A8A 100%
       );
     }
+    @media (min-width: 768px) {
+  .hero-mobile-image {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .hero-mobile-image {
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 10;
+  }
+}
+.story-img {
+  width: 100%;
+  max-width: 380px;    /* 데스크탑 기준 적절한 최대폭 (조절 가능) */
+  aspect-ratio: 4/3;   /* 4:3 비율, 1:1도 추천 가능 */
+  object-fit: cover;
+  object-position: center;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 767px) {
+  .story-img {
+    max-width: 90vw;
+    aspect-ratio: 1/1;  /* 모바일에서는 1:1 사각 추천 (또는 4/3 유지도 가능) */
+  }
+}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
@@ -235,9 +268,16 @@
     <!-- 어두운 오버레이 -->
     <div class="absolute inset-0 bg-black/30"></div>
   </div>
-
+  <div class="absolute inset-0 z-10 md:hidden">
+    <img src="indexFile/메인이미지.png"
+      alt="모바일 히어로 이미지"
+      class="w-full h-full object-cover"
+      style="object-position: center;"
+    />
+    <!-- 추가로 반투명 레이어 필요하면 이 안에 div를 하나 더 넣어도 됨 -->
+  </div>
   <!-- Hero 텍스트 등(콘텐츠, z-10) -->
-  <div class="container mx-auto px-4 relative z-10">
+  <div class="container mx-auto px-4 relative z-10 hidden md:block">
     <div class="max-w-4xl mx-auto text-center bg-white/70 rounded-2xl shadow-lg py-12 px-6 md:px-16">
       <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">『제1081회 1등 당첨자가<br/>
         <span class="text-primary">10년간 연구한 추천번호</span>』</h1>
@@ -268,7 +308,7 @@
           <!-- 시작: 평범함 속 작은 의문 -->
           <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="md:w-1/2">
-              <img src="story1.jpg" alt="시작" class="rounded-2xl shadow-lg premium-card" />
+              <img src="indexFile/story1.png" alt="시작" class="story-img rounded-2xl shadow-lg premium-card" />
             </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">불안했던 일상, 그리고 작은 의문</h3>
@@ -282,7 +322,7 @@
           <!-- 집념과 분석의 시간 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
             <div class="md:w-1/2">
-              <img src="indexFile/story2.jpg" alt="연구" class="rounded-2xl shadow-lg" />
+              <img src="indexFile/story2.png" alt="연구" class="story-img rounded-2xl shadow-lg" />
             </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">끝없는 실패 속 집념</h3>
@@ -297,7 +337,7 @@
           <!-- 도전의 터닝포인트 -->
           <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="md:w-1/2">
-              <img src="story3.jpg" alt="터닝포인트" class="rounded-2xl shadow-lg premium-card" />
+              <img src="indexFile/story3.png" alt="터닝포인트" class="story-img rounded-2xl shadow-lg premium-card" />
             </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">인생을 바꾼 빛나는 순간</h3>
@@ -312,9 +352,7 @@
           <!-- 인생을 바꾼 당첨의 순간 -->
           <div class="flex flex-col md:flex-row-reverse items-center gap-8">
             <div class="md:w-1/2 flex justify-center">
-            <img src="indexFile/main.jpg" alt="당첨의 순간"
-              class="rounded-2xl shadow-lg premium-card mx-auto w-4/5 md:w-3/5"
-            />
+            <img src="indexFile/story4.png" alt="당첨의 순간" class="story-img rounded-2xl shadow-lg premium-card mx-auto w-4/5 md:w-3/5" />
           </div>
             <div class="md:w-1/2">
               <h3 class="text-2xl font-bold text-primary mb-4">포기하지 않은 시간의 가치</h3>

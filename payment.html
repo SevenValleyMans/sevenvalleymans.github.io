@@ -149,9 +149,10 @@
         <div class="mb-8">
           <span class="text-3xl font-bold text-secondary">30,000원</span>
         </div>
-        <button class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition"
-          onclick="startPayment('1주 추천 번호', 30000)">
-          카카오페이 정기결제
+        <button
+          class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition"
+          onclick="openBankTransferModal('1주 추천 번호', 30000)">
+          무통장입금 하기
         </button>
       </div>
       <!-- 상품 2: 네이버페이 정기결제 -->
@@ -162,12 +163,13 @@
         <h2 class="text-2xl font-bold mb-2 text-primary">1달 도전 패스</h2>
         <p class="mb-6 text-gray-600">단 한 번의 선택으로 4주간 내 곁에 행운이!<br>꾸준히 도전하는 당신에게만 찾아오는 찬스, 직접 경험해보세요.</p>
         <div class="mb-8">
-          <span class="text-3xl font-bold text-secondary">30,000원</span>
+          <span class="text-3xl font-bold text-secondary">60,000원</span>
         </div>
-        <button class="w-full bg-green-500 text-white font-bold py-3 rounded-full text-lg hover:bg-green-600 transition"
-          onclick="startNPayPayment('1달 도전 패스', 30000)">
-          네이버페이 정기결제
-        </button>
+        <button
+        class="w-full bg-secondary text-white font-bold py-3 rounded-full text-lg hover:bg-primary/80 transition"
+        onclick="openBankTransferModal('1주 추천 번호', 30000)">
+        무통장입금 하기
+      </button>
       </div>
     </div>
 
@@ -256,6 +258,37 @@
   </div>
 </footer>
 
+<!-- 무통장입금 모달 -->
+<div id="bankTransferModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md gold-border relative">
+    <button onclick="closeBankTransferModal()" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-primary mb-2">무통장 입금 안내</h2>
+      <p class="text-accent text-sm">아래 계좌로 결제 금액을 이체해 주세요.<br>입금 후 자동 확인이 어려우니, <b>입금자명과 신청 정보</b>를 꼭 입력해 주세요!</p>
+    </div>
+    <div class="mb-4 bg-light rounded-lg p-4 flex flex-col gap-1 border">
+      <div><b>은행명:</b> 국민은행</div>
+      <div><b>계좌번호:</b> 123-456789-00-123</div>
+      <div><b>예금주:</b> 프라임파트너스</div>
+    </div>
+    <div class="mb-3">
+      <b>결제 상품:</b> <span id="modalProduct" class="font-semibold text-primary"></span>
+    </div>
+    <div class="mb-3">
+      <b>결제 금액:</b> <span id="modalAmount" class="font-semibold text-secondary"></span>원
+    </div>
+    <div class="mb-3">
+      <label class="block mb-1 font-semibold text-gray-700">입금자명</label>
+      <input id="modalPayerName" type="text" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" placeholder="입금자명 입력" />
+    </div>
+    <div class="mb-5">
+      <label class="block mb-1 font-semibold text-gray-700">전화번호</label>
+      <input id="modalPhone" type="tel" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring" placeholder="010-1234-5678" />
+    </div>
+    <button onclick="submitBankTransfer()" class="w-full bg-primary text-white font-bold py-3 rounded-full text-lg hover:bg-secondary transition mb-2">입금신청 완료</button>
+    <div class="text-xs text-gray-500 text-center mt-3">※ 입금확인은 운영자가 수동으로 진행하며, 입력하신 정보로 확인 후 안내드립니다.<br>문의는 고객센터로 연락주세요!</div>
+  </div>
+</div>
 
   <!-- 결제 준비 중 알림 -->
   <script>
@@ -326,6 +359,33 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+function openBankTransferModal(product, amount) {
+  document.getElementById('modalProduct').textContent = product;
+  document.getElementById('modalAmount').textContent = amount.toLocaleString();
+  document.getElementById('modalPayerName').value = '';
+  document.getElementById('modalPhone').value = '';
+  document.getElementById('bankTransferModal').classList.remove('hidden');
+}
+function closeBankTransferModal() {
+  document.getElementById('bankTransferModal').classList.add('hidden');
+}
+// 입금신청 처리 (입력값 가져와서 DB 저장/알림 등 처리)
+function submitBankTransfer() {
+  const product = document.getElementById('modalProduct').textContent;
+  const amount = document.getElementById('modalAmount').textContent.replace(/,/g, '');
+  const payer = document.getElementById('modalPayerName').value.trim();
+  const phone = document.getElementById('modalPhone').value.trim();
+  if (!payer || !phone) {
+    alert('입금자명과 전화번호를 입력해 주세요!');
+    return;
+  }
+  firebase.firestore().collection('bankTransfers').add({
+    product, amount, payer, phone, requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    alert('입금 신청이 완료되었습니다!\n확인 후 안내드릴게요 😊');
+    closeBankTransferModal();
+  });
+}
 </script>
 
 
@@ -340,157 +400,5 @@ document.addEventListener('DOMContentLoaded', function() {
   mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>
 
-
-
-<script>//카카오페이 테스트
-// ========== 카카오페이(상품1) ==========
-let paymentProduct = '';
-let paymentAmount = 0;
-
-function startPayment(product, amount) {
-  paymentProduct = product;
-  paymentAmount = amount;
-  const user = firebase.auth().currentUser;
-  if (user) {
-    firebase.firestore().collection('users').doc(user.uid).get()
-      .then(doc => {
-        if (doc.exists) {
-          const data = doc.data();
-          requestKakaoPaySubscribe(
-            paymentProduct,
-            paymentAmount,
-            data.name || "회원님",
-            data.phone || "",
-            user.uid
-          );
-        } else {
-          alert("회원 정보가 없습니다. 다시 로그인해 주세요.");
-        }
-      })
-      .catch(() => {
-        alert("회원 정보 불러오기에 실패했습니다.");
-      });
-  } else {
-    document.getElementById('userInfoModal').classList.remove('hidden');
-    window._pendingNPay = false; // 카카오페이임을 명확하게!
-  }
-}
-
-function requestKakaoPaySubscribe(product, amount, name, phone, userId) {
-  var IMP = window.IMP;
-  IMP.init("imp12572183");
-  IMP.request_pay({
-    pg: "kakaopay.TCSUBSCRIP",
-    pay_method: "card",
-    merchant_uid: "orderid_" + new Date().getTime(),
-    name: product,
-    amount: amount,
-    customer_uid: userId,
-    buyer_email: userId + "@guest.lotto1081.com",
-    buyer_name: name,
-    buyer_tel: phone
-  }, function(rsp) {
-    if (rsp.success) {
-      alert('카카오페이 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
-    } else {
-      alert("카카오페이 결제 실패: " + rsp.error_msg);
-    }
-  });
-}
-
-// ========== 네이버페이(상품2) ==========
-let nPayProduct = '';
-let nPayAmount = 0;
-
-function startNPayPayment(product, amount) {
-  nPayProduct = product;
-  nPayAmount = amount;
-  const user = firebase.auth().currentUser;
-  if (user) {
-    firebase.firestore().collection('users').doc(user.uid).get()
-      .then(doc => {
-        if (doc.exists) {
-          const data = doc.data();
-          requestNPaySubscribe(
-            nPayProduct,
-            nPayAmount,
-            data.name || "회원님",
-            data.phone || "",
-            user.uid
-          );
-        } else {
-          alert("회원 정보가 없습니다. 다시 로그인해 주세요.");
-        }
-      })
-      .catch(() => {
-        alert("회원 정보 불러오기에 실패했습니다.");
-      });
-  } else {
-    document.getElementById('userInfoModal').classList.remove('hidden');
-    window._pendingNPay = true; // 네이버페이 결제 플래그
-  }
-}
-
-function requestNPaySubscribe(product, amount, name, phone, userId) {
-  var IMP = window.IMP;
-  IMP.init("여기에_네이버페이_MID_입력"); // 실제 네이버페이 MID로 변경
-  IMP.request_pay({
-    pg: "naverco.billing",
-    pay_method: "card",
-    merchant_uid: "orderid_" + new Date().getTime(),
-    name: product,
-    amount: amount,
-    customer_uid: userId,
-    buyer_email: userId + "@guest.lotto1081.com",
-    buyer_name: name,
-    buyer_tel: phone
-  }, function(rsp) {
-    if (rsp.success) {
-      alert('네이버페이 결제 성공! imp_uid: ' + rsp.imp_uid + ', merchant_uid: ' + rsp.merchant_uid);
-    } else {
-      alert("네이버페이 결제 실패: " + rsp.error_msg);
-    }
-  });
-}
-
-// ========== 비회원 모달 입력 후 결제 ==========
-
-async function handleUserInfoSubmit() {
-  const name = document.getElementById('userNameInput').value.trim();
-  const phone = document.getElementById('userPhoneInput').value.trim();
-  if (!name || !phone) {
-    alert("이름과 전화번호를 모두 입력해 주세요.");
-    return;
-  }
-  const userId = phone.replace(/[^0-9]/g, '') + '_' + Date.now();
-  const userData = {
-    name,
-    phone,
-    userId,
-    createdAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
-  };
-  try {
-    await firebase.firestore().collection('users').doc(userId).set(userData);
-    closeUserInfoModal();
-    if (window._pendingNPay) {
-      window._pendingNPay = false;
-      requestNPaySubscribe(nPayProduct, nPayAmount, name, phone, userId);
-    } else {
-      requestKakaoPaySubscribe(paymentProduct, paymentAmount, name, phone, userId);
-    }
-  } catch (e) {
-    alert("정보 저장에 실패했습니다. 다시 시도해 주세요.");
-  }
-}
-
-function closeUserInfoModal() {
-  document.getElementById('userInfoModal').classList.add('hidden');
-  document.getElementById('userNameInput').value = '';
-  document.getElementById('userPhoneInput').value = '';
-}
-
-
-
-</script>
 </body>
 </html>

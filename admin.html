@@ -96,6 +96,7 @@
     <div class="flex border-b mb-6">
       <button id="tab-users" class="px-4 py-2 tab-active font-bold">회원관리</button>
       <button id="tab-qna" class="px-4 py-2 font-bold text-gray-500">Q&A 관리</button>
+      <button id="tab-approve" class="px-4 py-2 font-bold text-gray-500">입금승인대기</button>
     </div>
 
     <!-- 회원관리 -->
@@ -111,6 +112,7 @@
               <th class="py-2 px-3">이메일</th>
               <th class="py-2 px-3">닉네임</th>
               <th class="py-2 px-3">가입일</th>
+              <th class="py-2 px-3">회원구분</th>
               <th class="py-2 px-3">번호 발송</th>
             </tr>
           </thead>
@@ -125,6 +127,12 @@
     <section id="qnaSection" class="section-card p-6 border border-accent/20 hidden">
       <h2 class="text-xl font-bold text-primary mb-3">Q&A 전체 목록</h2>
       <div id="qnaList" class="overflow-x-auto"></div>
+    </section>
+
+
+    <section id="approveSection" class="section-card p-6 border border-accent/20 hidden">
+      <h2 class="text-xl font-bold text-primary mb-3">입금 승인 대기 명단</h2>
+      <div id="approveList" class="overflow-x-auto"></div>
     </section>
 
     <!-- 답변 모달 -->
@@ -262,53 +270,79 @@
     }
 
     // ---- 탭 전환 ----
-    document.getElementById('tab-users').onclick = function() {
-      document.getElementById('userSection').classList.remove('hidden');
-      document.getElementById('qnaSection').classList.add('hidden');
-      this.classList.add('tab-active');
-      this.classList.remove('text-gray-500');
-      document.getElementById('tab-qna').classList.remove('tab-active');
-      document.getElementById('tab-qna').classList.add('text-gray-500');
-    };
-    document.getElementById('tab-qna').onclick = function() {
-      document.getElementById('userSection').classList.add('hidden');
-      document.getElementById('qnaSection').classList.remove('hidden');
-      this.classList.add('tab-active');
-      this.classList.remove('text-gray-500');
-      document.getElementById('tab-users').classList.remove('tab-active');
-      document.getElementById('tab-users').classList.add('text-gray-500');
-      loadQnaList();
-    };
+   // 1. 탭/섹션 id 미리 변수에 저장(오타 방지)
+const tabUsers = document.getElementById('tab-users');
+const tabQna = document.getElementById('tab-qna');
+const tabApprove = document.getElementById('tab-approve');
+const userSection = document.getElementById('userSection');
+const qnaSection = document.getElementById('qnaSection');
+const approveSection = document.getElementById('approveSection');
+
+// 2. 탭 클릭 시 모두 숨기고, 자신만 보이게!
+tabUsers.onclick = function() {
+  tabUsers.classList.add('tab-active'); tabUsers.classList.remove('text-gray-500');
+  tabQna.classList.remove('tab-active'); tabQna.classList.add('text-gray-500');
+  tabApprove.classList.remove('tab-active'); tabApprove.classList.add('text-gray-500');
+  userSection.classList.remove('hidden');
+  qnaSection.classList.add('hidden');
+  approveSection.classList.add('hidden');
+  loadUsers();
+};
+
+tabQna.onclick = function() {
+  tabQna.classList.add('tab-active'); tabQna.classList.remove('text-gray-500');
+  tabUsers.classList.remove('tab-active'); tabUsers.classList.add('text-gray-500');
+  tabApprove.classList.remove('tab-active'); tabApprove.classList.add('text-gray-500');
+  userSection.classList.add('hidden');
+  qnaSection.classList.remove('hidden');
+  approveSection.classList.add('hidden');
+  loadQnaList();
+};
+
+tabApprove.onclick = function() {
+  tabApprove.classList.add('tab-active'); tabApprove.classList.remove('text-gray-500');
+  tabUsers.classList.remove('tab-active'); tabUsers.classList.add('text-gray-500');
+  tabQna.classList.remove('tab-active'); tabQna.classList.add('text-gray-500');
+  userSection.classList.add('hidden');
+  qnaSection.classList.add('hidden');
+  approveSection.classList.remove('hidden');
+  loadApproveList();
+};
+
 
     // ---- 회원 목록 불러오기 ----
     function loadUsers() {
-      const tbody = document.querySelector('#userList tbody');
-      tbody.innerHTML = '';
-      firebase.firestore().collection('users').get().then(snapshot => {
-        snapshot.forEach(doc => {
-          const user = doc.data();
-          const userId = user.userId || '-';
-          const nickname = user.name || '-';
-          const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
-          tbody.innerHTML += `
-            <tr>
-              <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
-              <td class="py-2 px-3">${nickname}</td>
-              <td class="py-2 px-3">${created}</td>
-              <td class="py-2 px-3">
-                <button class="sendBtn px-3 py-1 bg-primary text-white rounded" data-email="${userId}">발송</button>
-              </td>
-            </tr>
-          `;
-        });
-        document.querySelectorAll('.sendBtn').forEach(btn => {
-          btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
-        });
-        document.querySelectorAll('.email-cell').forEach(td => {
-          td.onclick = () => openHistoryModal(td.textContent);
-        });
-      });
-    }
+  const tbody = document.querySelector('#userList tbody');
+  tbody.innerHTML = '';
+  firebase.firestore().collection('users').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const userId = user.userId || '-';
+      const nickname = user.name || '-';
+      const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
+      const isMember = user.membership === true;
+      const membershipText = isMember ? '멤버십회원' : '일반회원';
+      tbody.innerHTML += `
+        <tr>
+          <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
+          <td class="py-2 px-3">${nickname}</td>
+          <td class="py-2 px-3">${created}</td>
+          <td class="py-2 px-3">${membershipText}</td>
+          <td class="py-2 px-3">
+            <button class="sendBtn px-3 py-1 bg-primary text-white rounded ${isMember ? '' : 'opacity-50 cursor-not-allowed'}" data-email="${userId}" ${isMember ? '' : 'disabled'}>발송</button>
+          </td>
+        </tr>
+      `;
+    });
+    document.querySelectorAll('.sendBtn').forEach(btn => {
+      if (btn.disabled) return;
+      btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
+    });
+    document.querySelectorAll('.email-cell').forEach(td => {
+      td.onclick = () => openHistoryModal(td.textContent);
+    });
+  });
+}
 
     // ---- 추천번호 개별 발송 모달 ----
     function openSendModal(userId) {
@@ -402,7 +436,7 @@
       if (!userDoc.empty) {
         phone = userDoc.docs[0].data().phone;
       }
-      if (phone) {
+      if (콜) {
         fetch('http://localhost:4000/send-sms', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -501,13 +535,15 @@
       // 회원별로 순차 발송(랜덤 30개), Firestore저장+문자 전송
       let sentCount = 0, failList = [];
       for (const doc of usersSnap.docs) {
-        const user = doc.data();
-        const userId = user.userId;
-        const phone = user.phone;
-        if (!userId || !phone) {
-          failList.push(user.name || userId || '(정보누락)');
-          continue;
-        }
+  const user = doc.data();
+  // 멤버십회원만 발송!
+  if (user.membership !== true) continue;
+  const userId = user.userId;
+  const phone = user.phone;
+  if (!userId || !phone) {
+    failList.push(user.name || userId || '(정보누락)');
+    continue;
+  }
         // 30개 랜덤 샘플
         const shuffled = uniqueLines
           .map(value => ({ value, sort: Math.random() }))
@@ -551,17 +587,6 @@
           failList.push(user.name || userId);
         }
       }
-      // 결과 안내
-      statusDiv.innerHTML =
-        `<b>${sentCount}명에게 발송 완료!</b> ` +
-        (failList.length ? `<br>실패: ${failList.join(', ')}` : '');
-      if (failList.length === 0) {
-        alert('전체 회원에게 추천번호가 일괄 발송되었습니다!');
-        document.getElementById('bulkSendModal').classList.add('hidden');
-      } else {
-        alert('일부 회원에게 발송이 실패했습니다. (아래 실패명단 참고)');
-      }
-      loadRecommendationLogs && loadRecommendationLogs();
     };
 
     // ---- 예약 발송 현황(관리자) ----
@@ -723,6 +748,82 @@
     document.getElementById('closeAnswerModal').onclick = () => {
       document.getElementById('answerModal').classList.add('hidden');
     };
+
+
+async function loadApproveList() {
+  const div = document.getElementById('approveList');
+  div.innerHTML = '불러오는 중...';
+  // bankTransfers 모든 데이터 가져옴 (전화번호/이름/상품)
+  const snap = await firebase.firestore().collection('bankTransfers').orderBy('requestedAt', 'desc').get();
+  if (snap.empty) {
+    div.innerHTML = '<div class="py-8 text-gray-400 text-center">승인 대기 내역이 없습니다.</div>';
+    return;
+  }
+
+  let html = `<table class="table w-full text-center">
+    <thead>
+      <tr>
+        <th class="py-2 px-3">이름</th>
+        <th class="py-2 px-3">전화번호</th>
+        <th class="py-2 px-3">상품</th>
+        <th class="py-2 px-3">금액</th>
+        <th class="py-2 px-3">신청일</th>
+        <th class="py-2 px-3">회원상태</th>
+        <th class="py-2 px-3">관리</th>
+      </tr>
+    </thead><tbody>`;
+
+  // 비동기 for문(모든 입금자마다 users에서 membership 상태 체크)
+  for (const doc of snap.docs) {
+    const data = doc.data();
+    const phone = data.phone || '';
+    const name = data.payer || '';
+    const product = data.product || '';
+    const amount = data.amount || '';
+    const date = data.requestedAt && data.requestedAt.toDate ? data.requestedAt.toDate().toLocaleString() : '';
+    // 유저 membership 조회
+    let membership = '-';
+    let userDoc = await firebase.firestore().collection('users').where('phone', '==', phone).limit(1).get();
+    let userId = '';
+    if (!userDoc.empty) {
+      const u = userDoc.docs[0].data();
+      membership = u.membership === true ? '승인완료' : '승인대기';
+      userId = userDoc.docs[0].id;
+    }
+    html += `<tr>
+      <td>${name}</td>
+      <td>${phone}</td>
+      <td>${product}</td>
+      <td>${amount}</td>
+      <td>${date}</td>
+      <td>${membership}</td>
+      <td>
+        ${
+          membership === '승인대기' && userId
+            ? `<button class="approveBtn px-3 py-1 bg-primary text-white rounded" data-uid="${userId}">승인</button>`
+            : ''
+        }
+      </td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  div.innerHTML = html;
+
+  // 승인 버튼 이벤트 연결
+  document.querySelectorAll('.approveBtn').forEach(btn => {
+    btn.onclick = async function() {
+      const uid = this.getAttribute('data-uid');
+      if (!uid) return alert('유저 정보를 찾을 수 없습니다.');
+      if (!confirm('해당 유저를 승인 처리하시겠습니까?')) return;
+      await firebase.firestore().collection('users').doc(uid).update({ membership: true });
+      alert('승인 완료! 해당 회원이 정회원으로 등록되었습니다.');
+      loadApproveList(); // 갱신
+      loadUsers && loadUsers(); // 회원리스트도 갱신
+    };
+  });
+}
+
+
 
     // ---- 당첨번호 및 회원별 성적 ----
     async function loadLatestWinningNumber() {
@@ -954,6 +1055,40 @@
   URL.revokeObjectURL(url);
 };
 
+
+function loadUsers() {
+  const tbody = document.querySelector('#userList tbody');
+  tbody.innerHTML = '';
+  firebase.firestore().collection('users').get().then(snapshot => {
+    snapshot.forEach(doc => {
+      const user = doc.data();
+      const userId = user.userId || '-';
+      const nickname = user.name || '-';
+      const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
+      const isMember = user.membership === true;
+      const membershipText = isMember ? '멤버십회원' : '일반회원';
+      // 버튼 비활성화 처리 (일반회원)
+      tbody.innerHTML += `
+        <tr>
+          <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
+          <td class="py-2 px-3">${nickname}</td>
+          <td class="py-2 px-3">${created}</td>
+          <td class="py-2 px-3">${membershipText}</td>
+          <td class="py-2 px-3">
+            <button class="sendBtn px-3 py-1 bg-primary text-white rounded ${isMember ? '' : 'opacity-50 cursor-not-allowed'}" data-email="${userId}" ${isMember ? '' : 'disabled'}>발송</button>
+          </td>
+        </tr>
+      `;
+    });
+    document.querySelectorAll('.sendBtn').forEach(btn => {
+      if (btn.disabled) return; // 비활성 버튼은 동작X
+      btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
+    });
+    document.querySelectorAll('.email-cell').forEach(td => {
+      td.onclick = () => openHistoryModal(td.textContent);
+    });
+  });
+}
   </script>
 
   <script>

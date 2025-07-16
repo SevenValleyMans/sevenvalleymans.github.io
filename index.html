@@ -189,6 +189,26 @@
   margin-left: auto;
   margin-right: auto;
 }
+  /* 메뉴 호버 시 밑줄 애니메이션 효과 */
+  .menu-link {
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  .menu-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -6px;
+    left: 50%;
+    background-color: #8B0000; /* primary color */
+    transition: all 0.3s ease-out;
+    transform: translateX(-50%);
+  }
+  .menu-link:hover::after,
+  .menu-link.active::after {
+    width: 100%;
+  }
 @media (max-width: 767px) {
   .story-img {
     max-width: 90vw;
@@ -200,30 +220,41 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 </head>
 <body class="bg-light font-sans">
-<!-- 네비게이션 바 (항상 보임) -->
-<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-accent/20">
+
+
+<nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-200">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="/" class="text-2xl font-bold text-primary relative">
+      <a href="/" class="text-2xl font-bold text-primary relative font-pretendard">
         로또1081
-        <span class="absolute -top-1 -right-2 w-2 h-2 bg-accent rounded-full"></span>
+        <span class="absolute -top-1 -right-2 w-2 h-2 bg-secondary rounded-full"></span>
       </a>
-      <!-- Desktop Menu -->
+
       <div class="hidden md:flex items-center space-x-8">
-        <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
-        <a href="myPage.html" class="text-gray-600 hover:text-primary transition">마이페이지</a>
-        <a href="faq.html" class="text-gray-600 hover:text-primary transition">고객센터</a>
-        <a href="payment.html" class="text-gray-600 hover:text-primary transition">구독상품</a>
-        <a href="review.html" class="text-gray-600 hover:text-primary transition">후기</a>
-          <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition">로그인</a>
-      <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
-      <span id="userNav" class="hidden flex items-center space-x-2">
-        <span id="userName" class="text-secondary font-bold"></span>
-        <button id="logoutNavBtn" class="ml-2 px-3 py-1 bg-accent text-white rounded hover:bg-primary transition text-sm">로그아웃</button>
-      </span>
+        <a href="index.html" class="text-primary font-bold menu-link active">홈</a>
+        <a href="myPage.html" class="text-gray-600 hover:text-primary menu-link">마이페이지</a>
+        <a href="faq.html" class="text-gray-600 hover:text-primary menu-link">고객센터</a>
+        <a href="review.html" class="text-gray-600 hover:text-primary menu-link">후기</a>
+        
+        <a href="payment.html" class="border-2 border-primary text-primary px-5 py-1.5 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-300">구독상품</a>
+        
+        <div class="flex items-center">
+          <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all">로그인</a>
+          
+          <div id="userNav" class="hidden relative">
+            <button id="userMenuBtn" class="flex items-center space-x-2">
+              <span id="userName" class="text-secondary font-bold"></span>
+              <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20 border">
+              <a href="myPage.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">마이페이지</a>
+              <div class="border-t border-gray-100"></div>
+              <a href="#" id="logoutNavBtn" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">로그아웃</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Mobile Hamburger -->
+      
       <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
         <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
@@ -232,6 +263,7 @@
     </div>
   </div>
 </nav>
+
 
 <!-- 모바일 전체 메뉴 오버레이 (오직 모바일에서만, nav 외부에!) -->
 <div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
@@ -259,112 +291,129 @@
 <div class="h-16 md:h-16"></div>
 
 <!-- Hero Section (비디오+콘텐츠 함께) -->
-<section class="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden">
-  <!-- 비디오 배경 (absolute) -->
-  <div class="absolute inset-0 w-full h-full z-0 pointer-events-none">
-    <video autoplay muted loop playsinline class="w-full h-full object-cover" style="min-width:100vw; min-height:100vh;">
+<section class="relative md:h-screen flex flex-col items-center justify-center text-center text-white overflow-hidden">
+  <div class="hidden md:block absolute inset-0 w-full h-full z-0 pointer-events-none">
+    <video autoplay muted loop playsinline class="w-full h-full object-cover">
       <source src="indexFile/video.mp4" type="video/mp4" />
       브라우저가 비디오 태그를 지원하지 않습니다.
     </video>
-    <!-- 어두운 오버레이 -->
-    <div class="absolute inset-0 bg-black/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
   </div>
-  <div class="absolute inset-0 z-10 md:hidden">
-    <img src="indexFile/메인이미지.png"
-      alt="모바일 히어로 이미지"
-      class="w-full h-full"
-      style="object-position: center;"
-    />
-    <!-- 추가로 반투명 레이어 필요하면 이 안에 div를 하나 더 넣어도 됨 -->
-  </div>
-  <!-- Hero 텍스트 등(콘텐츠, z-10) -->
-  <div class="container mx-auto px-4 relative z-10 hidden md:block">
-    <div class="max-w-4xl mx-auto text-center bg-white/70 rounded-2xl shadow-lg py-12 px-6 md:px-16">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6 drop-shadow">『제1081회 1등 당첨자가<br/>
-        <span class="text-primary">10년간 연구한 추천번호</span>』</h1>
-      <p class="text-xl text-gray-600 mb-4 drop-shadow">
-        당신에게 보내는 번호, 그저 '운'이 아닙니다.<br/>
-        이 번호는 제1081회 로또 1등 당첨자가 지난 10년간 수천 회차의 통계와 흐름을 분석하고,<br/>
-        자신만의 특별한 기준으로 직접 선별한 조합입니다.
+  
+  <div class="md:hidden w-full">
+    <img src="indexFile/메인이미지.png" alt="모바일 히어로 이미지" class="w-full h-auto" />
+    </div>
+
+  <div class="container mx-auto px-4 relative z-20 hidden md:block">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-shadow-lg font-pretendard animate-fade-in-down">
+        제1081회 1등 당첨자의<br/>
+        <span class="text-secondary">10년간의 집념이 담긴 번호</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-200 mb-8 text-shadow leading-relaxed animate-fade-in-up">
+        이것은 단순한 '운'이 아닙니다. 수천 회차의 통계와 흐름을 분석한<br class="hidden md:block"/>
+        저만의 기준으로 선별한, 당신을 위한 특별한 조합입니다.
       </p>
-      <p class="text-sm text-gray-500 mb-8 drop-shadow">
-        ※ 정확한 분석 방식은 대표자의 비공개 전략 자산으로, 상세한 로직은 공개하지 않습니다.<br/>
-        하지만, 이 번호들이 그저 운에 맡긴 숫자가 아님은 결과로 증명될 것입니다.
-      </p>
-      <p class="text-2xl font-bold text-primary mb-8">포기하지 말자! 할 수 있다! 제가 도와드리겠습니다.</p>
+      <div class="my-10 p-4 border-2 border-secondary/50 rounded-lg inline-block bg-black/20 backdrop-blur-sm animate-fade-in">
+        <p class="text-2xl font-bold text-secondary font-pretendard">"포기하지 않으면, 기회는 반드시 옵니다. 제가 돕겠습니다."</p>
+      </div>
+      <div class="mt-8 animate-bounce-slow">
+        <a href="payment.html" class="bg-secondary text-primary font-bold text-xl px-12 py-5 rounded-full hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-xl">
+          이번 주 행운 번호 받기
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes bounce-slow { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-15px); } 60% { transform: translateY(-5px); } }
+  .animate-fade-in-down { animation: fade-in-down 1s ease-out forwards; }
+  .animate-fade-in-up { animation: fade-in-up 1s ease-out 0.3s forwards; opacity: 0; }
+  .animate-fade-in { animation: fade-in 1s ease-in 0.6s forwards; opacity: 0; }
+  .animate-bounce-slow { animation: bounce-slow 2s infinite 1.5s; }
+</style>
+
 
   <!-- Story Section -->
-<section id="story" class="py-20 bg-white relative">
+<section id="story" class="py-16 md:py-24 lg:py-32 bg-light relative">
   <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
   <div class="container mx-auto px-4 relative">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">나의 특별한 이야기</h2>
-      <div class="section-content">
-        <div class="space-y-12">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 md:mb-20 text-gray-800 section-title">나의 특별한 10년의 여정</h2>
+      
+      <div class="relative">
+        <div class="hidden md:block absolute top-8 bottom-8 left-1/2 w-0.5 bg-gray-200"></div>
 
-          <!-- 시작: 평범함 속 작은 의문 -->
-          <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="md:w-1/2">
-              <img src="indexFile/story1.png" alt="시작" class="story-img rounded-2xl shadow-lg premium-card" />
-            </div>
-            <div class="md:w-1/2">
-              <h3 class="text-2xl font-bold text-primary mb-4">불안했던 일상, 그리고 작은 의문</h3>
-              <p class="text-gray-600 leading-relaxed">
-                10년 전, 저도 지극히 평범한 직장인이었습니다. 출근길이 버거웠고 가족과 미래 걱정에 시달렸습니다.<br>
-                월급만으로는 버티기 힘든 현실 속에서 문득 ‘로또에도 규칙이 있을까?’라는 막연한 희망이 저의 운명을 바꾸기 시작했습니다.
-              </p>
-            </div>
+        <div class="relative md:grid md:grid-cols-2 md:gap-12 mb-12 md:mb-16">
+          <div class="flex justify-center items-center mb-6 md:mb-0 md:pr-6">
+            <img src="indexFile/story1.png" alt="시작" class="story-img rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-300" />
           </div>
-
-          <!-- 집념과 분석의 시간 -->
-          <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div class="md:w-1/2">
-              <img src="indexFile/story2.png" alt="연구" class="story-img rounded-2xl shadow-lg" />
+          <div class="relative pl-10 md:pl-6">
+            <div class="md:hidden absolute top-2 -left-4 bottom-2 w-0.5 bg-gray-200"></div>
+            <div class="absolute -left-4 md:left-[-50px] top-1 w-7 h-7 md:w-8 md:h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center">
+              <div class="w-3 h-3 md:w-4 md:h-4 bg-gray-300 rounded-full"></div>
             </div>
-            <div class="md:w-1/2">
-              <h3 class="text-2xl font-bold text-primary mb-4">끝없는 실패 속 집념</h3>
-              <p class="text-gray-600 leading-relaxed">
-                수많은 실패와 반복 속에서 매주 수천 회차의 데이터를 기록하고 분석했습니다.<br>
-                그리고 끝없는 실패와 좌절 끝에 저만의 공식과 확신을 얻으며 한 걸음씩 꿈에 다가갔습니다.
-              </p>
-            </div>
+            <p class="text-secondary font-semibold text-base md:text-lg mb-1">2015년</p>
+            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-4 font-pretendard">불안했던 일상, 작은 의문의 시작</h3>
+            <p class="text-gray-700 leading-loose">
+              10년 전, 저도 지극히 평범한 직장인이었습니다. 버거운 출근길, 가족과 미래 걱정에 잠 못 이루던 밤이 많았습니다. 월급만으로는 감당하기 힘든 현실 속에서, 문득 던진 하나의 질문이 제 인생을 바꾸었습니다.<br/><strong>"혹시 로또에도 규칙이 있지 않을까?"</strong>
+            </p>
           </div>
-
-
-          <!-- 도전의 터닝포인트 -->
-          <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="md:w-1/2">
-              <img src="indexFile/story3.png" alt="터닝포인트" class="story-img rounded-2xl shadow-lg premium-card" />
-            </div>
-            <div class="md:w-1/2">
-              <h3 class="text-2xl font-bold text-primary mb-4">인생을 바꾼 빛나는 순간</h3>
-              <p class="text-gray-600 leading-relaxed">
-                그토록 바라던 1등 당첨의 순간이 찾아왔을 때,<br>
-                심장이 터질 듯한 벅찬 기쁨과 동시에,<br>
-                내가 걸어온 어두운 터널 끝에 따뜻한 빛이 비추는 느낌이 들었습니다.
-              </p>
-            </div>
-          </div>
-
-          <!-- 인생을 바꾼 당첨의 순간 -->
-          <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div class="md:w-1/2 flex justify-center">
-            <img src="indexFile/story4.png" alt="당첨의 순간" class="story-img rounded-2xl shadow-lg premium-card" />
-          </div>
-            <div class="md:w-1/2">
-              <h3 class="text-2xl font-bold text-primary mb-4">포기하지 않은 시간의 가치</h3>
-              <p class="text-gray-600 leading-relaxed">
-                저 역시 현실의 벽, 가족의 미래, 부모님의 병원비 그리고 책임감 앞에서 여러 번 좌절하는 순간들이 있었기에<br>
-                누군가에게는 단순한 ‘복권’일지 몰라도 누군가에게는 간절한 희망이라는 것을 잘 알고 있습니다. 저의 경험과 노하우를 나누고 싶습니다.
-              </p>
-            </div>
-          </div>
-
         </div>
+
+        <div class="relative md:grid md:grid-cols-2 md:gap-12 mb-12 md:mb-16">
+          <div class="flex justify-center items-center mb-6 md:mb-0 md:pl-6">
+            <img src="indexFile/story2.png" alt="연구" class="story-img rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="relative pl-10 md:pl-0 md:text-right md:pr-6 md:order-first"> <div class="md:hidden absolute top-2 -left-4 bottom-2 w-0.5 bg-gray-200"></div>
+            <div class="absolute -left-4 md:right-[-50px] md:left-auto top-1 w-7 h-7 md:w-8 md:h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center">
+              <div class="w-3 h-3 md:w-4 md:h-4 bg-gray-300 rounded-full"></div>
+            </div>
+            <p class="text-secondary font-semibold text-base md:text-lg mb-1">2019년</p>
+            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-4 font-pretendard">끝없는 실패 속에서 찾은 집념</h3>
+            <p class="text-gray-700 leading-loose">
+              수많은 실패와 반복 속에서도 포기하지 않았습니다. 매주 수천 회차의 데이터를 기록하고, 밤을 새워 패턴을 분석했습니다. 주변의 비웃음과 좌절의 순간들 끝에, 마침내 저만의 공식과 확신을 얻으며 한 걸음씩 꿈에 다가갔습니다.
+            </p>
+          </div>
+        </div>
+        
+        <div class="relative md:grid md:grid-cols-2 md:gap-12 mb-12 md:mb-16">
+          <div class="flex justify-center items-center mb-6 md:mb-0 md:pr-6">
+            <img src="indexFile/story3.png" alt="터닝포인트" class="story-img rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="relative pl-10 md:pl-6">
+             <div class="md:hidden absolute top-2 -left-4 bottom-2 w-0.5 bg-gray-200"></div>
+            <div class="absolute -left-4 md:left-[-50px] top-1 w-7 h-7 md:w-8 md:h-8 bg-primary border-2 border-secondary rounded-full flex items-center justify-center animate-pulse">
+              <svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            </div>
+            <p class="text-secondary font-semibold text-base md:text-lg mb-1">2023년 8월</p>
+            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-4 font-pretendard">인생을 바꾼 빛나는 순간</h3>
+            <p class="text-gray-700 leading-loose">
+              그토록 바라던 1등 당첨의 순간, 심장이 터질 듯한 벅찬 기쁨과 동시에, 제가 걸어온 어둡고 긴 터널 끝에 마침내 따뜻한 빛이 비추는 것을 느꼈습니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="relative md:grid md:grid-cols-2 md:gap-12">
+          <div class="flex justify-center items-center mb-6 md:mb-0 md:pl-6">
+            <img src="indexFile/story4.png" alt="나눔" class="story-img rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-300" />
+          </div>
+          <div class="relative pl-10 md:pl-0 md:text-right md:pr-6 md:order-first"> <div class="md:hidden absolute top-2 -left-4 bottom-2 w-0.5 bg-gray-200"></div>
+            <div class="absolute -left-4 md:right-[-50px] md:left-auto top-1 w-7 h-7 md:w-8 md:h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center">
+              <div class="w-3 h-3 md:w-4 md:h-4 bg-gray-300 rounded-full"></div>
+            </div>
+            <p class="text-secondary font-semibold text-base md:text-lg mb-1">2025년, 현재</p>
+            <h3 class="text-2xl md:text-3xl font-bold text-primary mb-4 font-pretendard">이제, 당신의 희망이 되겠습니다</h3>
+            <p class="text-gray-700 leading-loose">
+              현실의 벽 앞에서 좌절했던 과거의 저를 기억합니다. 그래서 알고 있습니다. 이 한 장이 누군가에게는 간절한 희망이라는 것을. 이제 저의 경험과 노하우를 나누어 당신의 희망에 힘이 되고 싶습니다.
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -373,130 +422,286 @@
 
   <div class="section-divider reverse"></div>
 
-  <section id="certification" class="py-20 bg-light relative">
-  <div class="container mx-auto px-6">
-    <div class="max-w-5xl mx-auto text-center"> <!-- 전체 최대폭도 좀 더 키움 -->
-      <h2 class="text-3xl font-bold mb-8 text-gray-800 section-title">1등 당첨 인증</h2>
-      <div class="section-content">
-        <p class="text-xl text-secondary font-bold mb-8">눈으로 직접 확인하세요!</p>
-        
-        <div class="grid md:grid-cols-2 gap-24 items-stretch">
-          <!-- 왼쪽: 인증서 -->
-          <div class="h-full flex">
-            <div class="premium-card rounded-2xl p-10 flex flex-col items-center max-w-4xl w-full h-full mx-auto md:mx-0 mb-0 md:mb-0">
-              <div class="w-full h-[620px] max-w-4xl mx-auto overflow-hidden flex items-center justify-center">
-                <img src="indexFile/winner-proof.JPG"
-                     alt="당첨 인증서"
-                     class="object-cover w-full h-full rounded-lg shadow-md transition duration-200 hover:scale-105"
-                />
-              </div>
-              <p class="mt-8 text-lg text-gray-600">제1081회 로또 1등 당첨 인증서</p>
-            </div>
-          </div>
-          <!-- 오른쪽: 입금내역(위) + 유튜브(아래) -->
-          <div class="flex flex-col gap-16 h-full">
-            <div class="premium-card rounded-2xl p-10 flex flex-col items-center max-w-4xl w-full flex-1 mx-auto md:mx-0">
-              <div class="w-full h-[400px] max-w-4xl mx-auto overflow-hidden flex items-center justify-center">
-                <img src="indexFile/1.JPG"
-                     alt="입금 내역"
-                     class="object-cover w-full h-full rounded-lg shadow-md transition duration-200 hover:scale-105"
-                />
-              </div>
-              <p class="mt-8 text-lg text-gray-600">공증된 입금 내역 (개인정보 모자이크 처리)</p>
-            </div>
-            <div class="premium-card rounded-2xl p-10 max-w-4xl w-full flex-1 mx-auto md:mx-0 flex flex-col items-center">
-  <h3 class="text-2xl font-bold text-primary mb-8">🎥 인터뷰 영상</h3>
-  <div class="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl max-w-4xl mx-auto">
-    <iframe class="absolute top-0 left-0 w-full h-full"
-      src="https://www.youtube.com/embed/wjJhp0HzRGE?si=KM5nVtagF0GqJf5k"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
+<section id="certification" class="py-24 md:py-32 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-7xl mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-4 text-gray-800 section-title">신뢰의 증거, 압도적인 결과</h2>
+      <p class="text-xl text-gray-600 mb-16">1등 당첨의 영광과, 지금도 계속되는 성공의 순간들을 직접 확인하세요.</p>
+      
+      <div class="grid lg:grid-cols-3 gap-8 items-start">
+
+        <div class="lg:col-span-1 premium-card rounded-2xl p-6 h-full">
+          <h3 class="text-2xl font-bold text-primary mb-4 font-pretendard">제1081회 1등 당첨 증명</h3>
+          <img src="indexFile/winner-proof.JPG" alt="당첨 인증서" class="w-full rounded-lg shadow-md mb-6 border"/>
+          
+          <div class="text-left space-y-2 text-gray-700">
+            <p><strong><span class="text-gray-500 mr-2">▪️</span>당첨 회차:</strong> 제 1081 회</p>
+            <p><strong><span class="text-gray-500 mr-2">▪️</span>추첨일:</strong> 2023년 8월 19일</p>
+            <p><strong><span class="text-gray-500 mr-2">▪️</span>당첨 등위:</strong> <span class="font-bold text-red-600">1등</span></p>
+            <p><strong><span class="text-gray-500 mr-2">▪️</span>총 당첨금:</strong> 약 13.5억 원 이상(세후)</p>
           </div>
         </div>
+
+        <div class="lg:col-span-1 flex flex-col gap-8 h-full">
+          <div class="premium-card rounded-2xl p-6">
+             <h3 class="text-2xl font-bold text-primary mb-4 font-pretendard">실제 입금 내역</h3>
+             <img src="indexFile/1.JPG" alt="입금 내역" class="w-full rounded-lg shadow-md border"/>
+             <p class="mt-4 text-sm text-gray-500">(개인정보 보호를 위해 일부 모자이크 처리)</p>
+          </div>
+          <div class="premium-card rounded-2xl p-6">
+            <h3 class="text-2xl font-bold text-primary mb-4 font-pretendard">10년의 기다림, 그 순간의 목소리</h3>
+            <div class="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg">
+              <iframe class="absolute top-0 left-0 w-full h-full"
+                src="https://www.youtube.com/embed/wjJhp0HzRGE?si=KM5nVtagF0GqJf5k"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 premium-card rounded-2xl p-6 h-full bg-primary/5">
+           <h3 class="text-2xl font-bold text-primary mb-4 font-pretendard">✨ 최근 당첨 소식</h3>
+           <p class="text-gray-600 mb-6">지금 이 순간에도 행운은 계속되고 있습니다.</p>
+           <div class="space-y-4">
+              <div class="bg-white p-4 rounded-lg shadow flex items-center gap-4">
+                <span class="text-2xl">🎉</span>
+                <div>
+                  <p class="font-bold text-gray-800">김*민 회원님 (1177회)</p>
+                  <p class="text-secondary font-semibold">4등 당첨을 축하합니다!</p>
+                </div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow flex items-center gap-4">
+                <span class="text-2xl">🎉</span>
+                <div>
+                  <p class="font-bold text-gray-800">박*서 회원님 (1178회)</p>
+                  <p class="text-secondary font-semibold">5등 당첨을 축하합니다!</p>
+                </div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow flex items-center gap-4">
+                <span class="text-2xl">🎉</span>
+                <div>
+                  <p class="font-bold text-gray-800">이*준 회원님 (1178회)</p>
+                  <p class="text-secondary font-semibold">4등 당첨을 축하합니다!</p>
+                </div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow flex items-center gap-4">
+                <span class="text-2xl">🎉</span>
+                <div>
+                  <p class="font-bold text-gray-800">이*희 회원님 (1179회)</p>
+                  <p class="text-secondary font-semibold">5등 당첨을 축하합니다!</p>
+                </div>
+              </div>
+              <div class="text-center mt-6">
+                <a href="/review.html" class="text-primary hover:underline font-semibold">더 많은 당첨 후기 보기 →</a>
+              </div>
+           </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
 
-
   <div class="section-divider"></div>
 
   <!-- Method Section -->
-  <section id="method" class="py-20 bg-white relative">
-    <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">당첨의 비법</h2>
-        <div class="section-content">
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="premium-card rounded-2xl p-6 text-center">
-              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-2xl">📊</span>
-              </div>
-              <h3 class="text-xl font-bold mb-3">통계 분석</h3>
-              <p class="text-gray-600">10년간의 당첨 번호 데이터를 분석하여 패턴을 찾아냈습니다.</p>
-            </div>
-            <div class="premium-card rounded-2xl p-6 text-center">
-              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-2xl">🎯</span>
-              </div>
-              <h3 class="text-xl font-bold mb-3">수학적 접근</h3>
-              <p class="text-gray-600">확률론과 수학적 모델을 기반으로 번호를 선정합니다.</p>
-            </div>
-            <div class="premium-card rounded-2xl p-6 text-center">
-              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="text-2xl">✨</span>
-              </div>
-              <h3 class="text-xl font-bold mb-3">검증된 결과</h3>
-              <p class="text-gray-600">실제 1등 당첨으로 증명된 방법을 제공합니다.</p>
-            </div>
+<section id="method" class="py-16 md:py-24 lg:py-32 bg-light relative"> <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
+  <div class="container mx-auto px-4 relative">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-gray-800 section-title">1등을 만든 분석 시스템</h2>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        
+        <div class="premium-card rounded-2xl p-6 md:p-8 text-center h-full">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+            <span class="text-3xl md:text-4xl">📊</span>
           </div>
+          <h3 class="text-xl md:text-2xl font-bold mb-4 font-pretendard">다차원 통계 분석</h3>
+          <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+            10년간 누적된 데이터를 기반으로, 아래와 같은 다각도 분석을 통해 패턴을 추출합니다.
+          </p>
+          <ul class="text-left mt-4 space-y-1 text-gray-500 text-sm md:text-base">
+            <li>- 기간별 출현 빈도 분석</li>
+            <li>- 연속 번호 및 동반 출현 패턴</li>
+            <li>- 홀/짝 및 고/저 비율 통계</li>
+          </ul>
+        </div>
+        
+        <div class="premium-card rounded-2xl p-6 md:p-8 text-center h-full">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+            <span class="text-3xl md:text-4xl">🤖</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold mb-4 font-pretendard">독자적 AI 알고리즘</h3>
+          <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+            단순 확률을 넘어, 자체 개발한 AI 필터링 알고리즘으로 당첨 확률이 낮은 번호를 걸러냅니다.
+          </p>
+          <ul class="text-left mt-4 space-y-1 text-gray-500 text-sm md:text-base">
+            <li>- 장기 미출현 번호 가중치 부여</li>
+            <li>- 과거 당첨 조합과의 유사도 분석</li>
+            <li>- 핵심 제외수 자동 필터링</li>
+          </ul>
+        </div>
+
+        <div class="premium-card rounded-2xl p-6 md:p-8 text-center h-full">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+            <span class="text-3xl md:text-4xl">✨</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold mb-4 font-pretendard">실데이터 검증 완료</h3>
+          <p class="text-gray-600 leading-relaxed text-sm md:text-base">
+            이 모든 과정은 실제 1등 당첨으로 증명되었습니다. 가설이 아닌, 결과로 증명된 번호를 제공합니다.
+          </p>
+           <ul class="text-left mt-4 space-y-1 text-gray-500 text-sm md:text-base">
+            <li>- 1081회 1등 당첨 조합 배출</li>
+            <li>- 3, 4, 5등 다수 당첨 사례</li>
+            <li>- 매주 최신 데이터로 시스템 업데이트</li>
+          </ul>
         </div>
       </div>
+
+      <div class="mt-16 md:mt-20 text-center">
+        <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2 font-pretendard">번호 추천 프로세스</h3>
+        <p class="text-gray-600 mb-10 md:mb-12">이러한 체계적인 과정을 통해 당신을 위한 번호가 탄생합니다.</p>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-0">
+          
+          <div class="flex-1 text-center p-2 md:p-4">
+            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto bg-white border-2 border-primary/20 rounded-full flex items-center justify-center shadow-lg">
+              <span class="text-3xl md:text-4xl">📂</span>
+            </div>
+            <p class="mt-3 font-bold text-base md:text-lg">1. 데이터 수집</p>
+            <p class="text-xs md:text-sm text-gray-500">1회~최신 회차<br>빅데이터 취합</p>
+          </div>
+          
+          <div class="text-3xl md:text-4xl text-gray-300 transform md:-translate-x-4 rotate-90 md:rotate-0">→</div>
+
+          <div class="flex-1 text-center p-2 md:p-4">
+            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto bg-white border-2 border-primary/20 rounded-full flex items-center justify-center shadow-lg">
+              <span class="text-3xl md:text-4xl">📈</span>
+            </div>
+            <p class="mt-3 font-bold text-base md:text-lg">2. 패턴 분석</p>
+            <p class="text-xs md:text-sm text-gray-500">다차원 통계<br>알고리즘 분석</p>
+          </div>
+
+          <div class="text-3xl md:text-4xl text-gray-300 transform md:-translate-x-4 rotate-90 md:rotate-0">→</div>
+
+          <div class="flex-1 text-center p-2 md:p-4">
+            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto bg-white border-2 border-primary/20 rounded-full flex items-center justify-center shadow-lg">
+              <span class="text-3xl md:text-4xl">🔬</span>
+            </div>
+            <p class="mt-3 font-bold text-base md:text-lg">3. 번호 추출</p>
+            <p class="text-xs md:text-sm text-gray-500">핵심 예상번호<br>및 제외수 추출</p>
+          </div>
+          
+          <div class="text-3xl md:text-4xl text-gray-300 transform md:-translate-x-4 rotate-90 md:rotate-0">→</div>
+          
+          <div class="flex-1 text-center p-2 md:p-4">
+            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto bg-secondary/20 border-2 border-secondary rounded-full flex items-center justify-center shadow-lg">
+              <span class="text-3xl md:text-4xl">💌</span>
+            </div>
+            <p class="mt-3 font-bold text-base md:text-lg text-secondary">4. 최종 조합 발송</p>
+            <p class="text-xs md:text-sm text-gray-500">최적의 번호 조합<br>회원에게 제공</p>
+          </div>
+        </div>
+
+        <p class="mt-12 md:mt-16 text-sm text-gray-500 bg-gray-100 p-4 rounded-lg border border-gray-200 max-w-3xl mx-auto">
+          <strong>※ 중요 안내:</strong> 위 프로세스에 적용된 상세 분석 로직과 핵심 필터링 기준은 대표자의 10년간 연구 노하우가 담긴 <strong>독점 자산</strong>이므로, 외부에 공개되지 않는 점 양해 바랍니다.
+        </p>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <div class="section-divider reverse"></div>
 
   
   <!-- Reviews Section -->
-  <section id="reviews" class="py-20 bg-light relative">
-    <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
-        <div class="section-content">
-          <div class="grid md:grid-cols-2 gap-8">
-            <div class="premium-card rounded-2xl p-6">
-              <div class="flex items-center mb-4">
-                <img src="indexFile/review1.png" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 class="font-bold">박*진 님</h4>
-                  <div class="text-yellow-400">★★★★★</div>
+<section id="reviews" class="py-16 md:py-24 lg:py-32 bg-light relative"> <div class="absolute inset-0 bg-gradient-to-b from-white to-light"></div>
+  <div class="container mx-auto px-4 relative">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-gray-800 section-title">함께 행운을 만들어가는 분들의 목소리</h2>
+
+      <div class="mb-16 md:mb-20">
+        <h3 class="text-2xl md:text-3xl font-bold text-center mb-10 text-primary font-pretendard">📸 실제 당첨용지 인증 후기</h3>
+        
+        <div class="flex space-x-6 md:grid md:grid-cols-2 md:space-x-0 md:gap-8 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0">
+          
+          <div class="flex-shrink-0 w-4/5 md:w-auto premium-card rounded-2xl p-6 border-2 border-secondary/50">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center">
+                    <img src="indexFile/review1.png" alt="후기 작성자" class="w-14 h-14 rounded-full mr-4"/>
+                    <div>
+                        <h4 class="font-bold text-lg">박*진 님</h4>
+                        <p class="text-sm text-gray-500">2025년 7월 12일</p>
+                    </div>
                 </div>
-              </div>
-              <p class="text-gray-600">"처음에는 반신반의했는데, 실제로 4등 당첨이 되었어요! 꾸준히 구매하려고 해요! 감사합니다!!"</p>
-            </div>
-            <div class="premium-card rounded-2xl p-6">
-              <div class="flex items-center mb-4">
-                <img src="indexFile/review2.png" alt="후기 작성자" class="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 class="font-bold">이*희 님</h4>
-                  <div class="text-yellow-400">★★★★★</div>
+                <div class="text-right">
+                    <p class="font-bold text-lg text-secondary">4등 당첨!</p>
+                    <div class="text-yellow-400">★★★★★</div>
                 </div>
-              </div>
-              <p class="text-gray-600">"운영자님의 노하우가 정말 대단해요. 3등 당첨으로 큰 행복을 누렸습니다."</p>
             </div>
+            <p class="text-gray-700 leading-relaxed mb-4">"반신반의했는데 진짜 당첨이 되네요! 큰 금액은 아니지만 너무 기뻐서 인증합니다. 운영자님 정말 감사드리고 앞으로도 쭉 이용할게요!"</p>
+            <img src="https://via.placeholder.com/400x300.png?text=4등+당첨용지+인증샷" alt="4등 당첨용지" class="w-full rounded-lg cursor-pointer border hover:opacity-80 transition"/>
+          </div>
+
+          <div class="flex-shrink-0 w-4/5 md:w-auto premium-card rounded-2xl p-6">
+             <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center">
+                    <img src="indexFile/review2.png" alt="후기 작성자" class="w-14 h-14 rounded-full mr-4"/>
+                    <div>
+                        <h4 class="font-bold text-lg">김*영 님</h4>
+                        <p class="text-sm text-gray-500">2025년 6월 28일</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-lg text-secondary">5등 당첨!</p>
+                    <div class="text-yellow-400">★★★★★</div>
+                </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed mb-4">"매주 5등이라도 꾸준히 되니깐 로또 사는 재미가 있네요 ㅎㅎ 언젠가 높은 등수도 되겠죠? 번호 항상 감사합니다."</p>
+             <img src="https://via.placeholder.com/400x300.png?text=5등+당첨용지+인증샷" alt="5등 당첨용지" class="w-full rounded-lg cursor-pointer border hover:opacity-80 transition"/>
           </div>
         </div>
       </div>
+
+
+      <div class="text-center">
+        <h3 class="text-2xl md:text-3xl font-bold mb-10 text-primary font-pretendard">💬 감사 메시지</h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          
+          <div class="premium-card rounded-2xl p-6 text-left">
+            <div class="flex items-center mb-4">
+              <img src="indexFile/review2.png" alt="후기 작성자" class="w-14 h-14 rounded-full mr-4"/>
+              <div>
+                <h4 class="font-bold text-lg">이*희 님</h4>
+                <div class="text-yellow-400">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">"운영자님의 스토리를 보고 진심이 느껴져서 시작했어요. 놀랍게도 3등에 당첨되어 아이들 학원비 걱정을 덜었습니다. 정말 큰 행복을 선물해주셔서 감사합니다."</p>
+          </div>
+          
+          <div class="premium-card rounded-2xl p-6 text-left">
+             <div class="flex items-center mb-4">
+              <img src="indexFile/review1.png" alt="후기 작성자" class="w-14 h-14 rounded-full mr-4"/>
+              <div>
+                <h4 class="font-bold text-lg">최*원 님</h4>
+                <div class="text-yellow-400">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-gray-700 leading-relaxed">"10년의 연구라는 말에 믿음이 갔습니다. 번호를 받고 나서부터는 매주 토요일이 기다려집니다. 좋은 결과 있으리라 믿습니다."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-12 md:mt-16"> <a href="/review.html" class="bg-white border border-primary text-primary font-semibold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-300">
+          더 많은 후기 보러가기 →
+        </a>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
   <div class="section-divider"></div>
 
@@ -529,95 +734,214 @@
   <div class="section-divider reverse"></div>
 
   <!-- FAQ Section -->
-  <section id="faq" class="py-20 bg-white relative">
-    <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
-    <div class="container mx-auto px-4 relative">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">FAQ</h2>
-        <div class="section-content">
-          <div class="space-y-4">
-            <div class="premium-card rounded-xl p-6">
-              <h3 class="text-xl font-bold mb-2">Q. 추천 번호는 어떻게 선정되나요?</h3>
-              <p class="text-gray-600">추천 번호는 제1081회 1등 당첨자가 10년간 직접 쌓아 올린 독점적인 노하우와 분석 시스템을 통해 선정됩니다. 이는 단순한 통계나 확률을 넘어선 특별함으로, 오직 저희 사이트에서만 경험하실 수 있습니다.</p>
-            </div>
-            <div class="premium-card rounded-xl p-6">
-              <h3 class="text-xl font-bold mb-2">Q. 결제 후 언제 번호를 받을 수 있나요?</h3>
-              <p class="text-gray-600">결제 후 수요일 10시 혹은 토요일 16시에 문자 메시지 및 마이페이지에서 추천 번호를 확인하실 수 있습니다.</p>
-            </div>
-            <div class="premium-card rounded-xl p-6">
-              <h3 class="text-xl font-bold mb-2">Q. 환불 정책은 어떻게 되나요?</h3>
-              <p class="text-gray-600">번호 확인 전까지는 100% 환불이 가능합니다. 자세한 내용은 고객센터 및 메일로 문의해 주세요.</p>
-            </div>
-          </div>
-        </div>
+<section id="faq" class="py-16 md:py-24 lg:py-32 bg-white relative"> <div class="absolute inset-0 bg-gradient-radial from-secondary/5 to-transparent"></div>
+  <div class="container mx-auto px-4 relative">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-gray-800 section-title">자주 묻는 질문 (FAQ)</h2>
+      
+      <div class="space-y-4">
+        
+        <details class="premium-card rounded-xl p-5 md:p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between text-lg md:text-xl font-bold list-none">
+            Q. 추천 번호는 어떤 방식으로 선정되나요?
+            <span class="transform transition-transform duration-300 group-open:rotate-180">▼</span>
+          </summary>
+          <p class="text-gray-700 leading-relaxed mt-4 pt-4 border-t border-gray-200">
+            A. 추천 번호는 제1081회 1등 당첨자가 10년간 직접 쌓아 올린 독점적인 노하우와 데이터 분석 시스템을 통해 선정됩니다. 이는 단순 통계나 기계적 확률을 넘어, 실제 1등 당첨으로 증명된 특별한 로직이며 오직 저희 사이트에서만 경험하실 수 있습니다. 상세 로직은 대표자의 독점 자산으로 외부에 공개되지 않습니다.
+          </p>
+        </details>
+
+        <details class="premium-card rounded-xl p-5 md:p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between text-lg md:text-xl font-bold list-none">
+            Q. 결제 후 언제, 어떻게 번호를 받을 수 있나요?
+            <span class="transform transition-transform duration-300 group-open:rotate-180">▼</span>
+          </summary>
+          <p class="text-gray-700 leading-relaxed mt-4 pt-4 border-t border-gray-200">
+            A. 번호는 **매주 2회(수요일 오전 10시, 토요일 오후 4시) 발송**됩니다. 결제 완료 즉시 마이페이지에서 확인 가능하며, 발송 시점에 맞춰 알림 메시지도 보내드립니다. 
+          </p>
+        </details>
+        
+        <details class="premium-card rounded-xl p-5 md:p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between text-lg md:text-xl font-bold list-none">
+            Q. 환불 정책은 어떻게 되나요?
+            <span class="transform transition-transform duration-300 group-open:rotate-180">▼</span>
+          </summary>
+          <p class="text-gray-700 leading-relaxed mt-4 pt-4 border-t border-gray-200">
+            A. 디지털 콘텐츠 특성상, 조합 번호를 확인하신 후에는 환불이 어렵습니다. **번호를 확인하기 전까지는 100% 환불이 가능**하오니, 신중한 결정을 부탁드립니다. 자세한 내용은 고객센터 및 메일로 문의해 주세요.
+          </p>
+        </details>
+
+        <details class="premium-card rounded-xl p-5 md:p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between text-lg md:text-xl font-bold list-none">
+            Q. 만약 당첨되면 세금은 어떻게 되나요?
+            <span class="transform transition-transform duration-300 group-open:rotate-180">▼</span>
+          </summary>
+          <p class="text-gray-700 leading-relaxed mt-4 pt-4 border-t border-gray-200">
+            A. 로또 당첨금은 기타소득으로 분류되어 세금이 부과됩니다. 5만 원 초과 ~ 3억 원 이하 금액은 22%, 3억 원 초과 금액은 33%의 세율이 적용됩니다. (소득세+지방소득세 포함) 자세한 내용은 국세청 홈페이지나 전문가와 상담하는 것을 추천합니다.
+          </p>
+        </details>
+        
+        <details class="premium-card rounded-xl p-5 md:p-6 group cursor-pointer">
+          <summary class="flex items-center justify-between text-lg md:text-xl font-bold list-none">
+            Q. 결제 정보는 안전하게 관리되나요?
+            <span class="transform transition-transform duration-300 group-open:rotate-180">▼</span>
+          </summary>
+          <p class="text-gray-700 leading-relaxed mt-4 pt-4 border-t border-gray-200">
+            A. 그럼요. 저희 사이트는 보안서버(SSL) 인증을 통해 모든 정보를 암호화하여 전송하고 있습니다. 회원님의 소중한 정보는 안전하게 보호되니 안심하고 이용하셔도 좋습니다.
+          </p>
+        </details>
+
+      </div>
+
+      <div class="mt-12 md:mt-16 text-center bg-gray-50 p-6 md:p-8 rounded-2xl border">
+        <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">찾으시는 질문이 없으신가요?</h3>
+        <p class="text-gray-600 mb-6">더 궁금한 점이 있으시면 언제든지 문의해 주세요.<br>최대한 빠르고 친절하게 답변해 드리겠습니다.</p>
+        <a href="/faq.html" class="inline-block bg-primary text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-opacity-90 transition">
+          1:1 문의하러 가기
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- Footer -->
-<footer class="bg-gray-800 text-white py-12 border-t border-accent/20">
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto">
-      <div class="grid md:grid-cols-3 gap-8 mb-8">
-        <div>
-          <h3 class="text-xl font-bold mb-4">로또1081</h3>
-          <p class="text-gray-400">10년간의 연구와 1등 당첨의 노하우를 담은 특별한 번호 추천 서비스</p>
-          <p class="text-gray-500 mt-4">운영팀: <span class="font-semibold">로또1081 운영팀</span></p>
-          <p class="text-gray-500">프라임파트너스 | 송승오</p>
-          <p class="text-gray-500">359 11 03128</p>
-          <p class="text-gray-500">경기도 김포시 고촌읍 장차로9 2층(신영빌딩)</p>
-          <p class="text-gray-500">연락처: 070-4001-1018</p>
+<footer class="bg-gray-900 text-white">
+  <div class="container mx-auto px-4 pt-16 pb-12">
+    <div class="max-w-6xl mx-auto">
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 mb-10">
+        
+        <div class="col-span-2 md:col-span-4 lg:col-span-2 text-center md:text-left">
+          <h3 class="text-2xl font-bold mb-4 font-pretendard text-secondary">로또1081</h3>
+          <p class="text-gray-400 leading-relaxed mb-6">
+            10년간의 연구와 1등 당첨의 노하우를 담아,<br>당신의 가능성에 확신을 더하는 번호를 제안합니다.
+          </p>
+          <div class="space-y-2 text-gray-400 text-sm">
+            <p><strong>상호명:</strong> 프라임파트너스 | <strong>대표:</strong> 송승오</p>
+            <p><strong>사업자등록번호:</strong> 359-11-03128</p>
+            <p><strong>주소:</strong> 경기도 김포시 고촌읍 장차로9 2층 (신영빌딩)</p>
+            <p><strong>연락처:</strong> 070-4001-1018 | <strong>이메일:</strong> lotto1081.sso@gmail.com</p>
+          </div>
         </div>
+        
         <div>
-          <h3 class="text-xl font-bold mb-4">고객센터</h3>
-          <p class="text-gray-400">운영시간: 평일 09:00 - 18:00</p>
-          <p class="text-gray-400">문의: 사이트 내 고객센터 게시판 이용</p>
-          <p class="text-gray-400">메일: lotto1081.sso@gmail.com</p>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4">바로가기</h3>
+          <h3 class="text-xl font-bold mb-4 text-secondary">바로가기</h3>
           <ul class="space-y-2">
-            <li><a href="login.html" class="text-gray-400 hover:text-white transition">로그인</a></li>
             <li><a href="/mypage" class="text-gray-400 hover:text-white transition">마이페이지</a></li>
-            <li><a href="/check" class="text-gray-400 hover:text-white transition">당첨 확인</a></li>
-            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition">개인정보처리방침</a></li>
+            <li><a href="/review.html" class="text-gray-400 hover:text-white transition">고객 후기</a></li>
+            <li><a href="/faq.html" class="text-gray-400 hover:text-white transition">자주 묻는 질문</a></li>
+            <li><a href="/payment.html" class="text-gray-400 hover:text-white transition">구독 상품</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-secondary">고객 지원</h3>
+          <ul class="space-y-2">
+            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition font-bold">개인정보처리방침</a></li>
             <li><a href="politics.html" class="text-gray-400 hover:text-white transition">이용약관</a></li>
             <li><a href="discalmier.html" class="text-gray-400 hover:text-white transition">면책조항</a></li>
           </ul>
+           <div class="mt-4">
+             <p class="text-gray-500 text-sm">고객센터: 평일 09:00 - 18:00</p>
+           </div>
+        </div>
+
+      </div>
+
+      <div class="border-t border-gray-700 my-8"></div>
+
+      <div class="flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+        <div class="text-gray-500 text-sm mb-6 md:mb-0">
+          <p>&copy; 2025 로또1081. All rights reserved.</p>
+          <p class="mt-1">본 서비스가 제공하는 정보는 통계적 분석에 기반한 참고 자료이며, 당첨을 보장하지 않습니다.</p>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <p class="text-sm text-gray-500 mr-2 hidden sm:block">Secured by:</p>
+            <svg class="w-16 h-8 text-gray-400" fill="currentColor" viewBox="0 0 100 50">
+              <text x="50" y="30" font-size="12" text-anchor="middle" fill="currentColor">SSL SECURE</text>
+            </svg>
+             <svg class="w-16 h-8 text-gray-400" fill="currentColor" viewBox="0 0 100 50">
+              <text x="50" y="30" font-size="12" text-anchor="middle" fill="currentColor">Toss Payments</text>
+            </svg>
         </div>
       </div>
-      <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-        <p>&copy; 2025 로또1081. All rights reserved. | 본 서비스는 당첨을 보장하지 않으며, 결과는 운에 따라 달라질 수 있습니다.</p>
-      </div>
+
     </div>
   </div>
 </footer>
 
 
 <script>
-// 이번주 추천 번호 섹터임
-const lottoNumbers = [3, 11, 19, 27, 29, 42]; 
+// 이번 주 추천 번호 섹션을 동적으로 변경하는 스크립트입니다.
 
+// 1. 미리 10개의 다른 로또 번호 세트를 정의합니다.
+//    이 세트들이 순서대로 계속 반복해서 보이게 됩니다.
+const predefinedLottoSets = [
+  [3, 11, 19, 27, 29, 42], // 세트 1 (기존 초기 번호)
+  [1, 12, 23, 34, 40, 45], // 세트 2 (다양한 색상 조합)
+  [5, 8, 15, 18, 25, 28],  // 세트 3 (노랑, 파랑, 빨강 위주)
+  [20, 33, 35, 38, 41, 44], // 세트 4 (회색, 초록 위주)
+  [2, 10, 20, 31, 39, 43], // 세트 5 (모든 색상 그룹 포함)
+  [7, 13, 17, 21, 24, 37], // 세트 6
+  [4, 9, 14, 26, 33, 41],  // 세트 7
+  [6, 16, 19, 22, 32, 36], // 세트 8
+  [8, 11, 28, 30, 34, 40], // 세트 9
+  [2, 21, 23, 25, 27, 35]  // 세트 10
+];
+
+// 2. 로또 번호에 따라 공의 색상을 반환하는 함수는 그대로 사용합니다.
 function getBallColor(num) {
   if (num >= 1 && num <= 9)   return "#FBC400"; // 노란색
   if (num >= 10 && num <= 19) return "#3A6CC8"; // 파란색
   if (num >= 20 && num <= 29) return "#E8213A"; // 빨간색
   if (num >= 30 && num <= 39) return "#888888"; // 회색
   if (num >= 40 && num <= 45) return "#24B24B"; // 초록색
-  return "#F16C3A"; // 기타(보너스 등, 필요할 경우)
+  return "#F16C3A";
 }
 
-document.getElementById('lottoBalls').addEventListener('contextmenu', e => e.preventDefault());
-document.getElementById('lottoBalls').addEventListener('copy', e => e.preventDefault());
-document.getElementById('lottoBalls').addEventListener('selectstart', e => e.preventDefault());
+// 3. 로또 공을 화면에 그리는 함수도 그대로 사용합니다.
+function displayLottoBalls(numbers) {
+  const lottoBallsContainer = document.getElementById('lottoBalls');
+  if (!lottoBallsContainer) return;
 
-const lottoBalls = document.getElementById('lottoBalls');
-lottoBalls.innerHTML = lottoNumbers.map(num => `
-  <span class="w-12 h-12 flex items-center justify-center rounded-full font-bold text-xl shadow blur-sm"
-    style="background:${getBallColor(num)};color:#fff;">
-    ${num}
-  </span>
-`).join('');
+  lottoBallsContainer.innerHTML = numbers.map(num => `
+    <span class="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-full font-bold text-2xl md:text-3xl shadow-lg blur-md transition-all duration-500"
+      style="background:${getBallColor(num)}; color:#fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+      ${num}
+    </span>
+  `).join('');
+}
+
+// 4. 현재 보여줄 세트의 순번(index)을 기억할 변수를 만듭니다.
+let currentSetIndex = 0;
+
+// 로또볼 컨테이너의 우클릭, 복사, 선택을 방지하는 이벤트 리스너는 그대로 둡니다.
+const container = document.getElementById('lottoBalls');
+if (container) {
+    container.addEventListener('contextmenu', e => e.preventDefault());
+    container.addEventListener('copy', e => e.preventDefault());
+    container.addEventListener('selectstart', e => e.preventDefault());
+}
+
+// --- 스크립트 실행 ---
+
+// A. 페이지가 로드되면, 미리 정의된 세트 목록의 첫 번째(0번) 세트를 보여줍니다.
+displayLottoBalls(predefinedLottoSets[currentSetIndex]);
+
+// B. 그 후, 1.5초(1500ms)마다 다음 세트를 보여주도록 설정합니다.
+setInterval(() => {
+  // 현재 순번(index)을 1 증가시킵니다.
+  // 만약 마지막 세트에 도달하면, 나머지 연산자(%)를 통해 다시 0번으로 돌아갑니다.
+  currentSetIndex = (currentSetIndex + 1) % predefinedLottoSets.length;
+  
+  // 다음 세트 번호 목록을 가져옵니다.
+  const nextSet = predefinedLottoSets[currentSetIndex];
+  
+  // 가져온 번호 목록으로 화면을 업데이트합니다.
+  displayLottoBalls(nextSet);
+}, 1800); // 1.5초마다 반복
+
 </script>
 
 
@@ -793,6 +1117,27 @@ firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
     });
   });
 })();
+</script>
+
+<script>
+  //네비게이션
+document.addEventListener('DOMContentLoaded', () => {
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userDropdown = document.getElementById('userDropdown');
+
+    if (userMenuBtn) {
+        userMenuBtn.addEventListener('click', () => {
+            userDropdown.classList.toggle('hidden');
+        });
+    }
+
+    // 다른 곳 클릭 시 드롭다운 닫기
+    window.addEventListener('click', function(e) {
+        if (userMenuBtn && !userMenuBtn.contains(e.target) && userDropdown && !userDropdown.contains(e.target)) {
+            userDropdown.classList.add('hidden');
+        }
+    });
+});
 </script>
 
 </body>

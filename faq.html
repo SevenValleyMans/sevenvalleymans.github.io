@@ -107,7 +107,7 @@
         <a href="faq.html" class="text-primary font-bold menu-link active">고객센터</a>
         <a href="review.html" class="text-gray-600 hover:text-primary menu-link">후기</a>
         
-        <a href="payment.html" class="border-2 border-primary text-primary px-5 py-1.5 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-300 active">구독상품</a>
+        <a href="payment.html" class="border-2 border-primary text-primary px-5 py-1.5 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-300">구독상품</a>
         
         <div class="flex items-center">
           <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all">로그인</a>
@@ -155,29 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- 모바일 전체 메뉴 오버레이 (오직 모바일에서만, nav 외부에!) -->
 <div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
   <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
-    <!-- 닫기 버튼 -->
     <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
-<!-- 모바일 메뉴 (수정 예시) -->
-<nav class="flex flex-col space-y-6 mt-8">
-  <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
-  <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
-  <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
-  <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
-  <a href="review.html" class="text-gray-700 text-lg font-bold hover:text-primary">후기</a>
-  <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
-  <!-- 로그인 후 노출될 유저/로그아웃 버튼(초기에 hidden) -->
-  <span id="userNavMobile" class="hidden flex items-center space-x-2">
-    <span id="userNameMobile" class="text-secondary font-bold"></span>
-  </span>
-</nav>
-
+    <nav class="flex flex-col space-y-6 mt-8">
+      <a href="index.html" class="text-gray-700 text-lg font-bold hover:text-primary">홈</a>
+      <a href="myPage.html" class="text-gray-700 text-lg font-bold hover:text-primary">마이페이지</a>
+      <a href="faq.html" class="text-gray-700 text-lg font-bold hover:text-primary">고객센터</a>
+      <a href="payment.html" class="text-gray-700 text-lg font-bold hover:text-primary">구독상품</a>
+      <a href="review.html" class="text-gray-700 text-lg font-bold hover:text-primary">후기</a>
+      <a href="login.html" id="loginMobileBtn" class="text-white bg-primary text-lg px-4 py-2 rounded-full font-bold text-center hover:bg-opacity-90 transition">로그인</a>
+      <span id="userNavMobile" class="hidden flex items-center space-x-2">
+        <span id="userNameMobile" class="text-secondary font-bold"></span>
+      </span>
+    </nav>
     <div class="mt-auto text-xs text-gray-400 pt-8 text-center">© 2024 로또1081</div>
   </div>
 </div>
-<!-- 네비 겹침 방지 padding-top 적용 예시 -->
 <div class="h-16 md:h-16"></div>
 
 <main class="container mx-auto px-4 max-w-3xl pt-20">
@@ -568,6 +562,15 @@ document.getElementById('writeModal').onclick = function(e) {
   if (e.target === document.getElementById('writeModal')) this.classList.add('hidden');
 };
 </script>
-
+  <!-- 햄버거 메뉴 동작 스크립트 (아래 한 번만 추가하면 됨) -->
+  <script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  // 메뉴 오버레이 클릭시 닫기
+  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+  </script>
 </body>
 </html>

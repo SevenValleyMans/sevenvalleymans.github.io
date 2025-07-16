@@ -172,7 +172,7 @@ document.getElementById('signupBtn').onclick = function() {
     signupMessage.textContent = "모든 항목을 입력해주세요.";
     return;
   }
-  if (!/^01[016789][0-9]{7,8}$/.test(콜)) {
+  if (!/^01[016789][0-9]{7,8}$/.test(phone)) {
     signupMessage.textContent = "휴대폰번호를 정확히 입력하세요.";
     return;
   }
@@ -229,7 +229,7 @@ document.getElementById('loginBtn').onclick = function() {
   const phone = document.getElementById('loginPhone').value.trim();
   const pw = document.getElementById('loginPassword').value;
   const loginMessage = document.getElementById('loginMessage');
-  if (!/^01[016789][0-9]{7,8}$/.test(콜)) {
+  if (!/^01[016789][0-9]{7,8}$/.test(phone)) {
     loginMessage.textContent = "휴대폰번호를 정확히 입력하세요.";
     return;
   }

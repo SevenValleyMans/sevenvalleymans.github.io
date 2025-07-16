@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Meta Description -->
+    <!-- Meta Description -->
 <meta name="description" content="로또1081 자주 묻는 질문을 확인해보세요. 무통장 입금, 번호 수신 방법, 구독 상태 확인 등 주요 궁금증을 빠르게 해결할 수 있습니다.">
 
 <!-- Canonical URL -->
@@ -93,7 +93,6 @@
 </head>
 <body class="bg-light font-sans">
 <style>
-  /* 메뉴 호버 시 밑줄 애니메이션 효과 */
   .menu-link {
     position: relative;
     transition: color 0.3s ease;
@@ -105,7 +104,7 @@
     height: 2px;
     bottom: -6px;
     left: 50%;
-    background-color: #8B0000; /* primary color */
+    background-color: #8B0000;
     transition: all 0.3s ease-out;
     transform: translateX(-50%);
   }
@@ -115,6 +114,7 @@
   }
 </style>
 
+<!-- 네비게이션 -->
 <nav class="fixed w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-200">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
@@ -122,18 +122,14 @@
         로또1081
         <span class="absolute -top-1 -right-2 w-2 h-2 bg-secondary rounded-full"></span>
       </a>
-
       <div class="hidden md:flex items-center space-x-8">
         <a href="index.html" class="text-gray-600 hover:text-primary menu-link">홈</a>
         <a href="myPage.html" class="text-gray-600 hover:text-primary menu-link">마이페이지</a>
         <a href="faq.html" class="text-gray-600 hover:text-primary menu-link">고객센터</a>
         <a href="review.html" class="text-primary font-bold menu-link active">후기</a>
-        
         <a href="payment.html" class="border-2 border-primary text-primary px-5 py-1.5 rounded-full font-bold hover:bg-primary hover:text-white transition-all duration-300">구독상품</a>
-        
         <div class="flex items-center">
           <a href="login.html" id="loginNavBtn" class="bg-primary text-white px-6 py-2 rounded-full font-bold hover:bg-opacity-90 transition-all">로그인</a>
-          
           <div id="userNav" class="hidden relative">
             <button id="userMenuBtn" class="flex items-center space-x-2">
               <span id="userName" class="text-secondary font-bold"></span>
@@ -147,7 +143,6 @@
           </div>
         </div>
       </div>
-      
       <button id="menuBtn" class="block md:hidden p-2 rounded hover:bg-light focus:outline-none">
         <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
@@ -156,27 +151,22 @@
     </div>
   </div>
 </nav>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const userMenuBtn = document.getElementById('userMenuBtn');
-    const userDropdown = document.getElementById('userDropdown');
-
-    if (userMenuBtn) {
-        userMenuBtn.addEventListener('click', () => {
-            userDropdown.classList.toggle('hidden');
-        });
-    }
-
-    // 다른 곳 클릭 시 드롭다운 닫기
-    window.addEventListener('click', function(e) {
-        if (userMenuBtn && !userMenuBtn.contains(e.target) && userDropdown && !userDropdown.contains(e.target)) {
-            userDropdown.classList.add('hidden');
-        }
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
+  if (userMenuBtn) {
+    userMenuBtn.addEventListener('click', () => {
+      userDropdown.classList.toggle('hidden');
     });
+  }
+  window.addEventListener('click', function(e) {
+    if (userMenuBtn && !userMenuBtn.contains(e.target) && userDropdown && !userDropdown.contains(e.target)) {
+      userDropdown.classList.add('hidden');
+    }
+  });
 });
 </script>
-
 <div id="mobileMenu" class="md:hidden fixed inset-0 bg-black/70 z-50 hidden">
   <div class="absolute right-0 top-0 w-64 h-full bg-white shadow-xl flex flex-col pt-8 pb-4 px-6">
     <button id="closeMenu" class="absolute top-3 right-4 text-2xl text-accent hover:text-primary">&times;</button>
@@ -195,13 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <div class="h-16 md:h-16"></div>
-<!-- 네비게이션 복붙 끝 -->
-
 
 <!-- 후기 안내문 + 후기 작성 폼 (좌우 2단) -->
 <div class="container mx-auto px-4 max-w-3xl py-16">
   <div class="md:flex md:items-start md:gap-10">
-    <!-- 안내문 (좌측, 모바일 상단) -->
     <div class="md:w-1/2 mb-10 md:mb-0 flex flex-col items-center md:items-start text-center md:text-left">
       <div class="mb-3">
         <svg class="w-12 h-12 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -226,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
         * 따뜻한 격려, 아쉬웠던 점, 작은 변화 모두 진심으로 귀 기울이겠습니다.
       </p>
     </div>
-    <!-- 후기 작성 폼 (우측, 모바일 하단) -->
     <div class="premium-card rounded-3xl p-8 shadow-2xl w-full md:w-1/2 relative">
       <div class="absolute -top-8 left-1/2 -translate-x-1/2 z-10">
         <svg class="w-16 h-16 text-secondary drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
@@ -266,11 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- section-divider -->
+<!-- Divider -->
 <div class="h-6"></div>
 <div class="section-divider"></div>
 
-<!-- Reviews Section -->
+<!-- 후기 리스트 섹션 -->
 <section id="reviews" class="py-24 bg-gradient-to-b from-white via-secondary/5 to-light relative">
   <div class="container mx-auto px-4 max-w-8xl">
     <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 section-title">고객 후기</h2>
@@ -297,14 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </section>
 
-
-  <!-- Footer -->
+<!-- Footer -->
 <footer class="bg-gray-900 text-white">
   <div class="container mx-auto px-4 pt-16 pb-12">
     <div class="max-w-6xl mx-auto">
-      
       <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 mb-10">
-        
         <div class="col-span-2 md:col-span-4 lg:col-span-2 text-center md:text-left">
           <h3 class="text-2xl font-bold mb-4 font-pretendard text-secondary">로또1081</h3>
           <p class="text-gray-400 leading-relaxed mb-6">
@@ -317,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>연락처:</strong> 070-4001-1018 | <strong>이메일:</strong> lotto1081.sso@gmail.com</p>
           </div>
         </div>
-        
         <div>
           <h3 class="text-xl font-bold mb-4 text-secondary">바로가기</h3>
           <ul class="space-y-2">
@@ -327,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <li><a href="/payment.html" class="text-gray-400 hover:text-white transition">구독 상품</a></li>
           </ul>
         </div>
-
         <div>
           <h3 class="text-xl font-bold mb-4 text-secondary">고객 지원</h3>
           <ul class="space-y-2">
@@ -339,263 +320,167 @@ document.addEventListener('DOMContentLoaded', () => {
              <p class="text-gray-500 text-sm">고객센터: 평일 09:00 - 18:00</p>
            </div>
         </div>
-
       </div>
-
       <div class="border-t border-gray-700 my-8"></div>
-
       <div class="flex flex-col md:flex-row items-center justify-between text-center md:text-left">
         <div class="text-gray-500 text-sm mb-6 md:mb-0">
           <p>&copy; 2025 로또1081. All rights reserved.</p>
           <p class="mt-1">본 서비스가 제공하는 정보는 통계적 분석에 기반한 참고 자료이며, 당첨을 보장하지 않습니다.</p>
         </div>
-        
       </div>
-
     </div>
   </div>
 </footer>
 
+<!-- 후기/네비 상태/별점/후기리스트 전체 스크립트 -->
 <script>
-  // 네비게이션 상태 변경(로그인/로그아웃)
+/* 별점 UI */
+const starRating = document.getElementById('starRating');
+const starValue = document.getElementById('starValue');
+let rating = 0;
+
+function setStarActive(state) {
+  if (state) {
+    starRating.classList.remove('pointer-events-none', 'opacity-60');
+  } else {
+    starRating.classList.add('pointer-events-none', 'opacity-60');
+  }
+}
+for (let i = 1; i <= 5; i++) {
+  const star = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  star.setAttribute("data-star", i);
+  star.setAttribute("class", "w-8 h-8 text-gray-300 hover:text-secondary cursor-pointer transition hover:scale-125");
+  star.setAttribute("fill", "currentColor");
+  star.setAttribute("viewBox", "0 0 20 20");
+  star.innerHTML = `<polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/>`;
+  starRating.appendChild(star);
+  star.addEventListener('mouseenter', () => updateStars(i));
+  star.addEventListener('click', () => { rating = i; updateStars(i, true); });
+}
+starRating.addEventListener('mouseleave', () => updateStars(rating));
+function updateStars(val, force) {
+  [...starRating.children].forEach((s, idx) => {
+    s.classList[val >= idx + 1 ? "add" : "remove"]("text-secondary");
+    s.classList[val >= idx + 1 ? "remove" : "add"]("text-gray-300");
+    s.classList[val >= idx + 1 ? "add" : "remove"]("drop-shadow-md");
+  });
+  starValue.textContent = val > 0 ? val + "점" : "";
+  if (force) rating = val;
+}
+updateStars(0);
+
+/* 폼 활성/비활성 */
+function setReviewFormActive(isActive) {
+  const nicknameInput = document.getElementById('nickname');
+  const reviewTextInput = document.getElementById('reviewText');
+  const submitBtn = document.getElementById('reviewForm').querySelector('button[type="submit"]');
+  if (isActive) {
+    nicknameInput.removeAttribute('readonly');
+    nicknameInput.removeAttribute('disabled');
+    reviewTextInput.removeAttribute('readonly');
+    reviewTextInput.removeAttribute('disabled');
+    submitBtn.removeAttribute('disabled');
+    setStarActive(true);
+  } else {
+    nicknameInput.setAttribute('readonly', true);
+    nicknameInput.setAttribute('disabled', true);
+    reviewTextInput.setAttribute('readonly', true);
+    reviewTextInput.setAttribute('disabled', true);
+    submitBtn.setAttribute('disabled', true);
+    setStarActive(false);
+  }
+}
+
+/* 네비/멤버십 상태/폼 UI */
+let currentUser = null;
+let isMembershipUser = false;
+
 document.addEventListener('DOMContentLoaded', function() {
   firebase.auth().onAuthStateChanged(function(user) {
-    // 데스크톱
+    currentUser = user;
+    isMembershipUser = false;
+
+    // 네비 UI 상태
     const loginNavBtn = document.getElementById('loginNavBtn');
     const userNav = document.getElementById('userNav');
     const userName = document.getElementById('userName');
     const logoutNavBtn = document.getElementById('logoutNavBtn');
-    // 모바일
     const loginMobileBtn = document.getElementById('loginMobileBtn');
     const userNavMobile = document.getElementById('userNavMobile');
     const userNameMobile = document.getElementById('userNameMobile');
     const logoutMobileBtn = document.getElementById('logoutMobileBtn');
-
-    if (user) {
-      // Firestore에서 유저명 불러오기(선택)
-      firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
-        const name = doc.exists && doc.data().name ? doc.data().name + '님' : user.email || '회원님';
-        if (userName) userName.textContent = name;
-        if (userNameMobile) userNameMobile.textContent = name;
-      }).catch(() => {
-        if (userName) userName.textContent = user.email || '회원님';
-        if (userNameMobile) userNameMobile.textContent = user.email || '회원님';
-      });
-
-      // 데스크톱
-      if (loginNavBtn) loginNavBtn.style.display = "none";
-      if (userNav) userNav.classList.remove('hidden');
-      // 모바일
-      if (loginMobileBtn) loginMobileBtn.style.display = "none";
-      if (userNavMobile) userNavMobile.classList.remove('hidden');
-    } else {
-      // 데스크톱
-      if (loginNavBtn) loginNavBtn.style.display = "inline-block";
-      if (userNav) userNav.classList.add('hidden');
-      // 모바일
-      if (loginMobileBtn) loginMobileBtn.style.display = "block";
-      if (userNavMobile) userNavMobile.classList.add('hidden');
-    }
-
-    // 로그아웃 이벤트 (데스크톱)
-    if (logoutNavBtn) {
-      logoutNavBtn.onclick = function(e) {
-        e.preventDefault();
-        firebase.auth().signOut().then(function() {
-          window.location.reload();
-        });
-      }
-    }
-    // 로그아웃 이벤트 (모바일)
-    if (logoutMobileBtn) {
-      logoutMobileBtn.onclick = function(e) {
-        e.preventDefault();
-        firebase.auth().signOut().then(function() {
-          window.location.reload();
-        });
-      }
-    }
-  });
-});
-  //리뷰 스크립트
-    const reviewsRef = firebase.firestore().collection('reviews').orderBy('createdAt', 'desc');
-let allReviews = [];
-let currentStart = 0;
-const REVIEWS_PER_PAGE = 4;
-
-function renderStars(rating) {
-  return (
-    `<div class="flex gap-0.5 items-center">` +
-      Array.from({ length: 5 }).map((_, i) =>
-        i < rating
-          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow-md scale-110" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
-          : `<svg class="w-5 h-5 md:w-6 md:h-6 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
-      ).join('') +
-    `</div>`
-  );
-}
-function escapeHtml(text) {
-  return text.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-}
-
-const pastel = [
-  "from-yellow-200 via-pink-100 to-secondary/40",
-  "from-primary/20 via-secondary/30 to-accent/10",
-  "from-blue-100 via-accent/20 to-blue-300",
-  "from-green-100 via-green-300 to-green-200"
-];
-
-function renderReviews() {
-  const reviewsDiv = document.getElementById('dynamicReviews');
-  const loadingDiv = document.getElementById('reviewsLoading');
-  const emptyDiv = document.getElementById('reviewsEmpty');
-  reviewsDiv.innerHTML = '';
-  if (allReviews.length === 0) {
-    loadingDiv.style.display = "none";
-    emptyDiv.classList.remove('hidden');
-    return;
-  }
-  loadingDiv.style.display = "none";
-  emptyDiv.classList.add('hidden');
-  // 슬라이드: currentStart ~ currentStart+4
-  let idx = currentStart;
-  allReviews.slice(currentStart, currentStart + REVIEWS_PER_PAGE).forEach((data, i) => {
-    const color = pastel[(idx + i) % pastel.length];
-reviewsDiv.innerHTML += `
-  <div class="rounded-3xl bg-white border-2 border-secondary shadow-xl px-8 py-7 flex flex-col min-w-[320px] max-w-[420px] hover:scale-[1.03] transition group">
-    <div class="flex items-center gap-4 mb-3">
-      <div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary via-white to-primary/30 flex items-center justify-center text-xl font-bold text-primary border border-secondary shadow">
-        ${escapeHtml((data.nickname||'?')[0])}
-      </div>
-      <div class="flex-1">
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-lg text-primary">${escapeHtml(data.nickname||'익명')} 님</span>
-          ${(data.rating >= 5 ? `<span class="text-[12px] text-secondary font-bold bg-secondary/20 rounded px-2 py-0.5 ml-1">BEST</span>` : '')}
-        </div>
-        <span class="block text-xs text-gray-400">${data.createdAtStr || ''}</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-1 mb-3 mt-2">
-      ${renderStars(data.rating || 5)}
-    </div>
-    <blockquote class="mt-2 bg-secondary/5 border-l-4 border-secondary pl-4 py-3 rounded text-gray-800 text-[1.07rem] leading-relaxed italic">
-      “${escapeHtml(data.text||'') }”
-    </blockquote>
-  </div>
-`;
-
-  });
-  document.getElementById('reviewPrev').disabled = (currentStart === 0);
-  document.getElementById('reviewNext').disabled = (currentStart + REVIEWS_PER_PAGE >= allReviews.length);
-}
-
-// DB에서 한 번만 불러와 메모리에 저장
-reviewsRef.get().then(snapshot => {
-  allReviews = [];
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (data.createdAt && data.createdAt.toDate) {
-      data.createdAtStr = data.createdAt.toDate().toLocaleDateString('ko-KR');
-    } else {
-      data.createdAtStr = '';
-    }
-    allReviews.push(data);
-  });
-  renderReviews();
-});
-
-document.getElementById('reviewPrev').addEventListener('click', () => {
-  if (currentStart >= REVIEWS_PER_PAGE) {
-    currentStart -= REVIEWS_PER_PAGE;
-    renderReviews();
-  }
-});
-document.getElementById('reviewNext').addEventListener('click', () => {
-  if (currentStart + REVIEWS_PER_PAGE < allReviews.length) {
-    currentStart += REVIEWS_PER_PAGE;
-    renderReviews();
-  }
-});
-</script>
-
-<script>
-  // 별점 UI
-  const starRating = document.getElementById('starRating');
-  const starValue = document.getElementById('starValue');
-  let rating = 0;
-  for(let i=1;i<=5;i++){
-    const star = document.createElementNS("http://www.w3.org/2000/svg","svg");
-    star.setAttribute("data-star",i);
-    star.setAttribute("class","w-8 h-8 text-gray-300 hover:text-secondary cursor-pointer transition hover:scale-125");
-    star.setAttribute("fill","currentColor");
-    star.setAttribute("viewBox","0 0 20 20");
-    star.innerHTML = `<polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/>`;
-    starRating.appendChild(star);
-    star.addEventListener('mouseenter',()=>updateStars(i));
-    star.addEventListener('click',()=>{ rating=i; updateStars(i,true); });
-  }
-  starRating.addEventListener('mouseleave',()=>updateStars(rating));
-  function updateStars(val,force){
-    [...starRating.children].forEach((s,idx)=>{
-      s.classList[val>=idx+1?"add":"remove"]("text-secondary");
-      s.classList[val>=idx+1?"remove":"add"]("text-gray-300");
-      s.classList[val>=idx+1?"add":"remove"]("drop-shadow-md");
-    });
-    starValue.textContent = val>0? val + "점" : "";
-    if(force) rating=val;
-  }
-  updateStars(0);
-
-  // 파이어베이스 Auth 체크
-  let currentUser = null;
-  firebase.auth().onAuthStateChanged(user=>{
-    currentUser = user;
     const authMsg = document.getElementById('authMessage');
     const form = document.getElementById('reviewForm');
-    if(user){
-      authMsg.classList.add('hidden');
-      form.classList.remove('pointer-events-none','opacity-60');
-    }else{
-      authMsg.classList.remove('hidden');
-      form.classList.add('pointer-events-none','opacity-60');
-    }
-    // 데스크탑 네비/유저네임
-    const loginNavBtn = document.getElementById('loginNavBtn');
-    const userNav = document.getElementById('userNav');
-    const userName = document.getElementById('userName');
-    // 모바일 네비/유저네임
-    const loginMobileBtn = document.getElementById('loginMobileBtn');
-    const userNavMobile = document.getElementById('userNavMobile');
-    const userNameMobile = document.getElementById('userNameMobile');
+
     if (user) {
       firebase.firestore().collection('users').doc(user.uid).get().then(doc => {
-        let nameText = '회원님';
-        if (doc.exists && doc.data().name) {
-          nameText = doc.data().name + '님';
-        }
+        let nameText = doc.exists && doc.data().name ? doc.data().name + '님' : (user.email || '회원님');
         if (userName) userName.textContent = nameText;
         if (userNameMobile) userNameMobile.textContent = nameText;
+
+        if (loginNavBtn) loginNavBtn.style.display = "none";
+        if (userNav) userNav.classList.remove('hidden');
+        if (loginMobileBtn) loginMobileBtn.style.display = "none";
+        if (userNavMobile) userNavMobile.classList.remove('hidden');
+
+        if (doc.exists && doc.data().membership === true) {
+          isMembershipUser = true;
+          authMsg.classList.add('hidden');
+          form.classList.remove('pointer-events-none', 'opacity-60');
+          setReviewFormActive(true);
+        } else {
+          isMembershipUser = false;
+          authMsg.textContent = "프리미엄 구독 회원만 후기를 작성할 수 있습니다.";
+          authMsg.classList.remove('hidden');
+          form.classList.add('pointer-events-none', 'opacity-60');
+          setReviewFormActive(false);
+        }
       }).catch(() => {
         if (userName) userName.textContent = '회원님';
         if (userNameMobile) userNameMobile.textContent = '회원님';
+        isMembershipUser = false;
+        authMsg.textContent = "프리미엄 구독 회원만 후기를 작성할 수 있습니다.";
+        authMsg.classList.remove('hidden');
+        form.classList.add('pointer-events-none', 'opacity-60');
+        setReviewFormActive(false);
       });
-      if (loginNavBtn) loginNavBtn.style.display = "none";
-      if (userNav) userNav.classList.remove('hidden');
-      if (loginMobileBtn) loginMobileBtn.style.display = "none";
-      if (userNavMobile) userNavMobile.classList.remove('hidden');
+
+      // 로그아웃
+      if (logoutNavBtn) {
+        logoutNavBtn.onclick = function(e) {
+          e.preventDefault();
+          firebase.auth().signOut().then(function() { window.location.reload(); });
+        }
+      }
+      if (logoutMobileBtn) {
+        logoutMobileBtn.onclick = function(e) {
+          e.preventDefault();
+          firebase.auth().signOut().then(function() { window.location.reload(); });
+        }
+      }
     } else {
       if (loginNavBtn) loginNavBtn.style.display = "inline-block";
       if (userNav) userNav.classList.add('hidden');
       if (loginMobileBtn) loginMobileBtn.style.display = "block";
       if (userNavMobile) userNavMobile.classList.add('hidden');
+
+      isMembershipUser = false;
+      authMsg.textContent = "로그인 후 후기를 작성할 수 있습니다.";
+      authMsg.classList.remove('hidden');
+      form.classList.add('pointer-events-none', 'opacity-60');
+      setReviewFormActive(false);
     }
   });
 
-  // 제출 이벤트
-  document.getElementById('reviewForm').addEventListener('submit',async function(e){
+  // 후기 제출
+  document.getElementById('reviewForm').addEventListener('submit', async function(e){
     e.preventDefault();
     if(!currentUser){
       alert("로그인 후 작성해 주세요.");
+      return;
+    }
+    if(!isMembershipUser){
+      alert("프리미엄 구독 회원만 후기를 작성할 수 있습니다.");
       return;
     }
     const nickname = document.getElementById('nickname').value.trim();
@@ -627,9 +512,103 @@ document.getElementById('reviewNext').addEventListener('click', () => {
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   const closeMenu = document.getElementById('closeMenu');
-  menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
-  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
-  mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+  if (menuBtn && mobileMenu) menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
+  if (closeMenu && mobileMenu) closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  if (mobileMenu) mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+});
+
+/* 후기 불러오기/리스트 */
+const reviewsRef = firebase.firestore().collection('reviews').orderBy('createdAt', 'desc');
+let allReviews = [];
+let currentStart = 0;
+const REVIEWS_PER_PAGE = 4;
+
+function renderStars(rating) {
+  return (
+    `<div class="flex gap-0.5 items-center">` +
+      Array.from({ length: 5 }).map((_, i) =>
+        i < rating
+          ? `<svg class="w-5 h-5 md:w-6 md:h-6 text-yellow-400 drop-shadow-md scale-110" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
+          : `<svg class="w-5 h-5 md:w-6 md:h-6 text-gray-200" fill="currentColor" viewBox="0 0 20 20"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.54 16.58,17.91 10,13.73 3.42,17.91 6.03,11.54 0.49,7.36 7.41,7.36"/></svg>`
+      ).join('') +
+    `</div>`
+  );
+}
+function escapeHtml(text) {
+  return text.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+const pastel = [
+  "from-yellow-200 via-pink-100 to-secondary/40",
+  "from-primary/20 via-secondary/30 to-accent/10",
+  "from-blue-100 via-accent/20 to-blue-300",
+  "from-green-100 via-green-300 to-green-200"
+];
+function renderReviews() {
+  const reviewsDiv = document.getElementById('dynamicReviews');
+  const loadingDiv = document.getElementById('reviewsLoading');
+  const emptyDiv = document.getElementById('reviewsEmpty');
+  reviewsDiv.innerHTML = '';
+  if (allReviews.length === 0) {
+    loadingDiv.style.display = "none";
+    emptyDiv.classList.remove('hidden');
+    return;
+  }
+  loadingDiv.style.display = "none";
+  emptyDiv.classList.add('hidden');
+  let idx = currentStart;
+  allReviews.slice(currentStart, currentStart + REVIEWS_PER_PAGE).forEach((data, i) => {
+    const color = pastel[(idx + i) % pastel.length];
+    reviewsDiv.innerHTML += `
+      <div class="rounded-3xl bg-white border-2 border-secondary shadow-xl px-8 py-7 flex flex-col min-w-[320px] max-w-[420px] hover:scale-[1.03] transition group">
+        <div class="flex items-center gap-4 mb-3">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary via-white to-primary/30 flex items-center justify-center text-xl font-bold text-primary border border-secondary shadow">
+            ${escapeHtml((data.nickname||'?')[0])}
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-lg text-primary">${escapeHtml(data.nickname||'익명')} 님</span>
+              ${(data.rating >= 5 ? `<span class="text-[12px] text-secondary font-bold bg-secondary/20 rounded px-2 py-0.5 ml-1">BEST</span>` : '')}
+            </div>
+            <span class="block text-xs text-gray-400">${data.createdAtStr || ''}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 mb-3 mt-2">
+          ${renderStars(data.rating || 5)}
+        </div>
+        <blockquote class="mt-2 bg-secondary/5 border-l-4 border-secondary pl-4 py-3 rounded text-gray-800 text-[1.07rem] leading-relaxed italic">
+          “${escapeHtml(data.text||'') }”
+        </blockquote>
+      </div>
+    `;
+  });
+  document.getElementById('reviewPrev').disabled = (currentStart === 0);
+  document.getElementById('reviewNext').disabled = (currentStart + REVIEWS_PER_PAGE >= allReviews.length);
+}
+reviewsRef.get().then(snapshot => {
+  allReviews = [];
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data.createdAt && data.createdAt.toDate) {
+      data.createdAtStr = data.createdAt.toDate().toLocaleDateString('ko-KR');
+    } else {
+      data.createdAtStr = '';
+    }
+    allReviews.push(data);
+  });
+  renderReviews();
+});
+document.getElementById('reviewPrev').addEventListener('click', () => {
+  if (currentStart >= REVIEWS_PER_PAGE) {
+    currentStart -= REVIEWS_PER_PAGE;
+    renderReviews();
+  }
+});
+document.getElementById('reviewNext').addEventListener('click', () => {
+  if (currentStart + REVIEWS_PER_PAGE < allReviews.length) {
+    currentStart += REVIEWS_PER_PAGE;
+    renderReviews();
+  }
+});
 </script>
 </body>
 </html>

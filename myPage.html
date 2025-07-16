@@ -7,6 +7,26 @@
   <link rel="icon" href="https://lotto1081.com/allFile/logo.jpg" type="image">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SEO: 마이페이지는 검색엔진 색인 제외 -->
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Canonical (기본 주소 지정) -->
+<link rel="canonical" href="https://lotto1081.com/myPage.html" />
+
+<!-- Open Graph (카카오톡/페북 공유 등에서 표시용) -->
+<meta property="og:title" content="마이페이지 - 로또1081" />
+<meta property="og:description" content="내 구독 상태, 추천번호 이력, Q&A 내역을 확인할 수 있는 나만의 페이지입니다." />
+<meta property="og:url" content="https://lotto1081.com/myPage.html" />
+<meta property="og:image" content="https://lotto1081.com/allFile/logo.jpg" />
+<meta property="og:type" content="website" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="로또1081 마이페이지" />
+<meta name="twitter:description" content="프리미엄 구독 현황, 추천번호 이력, Q&A 답변 내역 등을 확인할 수 있습니다." />
+<meta name="twitter:image" content="https://lotto1081.com/allFile/logo.jpg" />
+
   <!-- Firebase SDKs (v8.x.x) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -285,15 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-1">본 서비스가 제공하는 정보는 통계적 분석에 기반한 참고 자료이며, 당첨을 보장하지 않습니다.</p>
         </div>
         
-        <div class="flex items-center space-x-4">
-            <p class="text-sm text-gray-500 mr-2 hidden sm:block">Secured by:</p>
-            <svg class="w-16 h-8 text-gray-400" fill="currentColor" viewBox="0 0 100 50">
-              <text x="50" y="30" font-size="12" text-anchor="middle" fill="currentColor">SSL SECURE</text>
-            </svg>
-             <svg class="w-16 h-8 text-gray-400" fill="currentColor" viewBox="0 0 100 50">
-              <text x="50" y="30" font-size="12" text-anchor="middle" fill="currentColor">Toss Payments</text>
-            </svg>
-        </div>
       </div>
 
     </div>

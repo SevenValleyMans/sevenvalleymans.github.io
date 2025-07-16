@@ -568,7 +568,7 @@ document.getElementById('writeModal').onclick = function(e) {
   const mobileMenu = document.getElementById('mobileMenu');
   const closeMenu = document.getElementById('closeMenu');
   menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
-  closeMenu.onclick = () => mobileMenu.classList.add('hidden');
+  closeMenu.onclick = () => mobileMenu.classList.add('hidden');//
   // 메뉴 오버레이 클릭시 닫기
   mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
   </script>

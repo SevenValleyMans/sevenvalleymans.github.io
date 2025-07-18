@@ -435,12 +435,20 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function openBankTransferModal(product, amount) {
+  // 로그인 상태 체크
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    // 비회원이면 로그인 페이지로 이동
+    window.location.href = 'login.html';
+    return;
+  }
   document.getElementById('modalProduct').textContent = product;
   document.getElementById('modalAmount').textContent = amount.toLocaleString();
   document.getElementById('modalPayerName').value = '';
   document.getElementById('modalPhone').value = '';
   document.getElementById('bankTransferModal').classList.remove('hidden');
 }
+
 function closeBankTransferModal() {
   document.getElementById('bankTransferModal').classList.add('hidden');
 }

@@ -104,6 +104,7 @@
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xl font-bold text-primary">회원 목록</h2>
         <button id="bulkSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">일괄 발송</button>
+         <button id="selectedSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">선택회원 발송</button>
       </div>
       <div id="userList" class="overflow-x-auto">
         <table class="table w-full text-center text-gray-700">
@@ -113,6 +114,7 @@
               <th class="py-2 px-3">닉네임</th>
               <th class="py-2 px-3">가입일</th>
               <th class="py-2 px-3">회원구분</th>
+              <th class="py-2 px-3">이번주 발송</th>
               <th class="py-2 px-3">번호 발송</th>
             </tr>
           </thead>
@@ -231,6 +233,49 @@
         <div id="historyContent" class="max-h-[75vh] overflow-y-auto"></div>
       </div>
     </div>
+
+
+
+
+
+    <!-- 선택회원 발송 모달 (html 어디든 추가) -->
+<div id="selectedSendModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full relative max-h-[80vh] overflow-y-auto">
+    <button id="closeSelectedSendModal" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl">&times;</button>
+    <h3 class="text-lg font-bold text-primary mb-4">선택회원 발송</h3>
+    <div class="mb-2 text-gray-700">발송 대상: <span id="selectedSendList" class="font-semibold"></span></div>
+    <form id="selectedSendForm" class="space-y-3">
+      <div>
+        <label class="block font-semibold mb-1">추천번호 조합 (최소 30개)<br>
+          <span class="text-xs text-gray-400">각 조합을 한 줄에 1개씩, 예: 1,3,11,18,30,42</span>
+        </label>
+        <textarea id="selectedNumbers" class="w-full p-2 border rounded" placeholder="예:&#10;1,3,11,18,30,42&#10;7,8,17,24,31,45&#10;..." rows="12" required></textarea>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">응원 메시지</label>
+        <select id="selectedCheerSelect" class="w-full p-2 border rounded mb-1">
+          <option value="이번 주에는 행운이 함께 하시길!">이번 주에는 행운이 함께 하시길!</option>
+          <option value="꿈은 이루어집니다!">꿈은 이루어집니다!</option>
+          <option value="매주 행복한 한 주 보내세요!">매주 행복한 한 주 보내세요!</option>
+          <option value="로또1081이 늘 응원합니다!">로또1081이 늘 응원합니다!</option>
+        </select>
+        <input type="text" id="selectedCustomCheer" class="w-full p-2 border rounded mt-1" placeholder="직접 입력 (선택)" />
+        <small class="text-gray-400">직접 입력하면 선택 메시지 대신 사용됩니다.</small>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">예약 발송 시간</label>
+        <input type="datetime-local" id="selectedSendSchedule" class="w-full p-2 border rounded" />
+        <small class="text-gray-400">비워두면 즉시 발송</small>
+      </div>
+      <div class="flex gap-2">
+        <button type="submit" class="px-4 py-1 bg-primary text-white rounded font-bold">발송</button>
+        <button type="button" id="closeSelectedSendModal2" class="ml-auto px-4 py-1 bg-gray-200 rounded">취소</button>
+      </div>
+      <div id="selectedSendResult" class="text-sm text-gray-700 mt-2"></div>
+    </form>
+  </div>
+</div>
+
   </main>
 
   <!-- <div id="pwCover" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#fff;display:flex;align-items:center;justify-content:center;">
@@ -311,29 +356,48 @@ tabApprove.onclick = function() {
 
 
     // ---- 회원 목록 불러오기 ----
-    function loadUsers() {
+function loadUsers() {
   const tbody = document.querySelector('#userList tbody');
   tbody.innerHTML = '';
-  firebase.firestore().collection('users').get().then(snapshot => {
-    snapshot.forEach(doc => {
+  const round = getCurrentRound(); // 이번주 회차
+  // 1. 모든 회원 정보 가져오기
+  firebase.firestore().collection('users').get().then(async usersSnapshot => {
+    // 2. 이번주 추천번호 전체 불러오기 (userId:round)
+    const recSnap = await firebase.firestore()
+      .collection('recommendations')
+      .where('round', '==', round)
+      .get();
+    const receivedUsers = new Set();
+    recSnap.forEach(doc => {
+      const rec = doc.data();
+      if (rec.userId) receivedUsers.add(rec.userId);
+    });
+
+    usersSnapshot.forEach(doc => {
       const user = doc.data();
       const userId = user.userId || '-';
       const nickname = user.name || '-';
       const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
       const isMember = user.membership === true;
       const membershipText = isMember ? '멤버십회원' : '일반회원';
+      // ★ 금주 발송 여부 체크
+      const sentThisWeek = receivedUsers.has(userId) ? 'O' : '-';
+
       tbody.innerHTML += `
         <tr>
+           <td class="py-2 px-3">
+      <input type="checkbox" class="user-checkbox" data-email="${userId}" ${!isMember ? 'disabled' : ''}>
+    </td>
           <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
           <td class="py-2 px-3">${nickname}</td>
           <td class="py-2 px-3">${created}</td>
           <td class="py-2 px-3">${membershipText}</td>
-          <td class="py-2 px-3">
-            <button class="sendBtn px-3 py-1 bg-primary text-white rounded ${isMember ? '' : 'opacity-50 cursor-not-allowed'}" data-email="${userId}" ${isMember ? '' : 'disabled'}>발송</button>
-          </td>
+          <td class="py-2 px-3">${sentThisWeek}</td>
+
         </tr>
       `;
     });
+    // ...버튼 이벤트 부분은 기존 코드와 동일
     document.querySelectorAll('.sendBtn').forEach(btn => {
       if (btn.disabled) return;
       btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
@@ -343,6 +407,7 @@ tabApprove.onclick = function() {
     });
   });
 }
+
 
     // ---- 추천번호 개별 발송 모달 ----
     function openSendModal(userId) {
@@ -489,6 +554,9 @@ tabApprove.onclick = function() {
       const statusDiv = document.getElementById('bulkSendResult');
       const sendSchedule = document.getElementById('bulkSendSchedule').value;
 
+
+
+      
       // 조합 파싱
       const lines = textareaValue
         .split('\n')
@@ -1091,49 +1159,157 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
   URL.revokeObjectURL(url);
 };
 
-
-function loadUsers() {
-  const tbody = document.querySelector('#userList tbody');
-  tbody.innerHTML = '';
-  firebase.firestore().collection('users').get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const user = doc.data();
-      const userId = user.userId || '-';
-      const nickname = user.name || '-';
-      const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
-      const isMember = user.membership === true;
-      const membershipText = isMember ? '멤버십회원' : '일반회원';
-      // 버튼 비활성화 처리 (일반회원)
-      tbody.innerHTML += `
-        <tr>
-          <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
-          <td class="py-2 px-3">${nickname}</td>
-          <td class="py-2 px-3">${created}</td>
-          <td class="py-2 px-3">${membershipText}</td>
-          <td class="py-2 px-3">
-            <button class="sendBtn px-3 py-1 bg-primary text-white rounded ${isMember ? '' : 'opacity-50 cursor-not-allowed'}" data-email="${userId}" ${isMember ? '' : 'disabled'}>발송</button>
-          </td>
-        </tr>
-      `;
-    });
-    document.querySelectorAll('.sendBtn').forEach(btn => {
-      if (btn.disabled) return; // 비활성 버튼은 동작X
-      btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
-    });
-    document.querySelectorAll('.email-cell').forEach(td => {
-      td.onclick = () => openHistoryModal(td.textContent);
-    });
-  });
-}
   </script>
 
   <script>
+    function openSelectedSendModal(selectedUsers) {
+  // 모달 요소 표시
+  document.getElementById('selectedSendModal').classList.remove('hidden');
+  // 선택회원 리스트 표시
+  document.getElementById('selectedSendList').textContent = selectedUsers.join(', ');
+  // 폼 초기화
+  document.getElementById('selectedNumbers').value = '';
+  document.getElementById('selectedCustomCheer').value = '';
+  document.getElementById('selectedSendResult').textContent = '';
+  document.getElementById('selectedSendSchedule').value = '';
+  // 대상 userId 배열을 전역 변수 등에 저장 (폼 제출에서 활용)
+  window._selectedSendUserIds = selectedUsers;
+}
+
     function loadRecommendationLogs() {
   // 예: Firestore에서 recommendationLogs 데이터를 읽어와서
   // #recommendationLogs 라는 div나 테이블에 출력하는 코드 작성
   // 일단은 아래처럼 임시로 처리 가능:
   console.log('loadRecommendationLogs called (구현 필요)');
 }
+  </script>
+
+  <script>//선택회원
+    document.getElementById('selectedSendBtn').onclick = function () {
+  // 체크된 회원(이메일 or userId)
+  const checked = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+    .map(cb => cb.getAttribute('data-email'))
+    .filter(Boolean);
+
+  if (checked.length === 0) {
+    alert('발송할 회원을 선택하세요!');
+    return;
+  }
+
+  // 선택회원 정보 표시 및 모달 오픈
+  openSelectedSendModal(checked);
+};
+
+document.getElementById('closeSelectedSendModal').onclick =
+document.getElementById('closeSelectedSendModal2').onclick = function() {
+  document.getElementById('selectedSendModal').classList.add('hidden');
+};
+
+
+document.getElementById('selectedSendForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const userIds = window._selectedSendUserIds || [];
+  const textareaValue = document.getElementById('selectedNumbers').value.trim();
+  const round = getCurrentRound();
+  const now = new Date();
+  const selectMsg = document.getElementById('selectedCheerSelect').value;
+  const customMsg = document.getElementById('selectedCustomCheer').value.trim();
+  const cheerMsg = customMsg ? customMsg : selectMsg;
+  const sendSchedule = document.getElementById('selectedSendSchedule').value;
+  const statusDiv = document.getElementById('selectedSendResult');
+
+  // 조합 파싱
+  const lines = textareaValue
+    .split('\n')
+    .map(line => line.replace(/\s/g, ''))
+    .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
+  const uniqueLines = Array.from(new Set(lines));
+  if (uniqueLines.length < 30) {
+    alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
+    statusDiv.textContent = '';
+    return;
+  }
+
+  // 예약발송
+  if (sendSchedule) {
+    let sendAt = new Date(sendSchedule);
+    if (sendAt <= new Date()) {
+      alert('예약 발송 시각은 현재 시각 이후여야 합니다.');
+      return;
+    }
+    // 선택된 회원 각각에 대해 예약 발송 등록
+    for (const userId of userIds) {
+      await firebase.firestore().collection('scheduledRecommendations').add({
+        type: "개별",
+        userId,
+        numbers: uniqueLines.slice(0, 30).join('\n'),
+        round,
+        cheerMsg,
+        sendAt,
+        status: "scheduled",
+        createdAt: new Date()
+      });
+    }
+    alert('선택한 회원에게 예약 발송이 등록되었습니다!');
+    document.getElementById('selectedSendModal').classList.add('hidden');
+    loadSchedules && loadSchedules();
+    return;
+  }
+
+  // 즉시 발송
+  let sentCount = 0, failList = [];
+  for (const userId of userIds) {
+    try {
+      // Firestore 기록
+      await firebase.firestore().collection('recommendations').add({
+        userId,
+        numbers: uniqueLines.slice(0, 30).join('\n'),
+        round,
+        sentAt: now,
+        cheerMsg,
+        totalCount: uniqueLines.length
+      });
+      await firebase.firestore().collection('recommendationLogs').add({
+        userId,
+        numbers: uniqueLines.slice(0, 30).join('\n'),
+        round,
+        sentAt: now,
+        cheerMsg,
+        type: '선택발송'
+      });
+
+      // 전화번호 조회 후 문자 발송
+      let phone = '';
+      const userDoc = await firebase.firestore().collection('users').where('userId', '==', userId).get();
+      if (!userDoc.empty) {
+        phone = userDoc.docs[0].data().phone;
+      }
+      if (콜) {
+        const res = await fetch('http://localhost:4000/send-sms', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            to: phone,
+            numbers: uniqueLines.slice(0, 30).join('\n'),
+            message: cheerMsg
+          })
+        });
+        const result = await res.json();
+        if (result.success) sentCount++;
+        else failList.push(userId);
+      } else {
+        failList.push(userId);
+      }
+    } catch (err) {
+      failList.push(userId);
+    }
+  }
+
+  alert(`선택한 회원 ${userIds.length}명 중 ${sentCount}명 발송 성공${failList.length ? `, 실패: ${failList.join(', ')}` : ''}`);
+  document.getElementById('selectedSendModal').classList.add('hidden');
+  loadUsers && loadUsers();
+};
+
   </script>
 </body>
 </html>

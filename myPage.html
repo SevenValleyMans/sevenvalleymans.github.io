@@ -210,12 +210,18 @@ document.addEventListener('DOMContentLoaded', () => {
             <th class="py-3 px-4 text-base font-semibold text-accent">발송일</th>
             <th class="py-3 px-4 text-base font-semibold text-accent">추천번호</th>
           </tr>
-          <button id="downloadCurrentWeekBtn" class="mt-4 px-4 py-2 bg-primary text-white rounded font-bold hover:bg-opacity-90">
-  이번 주 추천번호 다운로드
-</button>
-<button id="copyCurrentWeekBtn" class="mt-2 px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary">
-  이번 주 추천번호 복사
-</button>
+<div class="flex gap-2 my-4">
+  <button id="downloadCurrentWeekBtn"
+    class="px-5 py-2.5 rounded-md bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium shadow-sm transition duration-150">
+    📥 이번 주 추천번호 다운로드
+  </button>
+
+  <button id="copyCurrentWeekBtn"
+    class="px-5 py-2.5 rounded-md bg-amber-400 hover:bg-amber-500 text-gray-900 text-sm font-medium shadow-sm transition duration-150">
+    📋 이번 주 추천번호 복사
+  </button>
+</div>
+
 
 
         </thead>

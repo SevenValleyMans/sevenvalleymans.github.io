@@ -210,9 +210,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <th class="py-3 px-4 text-base font-semibold text-accent">발송일</th>
             <th class="py-3 px-4 text-base font-semibold text-accent">추천번호</th>
           </tr>
-          <button id="downloadCurrentWeekBtn" class="mt-4 px-4 py-2 bg-primary text-white rounded font-bold hover:bg-opacity-90">
-  이번 주 추천번호 다운로드
-</button>
+<div class="flex gap-2 my-4">
+  <button id="downloadCurrentWeekBtn"
+    class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow transition">
+    📥 이번 주 추천번호 다운로드
+  </button>
+
+  <button id="copyCurrentWeekBtn"
+    class="px-5 py-2.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-gray-800 text-sm font-semibold shadow transition">
+    📋 이번 주 추천번호 복사
+  </button>
+</div>
+
+
 
         </thead>
         <tbody id="recommendListTbody" class="bg-white/80"></tbody>
@@ -778,7 +788,7 @@ mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.a
 
 
 
-
+// 이번주 번호 다운로드
 document.getElementById('downloadCurrentWeekBtn').onclick = async function () {
   const user = firebase.auth().currentUser;
   if (!user) {
@@ -820,6 +830,45 @@ document.getElementById('downloadCurrentWeekBtn').onclick = async function () {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+};
+
+
+//이번주 번호 복사
+document.getElementById('copyCurrentWeekBtn').onclick = async function () {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
+  const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+  if (!userDoc.exists) {
+    alert("유저 정보를 불러올 수 없습니다.");
+    return;
+  }
+
+  const userId = userDoc.data().userId;
+  const round = getCurrentRound() + 1; // 이번 주 회차 기준
+
+  const snapshot = await firebase.firestore()
+    .collection('recommendations')
+    .where('userId', '==', userId)
+    .where('round', '==', round)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    alert(`${round}회차 추천번호를 아직 받지 않았습니다.`);
+    return;
+  }
+
+  const rec = snapshot.docs[0].data();
+  const numbers = rec.numbers || '';
+  const textToCopy = `로또1081 ${round}회 추천번호\n\n${numbers}`;
+
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => alert(`${round}회 추천번호가 복사되었습니다!`))
+    .catch(err => alert('복사 실패: ' + err));
 };
 
 </script>

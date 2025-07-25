@@ -210,6 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <th class="py-3 px-4 text-base font-semibold text-accent">발송일</th>
             <th class="py-3 px-4 text-base font-semibold text-accent">추천번호</th>
           </tr>
+          <button id="downloadCurrentWeekBtn" class="mt-4 px-4 py-2 bg-primary text-white rounded font-bold hover:bg-opacity-90">
+  이번 주 추천번호 다운로드
+</button>
+
         </thead>
         <tbody id="recommendListTbody" class="bg-white/80"></tbody>
       </table>
@@ -771,6 +775,52 @@ const closeMenu = document.getElementById('closeMenu');
 menuBtn.onclick = () => mobileMenu.classList.remove('hidden');
 closeMenu.onclick = () => mobileMenu.classList.add('hidden');
 mobileMenu.onclick = (e) => { if(e.target === mobileMenu) mobileMenu.classList.add('hidden'); };
+
+
+
+
+document.getElementById('downloadCurrentWeekBtn').onclick = async function () {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
+  const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+  if (!userDoc.exists) {
+    alert("유저 정보를 불러올 수 없습니다.");
+    return;
+  }
+
+  const userId = userDoc.data().userId;
+  const round = getCurrentRound()+1; // 이미 정의돼 있음
+
+  const snapshot = await firebase.firestore()
+    .collection('recommendations')
+    .where('userId', '==', userId)
+    .where('round', '==', round)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    alert(`${round}회차 추천번호를 아직 받지 않았습니다.`);
+    return;
+  }
+
+  const rec = snapshot.docs[0].data();
+  const numbers = rec.numbers || '';
+  const filename = `로또1081_${round}회_추천번호.txt`;
+  const blob = new Blob([numbers], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
 
 </script>
 </body>

@@ -210,18 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <th class="py-3 px-4 text-base font-semibold text-accent">발송일</th>
             <th class="py-3 px-4 text-base font-semibold text-accent">추천번호</th>
           </tr>
-<div class="flex gap-2 my-4">
-  <button id="downloadCurrentWeekBtn"
-    class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow transition">
-    📥 이번 주 추천번호 다운로드
-  </button>
-
-  <button id="copyCurrentWeekBtn"
-    class="px-5 py-2.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-gray-800 text-sm font-semibold shadow transition">
-    📋 이번 주 추천번호 복사
-  </button>
-</div>
-
+          <button id="downloadCurrentWeekBtn" class="mt-4 px-4 py-2 bg-primary text-white rounded font-bold hover:bg-opacity-90">
+  이번 주 추천번호 다운로드
+</button>
+<button id="copyCurrentWeekBtn" class="mt-2 px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary">
+  이번 주 추천번호 복사
+</button>
 
 
         </thead>
@@ -848,7 +842,7 @@ document.getElementById('copyCurrentWeekBtn').onclick = async function () {
   }
 
   const userId = userDoc.data().userId;
-  const round = getCurrentRound() + 1;
+  const round = getCurrentRound() + 1; // 이번 주 회차 기준
 
   const snapshot = await firebase.firestore()
     .collection('recommendations')
@@ -866,28 +860,10 @@ document.getElementById('copyCurrentWeekBtn').onclick = async function () {
   const numbers = rec.numbers || '';
   const textToCopy = `로또1081 ${round}회 추천번호\n\n${numbers}`;
 
-  // ✅ 구형 방식으로 복사 처리
-  const textarea = document.createElement("textarea");
-  textarea.value = textToCopy;
-  textarea.style.position = "fixed"; // iOS에서 스크롤 문제 방지
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-
-  try {
-    const successful = document.execCommand("copy");
-    if (successful) {
-      alert(`${round}회 추천번호가 복사되었습니다!`);
-    } else {
-      alert("복사 실패: execCommand 실패");
-    }
-  } catch (err) {
-    alert("복사 실패: " + err);
-  }
-
-  document.body.removeChild(textarea);
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => alert(`${round}회 추천번호가 복사되었습니다!`))
+    .catch(err => alert('복사 실패: ' + err));
 };
-
 
 </script>
 </body>

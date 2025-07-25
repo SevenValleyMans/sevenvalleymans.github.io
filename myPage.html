@@ -848,7 +848,7 @@ document.getElementById('copyCurrentWeekBtn').onclick = async function () {
   }
 
   const userId = userDoc.data().userId;
-  const round = getCurrentRound() + 1; // 이번 주 회차 기준
+  const round = getCurrentRound() + 1;
 
   const snapshot = await firebase.firestore()
     .collection('recommendations')
@@ -866,10 +866,28 @@ document.getElementById('copyCurrentWeekBtn').onclick = async function () {
   const numbers = rec.numbers || '';
   const textToCopy = `로또1081 ${round}회 추천번호\n\n${numbers}`;
 
-  navigator.clipboard.writeText(textToCopy)
-    .then(() => alert(`${round}회 추천번호가 복사되었습니다!`))
-    .catch(err => alert('복사 실패: ' + err));
+  // ✅ 구형 방식으로 복사 처리
+  const textarea = document.createElement("textarea");
+  textarea.value = textToCopy;
+  textarea.style.position = "fixed"; // iOS에서 스크롤 문제 방지
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+
+  try {
+    const successful = document.execCommand("copy");
+    if (successful) {
+      alert(`${round}회 추천번호가 복사되었습니다!`);
+    } else {
+      alert("복사 실패: execCommand 실패");
+    }
+  } catch (err) {
+    alert("복사 실패: " + err);
+  }
+
+  document.body.removeChild(textarea);
 };
+
 
 </script>
 </body>

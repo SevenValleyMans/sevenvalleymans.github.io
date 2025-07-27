@@ -180,14 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="flex-1">
       <div class="flex items-center gap-2 mb-2">
         <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /></svg>
-        <span class="text-xl font-extrabold text-primary">프리미엄 구독</span>
+        <span class="text-xl font-extrabold text-primary">구독 상태:</span>
         <span id="membershipBadge" class="ml-2 px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold">구독중</span>
       </div>
       <div class="text-gray-500 mb-1">최근 결제일: <span id="lastPaymentDate" class="font-semibold text-gray-700">-</span></div>
 <div class="text-gray-500 mb-1">결제수단: <span id="paymentMethod" class="font-semibold text-gray-700">-</span></div>
 <div class="text-gray-500">다음 결제 예정일: <span id="nextPaymentDate" class="font-semibold text-gray-700">-</span></div>
     </div>
-    <button class="h-11 px-8 rounded-xl bg-accent text-white font-bold text-base shadow-md hover:bg-primary transition mt-4 sm:mt-0">구독 해지</button>
   </section>
 
   <!-- 2. 이번 주 로또 당첨번호 -->
@@ -500,14 +499,19 @@ function fetchMyUserIdAndLoadAll() {
 
           // 멤버십 상태 세팅
           if (userData.membership === true) {
-            if (membershipBadge) {
-              membershipBadge.textContent = '구독중';
-              membershipBadge.className = 'ml-2 px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold';
-            }
-            if (paymentMethod) paymentMethod.textContent = '무통장입금';
-            // 결제일/다음결제일: bankTransfers에서 가져옴 (users.approveAt은 무시)
-            setPaymentDatesFromBankTransfers(myPhone, lastPaymentDate, nextPaymentDate);
-          } else {
+  let planLabel = '';
+  if (userData.plan) {
+    // BASIC, PREMIUM 대문자 표기
+    planLabel = userData.plan.toUpperCase();
+  }
+  if (membershipBadge) {
+    membershipBadge.textContent = `구독중${planLabel ? ' (' + planLabel + ')' : ''}`;
+    membershipBadge.className = 'ml-2 px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold';
+  }
+  if (paymentMethod) paymentMethod.textContent = '무통장입금';
+  // 결제일/다음결제일: bankTransfers에서 가져옴 (users.approveAt은 무시)
+  setPaymentDatesFromBankTransfers(myPhone, lastPaymentDate, nextPaymentDate);
+} else {
             if (membershipBadge) {
               membershipBadge.textContent = '일반회원';
               membershipBadge.className = 'ml-2 px-3 py-1 rounded-full bg-gray-300 text-gray-600 text-xs font-bold';

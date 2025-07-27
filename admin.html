@@ -103,19 +103,19 @@
     <section id="userSection" class="section-card p-6 border border-accent/20">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xl font-bold text-primary">회원 목록</h2>
-        <button id="bulkSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">일괄 발송</button>
+        <button id="selectedDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded font-bold hover:bg-primary transition ml-2">선택회원 탈퇴</button>
          <button id="selectedSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">선택회원 발송</button>
       </div>
       <div id="userList" class="overflow-x-auto">
         <table class="table w-full text-center text-gray-700">
           <thead>
             <tr>
+              <th class="py-2 px-3">체크박스</th>
               <th class="py-2 px-3">이메일</th>
               <th class="py-2 px-3">닉네임</th>
               <th class="py-2 px-3">가입일</th>
               <th class="py-2 px-3">회원구분</th>
               <th class="py-2 px-3">이번주 발송</th>
-              <th class="py-2 px-3">번호 발송</th>
             </tr>
           </thead>
           <tbody>
@@ -189,41 +189,7 @@
     </div>
 
     <!-- 일괄 발송 모달 (예약 필드 추가) -->
-    <div id="bulkSendModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-      <div class="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full relative max-h-[80vh] overflow-y-auto">
-        <button id="closeBulkSendModal" class="absolute top-2 right-2 text-gray-400 hover:text-primary text-2xl">&times;</button>
-        <h3 class="text-lg font-bold text-primary mb-4">전체 회원 일괄 발송</h3>
-        <form id="bulkSendForm" class="space-y-3">
-          <div>
-            <label class="block font-semibold mb-1">추천번호 조합 (최소 30개)<br>
-              <span class="text-xs text-gray-400">각 조합을 한 줄에 1개씩, 예: 1,3,11,18,30,42</span>
-            </label>
-            <textarea id="bulkNumbers" class="w-full p-2 border rounded" placeholder="예:&#10;1,3,11,18,30,42&#10;7,8,17,24,31,45&#10;..." rows="15" required></textarea>
-          </div>
-          <div>
-            <label class="block font-semibold mb-1">응원 메시지</label>
-            <select id="bulkCheerSelect" class="w-full p-2 border rounded mb-1">
-              <option value="이번 주에는 행운이 함께 하시길!">이번 주에는 행운이 함께 하시길!</option>
-              <option value="꿈은 이루어집니다!">꿈은 이루어집니다!</option>
-              <option value="매주 행복한 한 주 보내세요!">매주 행복한 한 주 보내세요!</option>
-              <option value="로또1081이 늘 응원합니다!">로또1081이 늘 응원합니다!</option>
-            </select>
-            <input type="text" id="bulkCustomCheer" class="w-full p-2 border rounded mt-1" placeholder="직접 입력 (선택)" />
-            <small class="text-gray-400">직접 입력하면 선택 메시지 대신 사용됩니다.</small>
-          </div>
-          <div>
-            <label class="block font-semibold mb-1">예약 발송 시간</label>
-            <input type="datetime-local" id="bulkSendSchedule" class="w-full p-2 border rounded" />
-            <small class="text-gray-400">비워두면 즉시 발송</small>
-          </div>
-          <div class="flex gap-2">
-            <button type="submit" class="px-4 py-1 bg-primary text-white rounded font-bold">일괄 발송</button>
-            <button type="button" id="closeBulkSendModal2" class="ml-auto px-4 py-1 bg-gray-200 rounded">취소</button>
-          </div>
-          <div id="bulkSendResult" class="text-sm text-gray-700 mt-2"></div>
-        </form>
-      </div>
-    </div>
+
 
     <!-- 회원별 추천번호 이력 모달 -->
     <div id="historyModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
@@ -379,7 +345,23 @@ function loadUsers() {
       const nickname = user.name || '-';
       const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
       const isMember = user.membership === true;
-      const membershipText = isMember ? '멤버십회원' : '일반회원';
+// 플랜 종류 파싱
+let membershipText = '일반회원';
+if (isMember) {
+  if (user.plan) {
+    // BASIC, PREMIUM 등 모두 대문자로 표시
+    const plan = user.plan.toUpperCase();
+    membershipText = `멤버십(${plan})`;
+  } else if (user.membershipType) {
+    // 혹시 옛날 membershipType 필드가 있을 때
+    const plan = user.membershipType.toUpperCase();
+    membershipText = `멤버십(${plan})`;
+  } else {
+    membershipText = '멤버십(알수없음)';
+  }
+}
+
+
       // ★ 금주 발송 여부 체크
       const sentThisWeek = receivedUsers.has(userId) ? 'O' : '-';
 
@@ -501,7 +483,7 @@ function loadUsers() {
       if (!userDoc.empty) {
         phone = userDoc.docs[0].data().phone;
       }
-      if (콜) {
+      if (phone) {
         fetch('http://localhost:4000/send-sms', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -528,137 +510,10 @@ function loadUsers() {
     };
 
     // ---- 일괄 발송 모달 열기 ----
-    document.getElementById('bulkSendBtn').onclick = () => {
-      document.getElementById('bulkNumbers').value = '';
-      document.getElementById('bulkCustomCheer').value = '';
-      document.getElementById('bulkSendResult').textContent = '';
-      document.getElementById('bulkSendSchedule').value = '';
-      document.getElementById('bulkSendModal').classList.remove('hidden');
-    };
-    document.getElementById('closeBulkSendModal').onclick = () => {
-      document.getElementById('bulkSendModal').classList.add('hidden');
-    };
-    document.getElementById('closeBulkSendModal2').onclick = () => {
-      document.getElementById('bulkSendModal').classList.add('hidden');
-    };
+
 
     // ---- 일괄 발송 (즉시/예약) ----
-    document.getElementById('bulkSendForm').onsubmit = async function(e) {
-      e.preventDefault();
-      const textareaValue = document.getElementById('bulkNumbers').value.trim();
-      const round = getCurrentRound();
-      const now = new Date();
-      const selectMsg = document.getElementById('bulkCheerSelect').value;
-      const customMsg = document.getElementById('bulkCustomCheer').value.trim();
-      const cheerMsg = customMsg ? customMsg : selectMsg;
-      const statusDiv = document.getElementById('bulkSendResult');
-      const sendSchedule = document.getElementById('bulkSendSchedule').value;
-
-
-
-      
-      // 조합 파싱
-      const lines = textareaValue
-        .split('\n')
-        .map(line => line.replace(/\s/g, ''))
-        .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
-      const uniqueLines = Array.from(new Set(lines));
-      if (uniqueLines.length < 30) {
-        alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
-        statusDiv.textContent = '';
-        return;
-      }
-
-      if (sendSchedule) {
-        // 예약 일괄 발송 등록
-        let sendAt = new Date(sendSchedule);
-        if (sendAt <= new Date()) {
-          alert('예약 발송 시각은 현재 시각 이후여야 합니다.');
-          return;
-        }
-        await firebase.firestore().collection('scheduledRecommendations').add({
-          type: "일괄",
-          numbers: uniqueLines.join('\n'),
-          round,
-          cheerMsg,
-          sendAt,
-          status: "scheduled",
-          createdAt: new Date()
-        });
-        alert('일괄 예약 발송이 등록되었습니다!');
-        document.getElementById('bulkSendModal').classList.add('hidden');
-        loadSchedules();
-        return;
-      }
-
-      // 즉시 발송(기존)
-      // 모든 회원 가져오기
-      const usersSnap = await firebase.firestore().collection('users').get();
-      if (usersSnap.empty) {
-        alert('회원이 없습니다.');
-        statusDiv.textContent = '';
-        return;
-      }
-
-      // 회원별로 순차 발송(랜덤 30개), Firestore저장+문자 전송
-      let sentCount = 0, failList = [];
-      for (const doc of usersSnap.docs) {
-  const user = doc.data();
-  // 멤버십회원만 발송!
-  if (user.membership !== true) continue;
-  const userId = user.userId;
-  const phone = user.phone;
-  if (!userId || !phone) {
-    failList.push(user.name || userId || '(정보누락)');
-    continue;
-  }
-        // 30개 랜덤 샘플
-        const shuffled = uniqueLines
-          .map(value => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value);
-        const selectedNumbersArr = shuffled.slice(0, 30);
-
-        // Firestore 기록
-        await firebase.firestore().collection('recommendations').add({
-          userId,
-          numbers: selectedNumbersArr.join('\n'),
-          round,
-          sentAt: now,
-          cheerMsg,
-          totalCount: uniqueLines.length
-        });
-        await firebase.firestore().collection('recommendationLogs').add({
-          userId,
-          numbers: selectedNumbersArr.join('\n'),
-          round,
-          sentAt: now,
-          cheerMsg,
-          type: '일괄'
-        });
-
-        // 문자 발송
-        try {
-          const res = await fetch('http://localhost:4000/send-sms', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              to: phone,
-              numbers: selectedNumbersArr.join('\n'),
-              message: cheerMsg
-            })
-          });
-          const result = await res.json();
-          if (result.success) sentCount++;
-          else failList.push(user.name || userId);
-        } catch (err) {
-          failList.push(user.name || userId);
-        }
-      }
-      // 결과 안내
-      alert('전체 멤버십회원에게 추천번호가 일괄 발송되었습니다!');
-      document.getElementById('bulkSendModal').classList.add('hidden');
-    };
+ 
 
     // ---- 예약 발송 현황(관리자) ----
     async function loadSchedules() {
@@ -880,6 +735,8 @@ async function loadApproveList() {
   html += '</tbody></table>';
   div.innerHTML = html;
 
+// 승인 버튼 클릭 시
+// 승인 버튼 클릭 시 (수정 코드)
 document.querySelectorAll('.approveBtn').forEach(btn => {
   btn.onclick = async function() {
     const uid = this.getAttribute('data-uid');
@@ -887,20 +744,14 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
     if (!uid || !phone) return alert('유저 정보를 찾을 수 없습니다.');
     if (!confirm('해당 유저를 승인 처리하시겠습니까?')) return;
 
-    // 버튼 상태 변경
     this.textContent = '승인중...';
     this.disabled = true;
     this.classList.add('opacity-50');
 
     let approveError = false;
     try {
-      await firebase.firestore().collection('users').doc(uid).update({ membership: true });
-    } catch (e) {
-      approveError = true;
-    }
-
-    try {
-      // bankTransfers 승인시간 갱신
+      // bankTransfers에서 phone으로 최신 결제건 조회
+      let plan = 'basic';
       const bankSnap = await firebase.firestore()
         .collection('bankTransfers')
         .where('phone', '==', phone)
@@ -909,13 +760,24 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
         .get();
 
       if (!bankSnap.empty) {
-  const bankId = bankSnap.docs[0].id;
-  await firebase.firestore().collection('bankTransfers').doc(bankId)
-    .update({ approveAt: firebase.firestore.Timestamp.fromDate(new Date()) });
-}
+        const data = bankSnap.docs[0].data();
+        if (data.product) plan = data.product.toLowerCase();
+      }
+
+      // users.plan 항상 최신으로 덮어쓰기
+      await firebase.firestore().collection('users').doc(uid).update({
+        membership: true,
+        plan: plan
+      });
+
+      // bankTransfers 승인 처리
+      if (!bankSnap.empty) {
+        const bankId = bankSnap.docs[0].id;
+        await firebase.firestore().collection('bankTransfers').doc(bankId)
+          .update({ approveAt: firebase.firestore.Timestamp.fromDate(new Date()) });
+      }
     } catch (e) {
-      // bankTransfers 인덱스 오류 발생해도 무시
-      console.warn('bankTransfers 갱신 오류:', e);
+      approveError = true;
     }
 
     await loadApproveList();
@@ -926,6 +788,7 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
     }
   };
 });
+
 }
 
 
@@ -984,16 +847,16 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
 
       let html = `
         <table class="table w-full text-center mt-4">
-          <thead>
-            <tr>
-              <th class="py-2 px-3">이메일</th>
-              <th class="py-2 px-3">닉네임</th>
-              <th class="py-2 px-3">추천번호</th>
-              <th class="py-2 px-3">일치</th>
-              <th class="py-2 px-3">보너스</th>
-              <th class="py-2 px-3">등수</th>
-            </tr>
-          </thead>
+<thead>
+  <tr>
+    <th class="py-2 px-3">이메일</th>
+    <th class="py-2 px-3">닉네임</th>
+    <th class="py-2 px-3">가입일</th>
+    <th class="py-2 px-3">회원구분</th>
+    <th class="py-2 px-3">번호 발송</th>
+  </tr>
+</thead>
+
           <tbody>
       `;
       usersSnap.forEach(doc => {
@@ -1044,7 +907,6 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
           <td class="py-1 px-2">${name}</td>
           <td class="py-1 px-2">${best.nums}</td>
           <td class="py-1 px-2 font-bold">${best.matchCount}개 (${best.match.join(', ')})</td>
-          <td class="py-1 px-2">${best.bonusMatch ? 'O' : 'X'}</td>
           <td class="py-1 px-2 font-bold">${best.rank}</td>
         </tr>`;
       });
@@ -1199,6 +1061,49 @@ document.querySelectorAll('.approveBtn').forEach(btn => {
   // 선택회원 정보 표시 및 모달 오픈
   openSelectedSendModal(checked);
 };
+document.getElementById('selectedDeleteBtn').onclick = async function () {
+  // 체크된 회원(이메일 or userId)
+  const checked = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+    .map(cb => cb.getAttribute('data-email'))
+    .filter(Boolean);
+
+  if (checked.length === 0) {
+    alert('탈퇴시킬 회원을 선택하세요!');
+    return;
+  }
+
+  if (!confirm(`선택한 ${checked.length}명의 회원을 탈퇴 처리하시겠습니까? 탈퇴 시 회원의 membership이 해제되고, 관련 입금 정보가 삭제됩니다.`)) {
+    return;
+  }
+
+  let successCount = 0, failList = [];
+  for (const userId of checked) {
+    try {
+      // 1. 회원 정보에서 membership: false로 변경
+      const userSnap = await firebase.firestore().collection('users').where('userId', '==', userId).get();
+      if (!userSnap.empty) {
+        const userDocId = userSnap.docs[0].id;
+        await firebase.firestore().collection('users').doc(userDocId).update({ membership: false });
+        // 2. bankTransfers 컬렉션에서 해당 회원의 문서(들) 삭제 (phone 기준)
+        const phone = userSnap.docs[0].data().phone;
+        if (phone) {
+          const btSnap = await firebase.firestore().collection('bankTransfers').where('phone', '==', phone).get();
+          for (const btDoc of btSnap.docs) {
+            await firebase.firestore().collection('bankTransfers').doc(btDoc.id).delete();
+          }
+        }
+        successCount++;
+      } else {
+        failList.push(userId);
+      }
+    } catch (e) {
+      failList.push(userId);
+    }
+  }
+  alert(`총 ${checked.length}명 중 ${successCount}명 탈퇴 완료${failList.length ? `, 실패: ${failList.join(', ')}` : ''}`);
+  loadUsers && loadUsers();
+  loadApproveList && loadApproveList();
+};
 
 document.getElementById('closeSelectedSendModal').onclick =
 document.getElementById('closeSelectedSendModal2').onclick = function() {
@@ -1224,8 +1129,8 @@ document.getElementById('selectedSendForm').onsubmit = async function(e) {
     .map(line => line.replace(/\s/g, ''))
     .filter(line => !!line && line.split(',').length === 6 && line.split(',').every(n => !isNaN(Number(n)) && Number(n) >= 1 && Number(n) <= 45));
   const uniqueLines = Array.from(new Set(lines));
-  if (uniqueLines.length < 30) {
-    alert('30개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
+  if (uniqueLines.length < 20) {
+    alert('20개 이상의 6자리 숫자 조합을 한 줄에 1개씩 입력해 주세요.');
     statusDiv.textContent = '';
     return;
   }
@@ -1284,7 +1189,7 @@ document.getElementById('selectedSendForm').onsubmit = async function(e) {
       if (!userDoc.empty) {
         phone = userDoc.docs[0].data().phone;
       }
-      if (콜) {
+      if (phone) {
         const res = await fetch('http://localhost:4000/send-sms', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},

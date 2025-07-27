@@ -103,7 +103,7 @@
     <section id="userSection" class="section-card p-6 border border-accent/20">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xl font-bold text-primary">회원 목록</h2>
-        <button id="selectedDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded font-bold hover:bg-primary transition ml-2">선택회원 탈퇴</button>
+        <button id="selectedDeleteBtn" class="px-4 py-2 bg-red-500 text-white rounded font-bold hover:bg-primary transition ml-2">선택회원 멤버십 해지</button>
          <button id="selectedSendBtn" class="px-4 py-2 bg-secondary text-white rounded font-bold hover:bg-primary transition">선택회원 발송</button>
       </div>
       <div id="userList" class="overflow-x-auto">
@@ -1068,11 +1068,11 @@ document.getElementById('selectedDeleteBtn').onclick = async function () {
     .filter(Boolean);
 
   if (checked.length === 0) {
-    alert('탈퇴시킬 회원을 선택하세요!');
+    alert('멤버십 해지 시킬 회원을 선택하세요!');
     return;
   }
 
-  if (!confirm(`선택한 ${checked.length}명의 회원을 탈퇴 처리하시겠습니까? 탈퇴 시 회원의 membership이 해제되고, 관련 입금 정보가 삭제됩니다.`)) {
+  if (!confirm(`선택한 ${checked.length}명의 회원을 멤버십 해지 처리하시겠습니까? 멤버십 해지 시 회원의 membership이 해제되고, 관련 입금 정보가 삭제됩니다.`)) {
     return;
   }
 

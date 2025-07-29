@@ -1,3 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /admin-login.html
+Disallow: /admin-3xg19-beta.html
 Sitemap: https://lotto1081.com/sitemap.xml

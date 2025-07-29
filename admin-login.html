@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login</title>
+</head>
+<body>
+  <h2>관리자 로그인</h2>
+  <input type="password" id="admin-password" placeholder="비밀번호 입력" />
+  <button onclick="checkPassword()">접속</button>
+
+<script>
+  async function hash(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text.trim()); // ← 공백 제거!
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+  }
+
+  async function checkPassword() {
+    const input = document.getElementById("admin-password").value;
+    const hashedInput = await hash(input);
+    const correctHash = "e18037f42fd038fa9b51c6234fa4f332fa681c14653c9852fdf9a0a501bbac24";
+
+    if (hashedInput === correctHash) {
+      localStorage.setItem("admin-auth", "true");
+      window.location.href = "/admin-3xg19-beta.html";
+    } else {
+      alert("비밀번호가 틀렸습니다.");
+    }
+  }
+</script>
+
+
+</body>
+</html>

@@ -22,7 +22,7 @@
   async function checkPassword() {
     const input = document.getElementById("admin-password").value;
     const hashedInput = await hash(input);
-    const correctHash = "e18037f42fd038fa9b51c6234fa4f332fa681c14653c9852fdf9a0a501bbac24";
+    const correctHash = "52ed8fba503e8a9d8e235041ef867cd3cdcd7426125a5e322859c1c3e826c876";
 
     if (hashedInput === correctHash) {
       localStorage.setItem("admin-auth", "true");

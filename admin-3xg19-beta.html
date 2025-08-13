@@ -61,6 +61,26 @@
     .tab-active { color: #8B0000; border-bottom: 2px solid #8B0000; }
     .status-paid { color: #22c55e; font-weight: bold; }
     .status-expired { color: #f87171; }
+
+       /* 회원 목록 테이블의 셀 스타일 조정 */
+    #userList .table th,
+    #userList .table td {
+      white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+      padding-left: 16px;  /* 좌우 여백 추가 */
+      padding-right: 16px;
+    }
+
+    /* '회원구분' 컬럼의 너비를 더 넓게 확보 */
+    #userList .table th:nth-child(5),
+    #userList .table td:nth-child(5) {
+      min-width: 300px; /* 최소 너비를 300px로 지정 */
+    }
+
+    /* '이메일' 컬럼 너비 확보 */
+    #userList .table th:nth-child(2),
+    #userList .table td:nth-child(2) {
+      min-width: 220px;
+    }
   </style>
 </head>
 <body class="bg-light min-h-screen">
@@ -334,71 +354,95 @@ tabApprove.onclick = function() {
 
     // ---- 회원 목록 불러오기 ----
 function loadUsers() {
-  const tbody = document.querySelector('#userList tbody');
-  tbody.innerHTML = '';
-  const round = getCurrentRound(); // 이번주 회차
-  // 1. 모든 회원 정보 가져오기
-  firebase.firestore().collection('users').get().then(async usersSnapshot => {
-    // 2. 이번주 추천번호 전체 불러오기 (userId:round)
-    const recSnap = await firebase.firestore()
-      .collection('recommendations')
-      .where('round', '==', round)
-      .get();
-    const receivedUsers = new Set();
-    recSnap.forEach(doc => {
-      const rec = doc.data();
-      if (rec.userId) receivedUsers.add(rec.userId);
+  const tbody = document.querySelector('#userList tbody');
+  tbody.innerHTML = '';
+  const round = getCurrentRound(); // 이번주 회차
+  // 1. 모든 회원 정보 가져오기
+  firebase.firestore().collection('users').get().then(async usersSnapshot => {
+    // 2. 이번주 추천번호 전체 불러오기 (userId:round)
+    const recSnap = await firebase.firestore()
+      .collection('recommendations')
+      .where('round', '==', round)
+      .get();
+    const receivedUsers = new Set();
+    recSnap.forEach(doc => {
+      const rec = doc.data();
+      if (rec.userId) receivedUsers.add(rec.userId);
+    });
+
+    // --- [수정된 부분 시작] ---
+    // 1. usersSnapshot에서 문서 배열을 가져옵니다.
+    const userDocs = usersSnapshot.docs;
+
+    // 2. '일반회원'이 위로 오도록 정렬합니다.
+    userDocs.sort((a, b) => {
+      const userA = a.data();
+      const userB = b.data();
+      
+      const isGeneralA = userA.membership !== true;
+      const isGeneralB = userB.membership !== true;
+
+      if (isGeneralA && !isGeneralB) {
+        return -1; // A가 일반회원이면 앞으로 보낸다.
+      }
+      if (!isGeneralA && isGeneralB) {
+        return 1; // B가 일반회원이면 앞으로 보낸다.
+      }
+      return 0; // 둘 다 멤버십이거나 둘 다 일반회원이면 순서 유지
     });
+    // --- [수정된 부분 끝] ---
 
-    usersSnapshot.forEach(doc => {
-      const user = doc.data();
-      const userId = user.userId || '-';
-      const nickname = user.name || '-';
-      const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
-      const isMember = user.membership === true;
-// 플랜 종류 파싱
-let membershipText = '일반회원';
-if (isMember) {
-  if (user.plan) {
-    // BASIC, PREMIUM 등 모두 대문자로 표시
-    const plan = user.plan.toUpperCase();
-    membershipText = `멤버십(${plan})`;
-  } else if (user.membershipType) {
-    // 혹시 옛날 membershipType 필드가 있을 때
-    const plan = user.membershipType.toUpperCase();
-    membershipText = `멤버십(${plan})`;
-  } else {
-    membershipText = '멤버십(알수없음)';
-  }
-}
+    // 3. 정렬된 배열(userDocs)을 사용해 화면을 그립니다.
+    userDocs.forEach(doc => {
+      const user = doc.data();
+      const userId = user.userId || '-';
+      const nickname = user.name || '-';
+      const created = user.createdAt && user.createdAt.toDate ? user.createdAt.toDate().toLocaleDateString() : '-';
+      const isMember = user.membership === true;
 
+      // 플랜 종류 파싱 (기존 코드와 동일)
+      let membershipText = '일반회원';
+      if (isMember) {
+        if (user.plan) {
+          const plan = user.plan.toUpperCase();
+          // 프리미엄 플랜의 상세 정보를 함께 표시
+          if (plan === 'PREMIUM') {
+              membershipText = `멤버십(${plan} 플랜 (1개월 120세트))`;
+          } else if (plan === 'BASIC') {
+              membershipText = `멤버십(${plan} 플랜 (1개월 80세트))`;
+          } else {
+              membershipText = `멤버십(${plan})`;
+          }
+        } else if (user.membershipType) {
+          const plan = user.membershipType.toUpperCase();
+          membershipText = `멤버십(${plan})`;
+        } else {
+          membershipText = '멤버십(알수없음)';
+        }
+      }
 
-      // ★ 금주 발송 여부 체크
-      const sentThisWeek = receivedUsers.has(userId) ? 'O' : '-';
+      // ★ 금주 발송 여부 체크 (기존 코드와 동일)
+      const sentThisWeek = receivedUsers.has(userId) ? 'O' : '-';
 
-      tbody.innerHTML += `
-        <tr>
-           <td class="py-2 px-3">
-      <input type="checkbox" class="user-checkbox" data-email="${userId}" ${!isMember ? 'disabled' : ''}>
-    </td>
-          <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
-          <td class="py-2 px-3">${nickname}</td>
-          <td class="py-2 px-3">${created}</td>
-          <td class="py-2 px-3">${membershipText}</td>
-          <td class="py-2 px-3">${sentThisWeek}</td>
-
-        </tr>
-      `;
-    });
-    // ...버튼 이벤트 부분은 기존 코드와 동일
-    document.querySelectorAll('.sendBtn').forEach(btn => {
-      if (btn.disabled) return;
-      btn.onclick = () => openSendModal(btn.getAttribute('data-email'));
-    });
-    document.querySelectorAll('.email-cell').forEach(td => {
-      td.onclick = () => openHistoryModal(td.textContent);
-    });
-  });
+      tbody.innerHTML += `
+        <tr>
+           <td class="py-2 px-3">
+      <input type="checkbox" class="user-checkbox" data-email="${userId}" ${!isMember ? 'disabled' : ''}>
+    </td>
+          <td class="py-2 px-3 email-cell cursor-pointer text-blue-700 hover:underline">${userId}</td>
+          <td class="py-2 px-3">${nickname}</td>
+          <td class="py-2 px-3">${created}</td>
+          <td class="py-2 px-3">${membershipText}</td>
+          <td class="py-2 px-3">${sentThisWeek}</td>
+        </tr>
+      `;
+    });
+    
+    // 버튼 이벤트 리스너 추가 (기존 코드와 동일)
+    document.querySelectorAll('.email-cell').forEach(td => {
+      td.onclick = () => openHistoryModal(td.textContent);
+    });
+  });
 }
 
 
